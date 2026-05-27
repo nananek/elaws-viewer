@@ -1,0 +1,24 @@
+services:
+  elaws:
+    image: ghcr.io/nananek/elaws-viewer:latest
+    container_name: elaws-viewer
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      NODE_ENV: production
+      TZ: Asia/Tokyo
+      # Set ELAWS_AUTH_DISABLED=1 to bypass the Tailscale CGNAT
+      # allowlist (useful when fronted by a different ACL).
+      ELAWS_AUTH_DISABLED: "${ELAWS_AUTH_DISABLED:-0}"
+    volumes:
+      - ./storage:/app/storage
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
