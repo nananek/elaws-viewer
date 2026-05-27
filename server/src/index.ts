@@ -12,6 +12,8 @@ import { searchRouter } from './routes/search.js';
 import { bookmarksRouter } from './routes/bookmarks.js';
 import { tagsRouter } from './routes/tags.js';
 import { ioRealmRouter } from './routes/ioRealm.js';
+import { startBackupScheduler } from './realm/backup-scheduler.js';
+import { runDailyBackup } from './realm/backup.js';
 
 const app = new Hono();
 
@@ -35,6 +37,15 @@ app.route('/api/bookmarks', bookmarksRouter);
 app.route('/api/tags', tagsRouter);
 app.route('/api', ioRealmRouter);
 
+app.post('/api/backup', async (c) => {
+  try {
+    const path = await runDailyBackup();
+    return c.json({ ok: true, path });
+  } catch (e) {
+    return c.json({ ok: false, error: String(e) }, 500);
+  }
+});
+
 // Serve compiled SPA in production (no-op in dev where vite serves on :5173)
 const webDist = resolve(import.meta.dirname, '..', '..', 'web', 'dist');
 if (existsSync(webDist)) {
@@ -53,4 +64,5 @@ const host = process.env.HOST ?? '0.0.0.0';
 
 serve({ fetch: app.fetch, port, hostname: host }, (info) => {
   console.log(`[elaws-viewer] listening on http://${info.address}:${info.port}`);
+  startBackupScheduler();
 });

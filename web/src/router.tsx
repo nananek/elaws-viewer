@@ -13,6 +13,8 @@ import { BookmarksPage } from './routes/Bookmarks.js';
 import { TagsPage } from './routes/Tags.js';
 import { SettingsPage } from './routes/Settings.js';
 import { ThemeToggle } from './components/ThemeToggle.js';
+import { LawTabs } from './components/LawTabs.js';
+import { ShortcutHelp } from './components/ShortcutHelp.js';
 
 const rootRoute = createRootRoute({
   component: function RootLayout() {
@@ -36,9 +38,11 @@ const rootRoute = createRootRoute({
             <ThemeToggle />
           </div>
         </header>
+        <LawTabs />
         <main className="flex-1 min-h-0">
           <Outlet />
         </main>
+        <ShortcutHelp />
       </div>
     );
   },

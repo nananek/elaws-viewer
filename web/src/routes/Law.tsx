@@ -3,6 +3,7 @@ import { useParams } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 import { fetchLawBody, downloadLaw } from '../api/laws.js';
 import { LawViewer } from '../components/LawViewer/LawViewer.js';
+import { useTabs } from '../state/tabs.js';
 
 export function LawPage() {
   const { lawId } = useParams({ from: '/law/$lawId' });
@@ -35,6 +36,12 @@ export function LawPage() {
       }
     })();
   }, [notDownloaded, downloading, lawId]);
+
+  // Register this law in the tabs store once we have a title
+  useEffect(() => {
+    if (!query.data) return;
+    useTabs.getState().open({ lawId, title: query.data.lawTitle });
+  }, [lawId, query.data]);
 
   if (query.isLoading) return <div className="p-6 text-sm">読み込み中…</div>;
   if (downloading) {
