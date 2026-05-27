@@ -11,6 +11,7 @@ import { LawPage } from './routes/Law.js';
 import { SearchPage } from './routes/Search.js';
 import { BookmarksPage } from './routes/Bookmarks.js';
 import { TagsPage } from './routes/Tags.js';
+import { SettingsPage } from './routes/Settings.js';
 
 const rootRoute = createRootRoute({
   component: function RootLayout() {
@@ -28,6 +29,7 @@ const rootRoute = createRootRoute({
             <Link to="/search" className="hover:underline">検索</Link>
             <Link to="/bookmarks" className="hover:underline">ブックマーク</Link>
             <Link to="/tags" className="hover:underline">タグ</Link>
+            <Link to="/settings" className="hover:underline">設定</Link>
           </nav>
         </header>
         <main className="flex-1 min-h-0">
@@ -71,8 +73,14 @@ const tagsRoute = createRoute({
   component: TagsPage,
 });
 
+const settingsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/settings',
+  component: SettingsPage,
+});
+
 const routeTree = rootRoute.addChildren([
-  homeRoute, lawRoute, searchRoute, bookmarksRoute, tagsRoute,
+  homeRoute, lawRoute, searchRoute, bookmarksRoute, tagsRoute, settingsRoute,
 ]);
 
 export const router = createRouter({

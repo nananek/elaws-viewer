@@ -8,6 +8,7 @@ import { selectionsRouter } from './routes/selections.js';
 import { searchRouter } from './routes/search.js';
 import { bookmarksRouter } from './routes/bookmarks.js';
 import { tagsRouter } from './routes/tags.js';
+import { ioRealmRouter } from './routes/ioRealm.js';
 
 const app = new Hono();
 
@@ -29,6 +30,7 @@ app.route('/api', selectionsRouter);
 app.route('/api', searchRouter);
 app.route('/api/bookmarks', bookmarksRouter);
 app.route('/api/tags', tagsRouter);
+app.route('/api', ioRealmRouter);
 
 const port = parseInt(process.env.PORT ?? '3000', 10);
 const host = process.env.HOST ?? '0.0.0.0';
