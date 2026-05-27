@@ -1,0 +1,20 @@
+{
+  "name": "elaws-viewer",
+  "version": "0.0.0",
+  "private": true,
+  "description": "個人用 Web 法令ビューア",
+  "packageManager": "pnpm@11.3.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm -r --parallel run dev",
+    "build": "pnpm -r run build",
+    "test": "pnpm -r run test",
+    "typecheck": "pnpm -r run typecheck",
+    "bootstrap": "pnpm --filter @elaws/server run bootstrap"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}

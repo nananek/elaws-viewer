@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    font-family: ui-sans-serif, system-ui, "Hiragino Sans", "Yu Gothic UI",
+      "Segoe UI", sans-serif;
+  }
+}
