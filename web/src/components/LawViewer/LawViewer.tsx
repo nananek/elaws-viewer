@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { LawBody, LawNode } from '@elaws/shared/types';
 import { normalizeArticleInput } from '@elaws/shared/anchor';
 import { TocSidebar } from './TocSidebar.js';
 import { renderNode } from './anchorDom.js';
-import { fetchSelectionsForLaw } from '../../api/selections.js';
+import { fetchSelectionsForLaw, createSelection } from '../../api/selections.js';
 import { applyOverlays, unwrapOverlays } from './overlay.js';
+import { useSelectionCapture } from './useSelectionCapture.js';
+import { SelectionMenu } from './SelectionMenu.js';
 
 interface Props {
   body: LawBody;
@@ -16,10 +18,36 @@ export function LawViewer({ body }: Props) {
   const articleRef = useRef<HTMLElement>(null);
   const [jumpInput, setJumpInput] = useState('');
 
+  const queryClient = useQueryClient();
   const selectionsQuery = useQuery({
     queryKey: ['selections', body.lawId],
     queryFn: () => fetchSelectionsForLaw(body.lawId),
   });
+
+  const { selection: pickerSelection, clear: clearSelection } = useSelectionCapture(articleRef);
+
+  const createMutation = useMutation({
+    mutationFn: createSelection,
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['selections', body.lawId] });
+    },
+  });
+
+  function handlePick(style: number) {
+    if (!pickerSelection) return;
+    createMutation.mutate({
+      lawNo: body.lawNum,
+      style,
+      row: pickerSelection.row,
+      startIndexInRow: pickerSelection.startIndexInRow,
+      startAnchor: pickerSelection.startAnchor,
+      endAnchor: pickerSelection.endAnchor,
+      startString: pickerSelection.startString,
+      startStringOccurrenceIndex: pickerSelection.startStringOccurrenceIndex,
+      endString: pickerSelection.endString,
+    });
+    clearSelection();
+  }
 
   // Apply overlays after body and selections are both ready
   useEffect(() => {
@@ -89,6 +117,14 @@ export function LawViewer({ body }: Props) {
           <div className="text-center text-xs text-neutral-500 py-2">
             {selectionsQuery.data.count} 件のハイライト
           </div>
+        )}
+        {pickerSelection && (
+          <SelectionMenu
+            x={pickerSelection.popupX}
+            y={pickerSelection.popupY}
+            onPick={handlePick}
+            onDismiss={clearSelection}
+          />
         )}
       </section>
     </div>
