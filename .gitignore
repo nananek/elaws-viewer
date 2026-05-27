@@ -42,3 +42,4 @@ dist/
 # Build artifacts
 *.tsbuildinfo
 coverage/
+web/.vite/

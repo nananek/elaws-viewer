@@ -5,6 +5,7 @@ import { cors } from 'hono/cors';
 import { tailscaleAuth } from './middleware/auth.js';
 import { lawsRouter } from './routes/laws.js';
 import { selectionsRouter } from './routes/selections.js';
+import { searchRouter } from './routes/search.js';
 
 const app = new Hono();
 
@@ -23,6 +24,7 @@ app.get('/api/health', (c) =>
 
 app.route('/api/laws', lawsRouter);
 app.route('/api', selectionsRouter);
+app.route('/api', searchRouter);
 
 const port = parseInt(process.env.PORT ?? '3000', 10);
 const host = process.env.HOST ?? '0.0.0.0';

@@ -8,6 +8,7 @@ import {
 } from '@tanstack/react-router';
 import { HomePage } from './routes/Home.js';
 import { LawPage } from './routes/Law.js';
+import { SearchPage } from './routes/Search.js';
 
 const rootRoute = createRootRoute({
   component: function RootLayout() {
@@ -22,6 +23,7 @@ const rootRoute = createRootRoute({
           </Link>
           <nav className="text-sm text-neutral-600 dark:text-neutral-400 flex gap-3">
             <Link to="/" className="hover:underline">法令一覧</Link>
+            <Link to="/search" className="hover:underline">検索</Link>
           </nav>
         </header>
         <main className="flex-1 min-h-0">
@@ -42,9 +44,18 @@ const lawRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/law/$lawId',
   component: LawPage,
+  validateSearch: (search): { at?: string } => ({
+    at: typeof search.at === 'string' ? search.at : undefined,
+  }),
 });
 
-const routeTree = rootRoute.addChildren([homeRoute, lawRoute]);
+const searchRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/search',
+  component: SearchPage,
+});
+
+const routeTree = rootRoute.addChildren([homeRoute, lawRoute, searchRoute]);
 
 export const router = createRouter({
   routeTree,
