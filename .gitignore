@@ -1,0 +1,44 @@
+# Personal data (never commit)
+data.bin
+*.comcatalystwoelawslawxml
+法令ブラウザデータ*
+IMG_*.jpg
+IMG_*.png
+IMG_*.heic
+IMG_*.HEIC
+
+# Realm working copies
+realm-reader/work*.realm
+realm-reader/*.realm.lock
+realm-reader/*.realm.note
+realm-reader/*.realm.management/
+
+# Runtime storage
+storage/
+
+# Python venv (only used for ad-hoc scan scripts)
+.venv/
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+.pnpm-store/
+dist/
+.cache/
+.turbo/
+
+# Editor / OS
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Build artifacts
+*.tsbuildinfo
+coverage/
