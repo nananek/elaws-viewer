@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "./highlights.css";
 
+/* Class-based dark mode: applies when <html class="dark"> is set. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;

@@ -12,6 +12,7 @@ import { SearchPage } from './routes/Search.js';
 import { BookmarksPage } from './routes/Bookmarks.js';
 import { TagsPage } from './routes/Tags.js';
 import { SettingsPage } from './routes/Settings.js';
+import { ThemeToggle } from './components/ThemeToggle.js';
 
 const rootRoute = createRootRoute({
   component: function RootLayout() {
@@ -31,6 +32,9 @@ const rootRoute = createRootRoute({
             <Link to="/tags" className="hover:underline">タグ</Link>
             <Link to="/settings" className="hover:underline">設定</Link>
           </nav>
+          <div className="ml-auto">
+            <ThemeToggle />
+          </div>
         </header>
         <main className="flex-1 min-h-0">
           <Outlet />

@@ -9,7 +9,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg'],
+      includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       manifest: {
         name: 'elaws-viewer',
         short_name: 'elaws',
@@ -18,9 +18,11 @@ export default defineConfig({
         background_color: '#f9fafb',
         display: 'standalone',
         start_url: '/',
+        lang: 'ja',
         icons: [
           { src: '/pwa-192.png', sizes: '192x192', type: 'image/png' },
           { src: '/pwa-512.png', sizes: '512x512', type: 'image/png' },
+          { src: '/pwa-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
       },
       workbox: {

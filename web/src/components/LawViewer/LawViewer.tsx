@@ -8,6 +8,7 @@ import { fetchSelectionsForLaw, createSelection } from '../../api/selections.js'
 import { createBookmark } from '../../api/bookmarks.js';
 import { applyOverlays, unwrapOverlays } from './overlay.js';
 import { useSelectionCapture } from './useSelectionCapture.js';
+import { useArticleJumpShortcut } from './useArticleJumpShortcut.js';
 import { SelectionMenu } from './SelectionMenu.js';
 
 interface Props {
@@ -17,7 +18,34 @@ interface Props {
 export function LawViewer({ body }: Props) {
   const contentRef = useRef<HTMLDivElement>(null);
   const articleRef = useRef<HTMLElement>(null);
+  const jumpInputRef = useRef<HTMLInputElement>(null);
   const [jumpInput, setJumpInput] = useState('');
+
+  const jumpBuffer = useArticleJumpShortcut((anchor) =>
+    scrollToAnchor(contentRef.current, anchor),
+  );
+
+  // `/` focuses the article jump input, `Escape` clears + blurs it.
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      const t = e.target as HTMLElement | null;
+      const inField =
+        t &&
+        (t.tagName === 'INPUT' ||
+          t.tagName === 'TEXTAREA' ||
+          t.isContentEditable);
+      if (e.key === '/' && !inField && !e.metaKey && !e.ctrlKey) {
+        e.preventDefault();
+        jumpInputRef.current?.focus();
+        jumpInputRef.current?.select();
+      } else if (e.key === 'Escape' && t === jumpInputRef.current) {
+        setJumpInput('');
+        jumpInputRef.current?.blur();
+      }
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   const queryClient = useQueryClient();
   const selectionsQuery = useQuery({
@@ -123,8 +151,9 @@ export function LawViewer({ body }: Props) {
           <span className="text-xs text-neutral-500">{body.lawNum}</span>
           <form onSubmit={handleJump} className="ml-auto flex gap-2">
             <input
+              ref={jumpInputRef}
               type="text"
-              placeholder="条番号にジャンプ (例: 400, 第百条, 2の7)"
+              placeholder="条番号にジャンプ (/ でフォーカス、g 数字 Enter)"
               value={jumpInput}
               onChange={(e) => setJumpInput(e.target.value)}
               className="text-sm px-2 py-1 rounded border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 w-72"
@@ -164,6 +193,11 @@ export function LawViewer({ body }: Props) {
             onPick={handlePick}
             onDismiss={clearSelection}
           />
+        )}
+        {jumpBuffer !== null && (
+          <div className="fixed bottom-4 left-4 px-3 py-1.5 rounded-md font-mono text-sm shadow-md bg-neutral-900 text-neutral-100 dark:bg-neutral-100 dark:text-neutral-900">
+            g{jumpBuffer || '_'} <span className="opacity-60 text-xs">Enter</span>
+          </div>
         )}
       </section>
     </div>
