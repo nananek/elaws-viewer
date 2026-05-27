@@ -5,6 +5,7 @@ import { normalizeArticleInput } from '@elaws/shared/anchor';
 import { TocSidebar } from './TocSidebar.js';
 import { renderNode } from './anchorDom.js';
 import { fetchSelectionsForLaw, createSelection } from '../../api/selections.js';
+import { createBookmark } from '../../api/bookmarks.js';
 import { applyOverlays, unwrapOverlays } from './overlay.js';
 import { useSelectionCapture } from './useSelectionCapture.js';
 import { SelectionMenu } from './SelectionMenu.js';
@@ -32,6 +33,36 @@ export function LawViewer({ body }: Props) {
       void queryClient.invalidateQueries({ queryKey: ['selections', body.lawId] });
     },
   });
+
+  const bookmarkMutation = useMutation({
+    mutationFn: createBookmark,
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
+    },
+  });
+
+  function handleBookmark() {
+    // Bookmark the currently top-visible article
+    const root = articleRef.current;
+    if (!root) return;
+    const articles = Array.from(root.querySelectorAll<HTMLElement>('article[data-anchor]'));
+    const containerScroll = contentRef.current?.scrollTop ?? 0;
+    const headerOffset = 80;
+    const topVisible = articles.find((a) => {
+      const offset = a.offsetTop - containerScroll;
+      return offset >= headerOffset - 10;
+    }) ?? articles[0];
+    if (!topVisible) return;
+    const anchor = topVisible.dataset.anchor!;
+    const titleEl = topVisible.querySelector<HTMLElement>('h6');
+    const captionEl = topVisible.querySelector<HTMLElement>('div.text-xs.text-neutral-500');
+    const title = `${titleEl?.textContent ?? anchor} ${captionEl?.textContent ?? ''}`.trim();
+    bookmarkMutation.mutate({
+      lawNo: body.lawNum,
+      anchor,
+      title: title || anchor,
+    });
+  }
 
   function handlePick(style: number) {
     if (!pickerSelection) return;
@@ -118,6 +149,14 @@ export function LawViewer({ body }: Props) {
             {selectionsQuery.data.count} 件のハイライト
           </div>
         )}
+        <button
+          type="button"
+          onClick={handleBookmark}
+          className="fixed bottom-4 right-4 px-3 py-2 rounded-full shadow-md bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900 text-sm hover:opacity-90"
+          title="この位置をブックマーク"
+        >
+          ★ ブックマーク
+        </button>
         {pickerSelection && (
           <SelectionMenu
             x={pickerSelection.popupX}

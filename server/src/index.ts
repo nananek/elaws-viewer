@@ -6,6 +6,8 @@ import { tailscaleAuth } from './middleware/auth.js';
 import { lawsRouter } from './routes/laws.js';
 import { selectionsRouter } from './routes/selections.js';
 import { searchRouter } from './routes/search.js';
+import { bookmarksRouter } from './routes/bookmarks.js';
+import { tagsRouter } from './routes/tags.js';
 
 const app = new Hono();
 
@@ -25,6 +27,8 @@ app.get('/api/health', (c) =>
 app.route('/api/laws', lawsRouter);
 app.route('/api', selectionsRouter);
 app.route('/api', searchRouter);
+app.route('/api/bookmarks', bookmarksRouter);
+app.route('/api/tags', tagsRouter);
 
 const port = parseInt(process.env.PORT ?? '3000', 10);
 const host = process.env.HOST ?? '0.0.0.0';

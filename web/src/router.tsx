@@ -9,6 +9,8 @@ import {
 import { HomePage } from './routes/Home.js';
 import { LawPage } from './routes/Law.js';
 import { SearchPage } from './routes/Search.js';
+import { BookmarksPage } from './routes/Bookmarks.js';
+import { TagsPage } from './routes/Tags.js';
 
 const rootRoute = createRootRoute({
   component: function RootLayout() {
@@ -24,6 +26,8 @@ const rootRoute = createRootRoute({
           <nav className="text-sm text-neutral-600 dark:text-neutral-400 flex gap-3">
             <Link to="/" className="hover:underline">法令一覧</Link>
             <Link to="/search" className="hover:underline">検索</Link>
+            <Link to="/bookmarks" className="hover:underline">ブックマーク</Link>
+            <Link to="/tags" className="hover:underline">タグ</Link>
           </nav>
         </header>
         <main className="flex-1 min-h-0">
@@ -55,7 +59,21 @@ const searchRoute = createRoute({
   component: SearchPage,
 });
 
-const routeTree = rootRoute.addChildren([homeRoute, lawRoute, searchRoute]);
+const bookmarksRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/bookmarks',
+  component: BookmarksPage,
+});
+
+const tagsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/tags',
+  component: TagsPage,
+});
+
+const routeTree = rootRoute.addChildren([
+  homeRoute, lawRoute, searchRoute, bookmarksRoute, tagsRoute,
+]);
 
 export const router = createRouter({
   routeTree,
