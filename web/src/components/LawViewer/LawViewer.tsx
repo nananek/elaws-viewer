@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import type { LawBody, LawNode } from '@elaws/shared/types';
 import { normalizeArticleInput } from '@elaws/shared/anchor';
 import { TocSidebar } from './TocSidebar.js';
 import { renderNode } from './anchorDom.js';
+import { fetchSelectionsForLaw } from '../../api/selections.js';
+import { applyOverlays, unwrapOverlays } from './overlay.js';
 
 interface Props {
   body: LawBody;
@@ -10,7 +13,25 @@ interface Props {
 
 export function LawViewer({ body }: Props) {
   const contentRef = useRef<HTMLDivElement>(null);
+  const articleRef = useRef<HTMLElement>(null);
   const [jumpInput, setJumpInput] = useState('');
+
+  const selectionsQuery = useQuery({
+    queryKey: ['selections', body.lawId],
+    queryFn: () => fetchSelectionsForLaw(body.lawId),
+  });
+
+  // Apply overlays after body and selections are both ready
+  useEffect(() => {
+    const root = articleRef.current;
+    if (!root) return;
+    if (!selectionsQuery.data) return;
+    const { applied, missing } = applyOverlays(root, selectionsQuery.data.selections);
+    console.log(`[overlay] applied=${applied} missing=${missing} of ${selectionsQuery.data.count}`);
+    return () => {
+      unwrapOverlays(root);
+    };
+  }, [body.lawId, selectionsQuery.data]);
 
   // Build TOC entries (Part/Chapter/Section/Article level) from the flat node list
   const toc = useMemo(() => buildToc(body.nodes), [body.nodes]);
@@ -58,9 +79,17 @@ export function LawViewer({ body }: Props) {
           </form>
         </div>
 
-        <article className="max-w-3xl mx-auto px-4 py-4 leading-loose text-[0.95rem]">
+        <article
+          ref={articleRef}
+          className="max-w-3xl mx-auto px-4 py-4 leading-loose text-[0.95rem]"
+        >
           {body.nodes.map((n) => renderNode(n))}
         </article>
+        {selectionsQuery.data && (
+          <div className="text-center text-xs text-neutral-500 py-2">
+            {selectionsQuery.data.count} 件のハイライト
+          </div>
+        )}
       </section>
     </div>
   );

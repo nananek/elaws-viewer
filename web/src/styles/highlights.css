@@ -1,0 +1,50 @@
+/* Highlight overlays - style values match shared/styles.ts STYLE_MAP */
+
+.sel { border-radius: 1px; }
+
+/* Markers (pastel background fill) */
+.sel-marker-0   { background-color: #f5ea84; }  /* 黄 */
+.sel-marker-1   { background-color: #cded83; }  /* 緑 */
+.sel-marker-2   { background-color: #b5d3eb; }  /* 青 */
+.sel-marker-3   { background-color: #eaadbc; }  /* 赤 */
+.sel-marker-4   { background-color: #cdb0e9; }  /* 紫 */
+.sel-marker-11  { background-color: #efc07b; }  /* オレンジ */
+
+/* Memorization hide (style=104). Click/hover to reveal. */
+.sel-marker-104 {
+  background-color: #b4b2af;
+  color: transparent;
+  transition: color .15s, background-color .15s;
+  cursor: pointer;
+}
+.sel-marker-104:hover,
+.sel-marker-104.revealed {
+  color: inherit;
+  background-color: #b4b2af80;
+}
+
+/* Underlines (vivid colors) */
+.sel-underline-5  { text-decoration: underline #c34235; text-decoration-thickness: 0.18em; text-underline-offset: 0.18em; }
+.sel-underline-6  { text-decoration: underline #2036b9; text-decoration-thickness: 0.18em; text-underline-offset: 0.18em; }
+.sel-underline-7  { text-decoration: underline #71954e; text-decoration-thickness: 0.18em; text-underline-offset: 0.18em; }
+.sel-underline-8  { text-decoration: underline #e1cd6e; text-decoration-thickness: 0.18em; text-underline-offset: 0.18em; }
+.sel-underline-9  { text-decoration: underline #c761d1; text-decoration-thickness: 0.18em; text-underline-offset: 0.18em; }
+.sel-underline-10 { text-decoration: underline #d79553; text-decoration-thickness: 0.18em; text-underline-offset: 0.18em; }
+.sel-underline-12 { text-decoration: underline #e6e6db; text-decoration-thickness: 0.18em; text-underline-offset: 0.18em; }
+
+/* Drawing placeholder (style=13). Real renderer comes later. */
+.sel-drawing-13 {
+  outline: 2px dashed #444;
+  outline-offset: 1px;
+}
+
+/* Dark-mode tweaks */
+.dark .sel-marker-0   { background-color: #b3a849; color: #111; }
+.dark .sel-marker-1   { background-color: #97b94f; color: #111; }
+.dark .sel-marker-2   { background-color: #5e8db1; color: #111; }
+.dark .sel-marker-3   { background-color: #b87a89; color: #111; }
+.dark .sel-marker-4   { background-color: #957bb0; color: #111; }
+.dark .sel-marker-11  { background-color: #b88947; color: #111; }
+.dark .sel-marker-104 { background-color: #6e6c6a; color: transparent; }
+.dark .sel-marker-104:hover,
+.dark .sel-marker-104.revealed { color: #eee; background-color: #6e6c6a80; }
