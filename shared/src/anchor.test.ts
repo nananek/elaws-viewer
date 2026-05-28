@@ -5,6 +5,8 @@ import {
   parseAnchor,
   formatAnchor,
   anchorArticleKey,
+  buildCompoundAnchor,
+  anchorFallbackChain,
 } from './anchor.js';
 
 describe('kanjiToNumber', () => {
@@ -77,5 +79,52 @@ describe('anchorArticleKey', () => {
     expect(anchorArticleKey('条400/項1/文2')).toBe('条400');
     expect(anchorArticleKey('条576/頭')).toBe('条576');
     expect(anchorArticleKey('前0/項1/文1')).toBe('前0');
+  });
+});
+
+describe('buildCompoundAnchor', () => {
+  it('builds plain article', () => {
+    expect(buildCompoundAnchor({ article: 400 })).toBe('条400');
+  });
+  it('builds sub-article (枝条)', () => {
+    expect(buildCompoundAnchor({ article: 576, of: 2 })).toBe('条576_2');
+  });
+  it('builds article + paragraph + 号', () => {
+    expect(
+      buildCompoundAnchor({ article: 2, paragraph: 1, item: 3 }),
+    ).toBe('条2/項1/号3');
+  });
+  it('builds article + paragraph only', () => {
+    expect(buildCompoundAnchor({ article: 400, paragraph: 1 })).toBe('条400/項1');
+  });
+  it('builds sub-article + 項 + 号', () => {
+    expect(
+      buildCompoundAnchor({ article: 2, of: 3, paragraph: 1, item: 5 }),
+    ).toBe('条2_3/項1/号5');
+  });
+  it('null values are ignored', () => {
+    expect(
+      buildCompoundAnchor({ article: 5, of: null, paragraph: null, item: null }),
+    ).toBe('条5');
+  });
+});
+
+describe('anchorFallbackChain', () => {
+  it('drops 号 then 項 then 枝条 then base', () => {
+    expect(anchorFallbackChain('条2_3/項1/号5')).toEqual([
+      '条2_3/項1/号5',
+      '条2_3/項1',
+      '条2_3',
+      '条2',
+    ]);
+  });
+  it('drops 項 then base for plain article', () => {
+    expect(anchorFallbackChain('条400/項1')).toEqual(['条400/項1', '条400']);
+  });
+  it('single-element for bare 条', () => {
+    expect(anchorFallbackChain('条400')).toEqual(['条400']);
+  });
+  it('handles sub-article alone', () => {
+    expect(anchorFallbackChain('条576_2')).toEqual(['条576_2', '条576']);
   });
 });

@@ -12,6 +12,7 @@ import { searchRouter } from './routes/search.js';
 import { bookmarksRouter } from './routes/bookmarks.js';
 import { tagsRouter } from './routes/tags.js';
 import { ioRealmRouter } from './routes/ioRealm.js';
+import { foldersRouter } from './routes/folders.js';
 import { startBackupScheduler } from './realm/backup-scheduler.js';
 import { runDailyBackup } from './realm/backup.js';
 import { APP_VERSION } from './version.js';
@@ -50,6 +51,7 @@ app.route('/api', searchRouter);
 app.route('/api/bookmarks', bookmarksRouter);
 app.route('/api/tags', tagsRouter);
 app.route('/api', ioRealmRouter);
+app.route('/api', foldersRouter);
 
 app.post('/api/backup', async (c) => {
   try {

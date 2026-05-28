@@ -61,6 +61,59 @@ export async function searchLaws(params: {
   return (await res.json()) as EgovLawList;
 }
 
+/**
+ * Enumerate all e-Gov revisions for a given law (matched by law_num).
+ *
+ * e-Gov `/laws?law_num=<num>` returns one row per `(law_id, law_revision_id)`
+ * pair, so for amended laws this yields multiple rows differing only by
+ * `revision_info.law_revision_id` / `amendment_enforcement_date`.
+ *
+ * If `lawNumOrId` looks like a law_id (alphanumeric prefix) we fall back
+ * to a single-row response using `searchLaws({ law_title: '' })` indirectly
+ * — that branch is rarely useful since callers can already pass a law_num.
+ */
+export async function searchLawRevisions(
+  lawNumOrId: string,
+): Promise<EgovLawList> {
+  // Heuristic: real law_num always starts with a kanji era (明治 / 大正 / 昭和 / 平成 / 令和).
+  const looksLikeLawNum = /^[明大昭平令]/.test(lawNumOrId);
+  if (looksLikeLawNum) {
+    return searchLaws({ law_num: lawNumOrId, limit: 100 });
+  }
+  // Otherwise treat as a law_id and just return a one-row stub by hitting
+  // /law_data and shaping the metadata. The caller can still download via
+  // fetchLawXml(lawNumOrId).
+  const xml = await fetchLawXml(lawNumOrId);
+  // crude extraction: <Law LawType="..." Year="..."> and <LawTitle>
+  const num = /<LawNum[^>]*>([^<]+)<\/LawNum>/.exec(xml)?.[1] ?? '';
+  const title = /<LawTitle[^>]*>([^<]+)<\/LawTitle>/.exec(xml)?.[1] ?? '';
+  return {
+    total_count: 1,
+    count: 1,
+    next_offset: 0,
+    laws: [
+      {
+        law_info: {
+          law_type: '',
+          law_id: lawNumOrId,
+          law_num: num,
+          promulgation_date: '',
+        },
+        revision_info: {
+          law_revision_id: lawNumOrId,
+          law_type: '',
+          law_title: title,
+          law_title_kana: null,
+          category: null,
+          amendment_promulgate_date: null,
+          amendment_enforcement_date: null,
+          current_revision_status: '',
+        },
+      },
+    ],
+  };
+}
+
 /* ---------------- /law_data/{id_or_num} ---------------- */
 
 /**

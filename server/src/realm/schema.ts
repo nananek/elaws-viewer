@@ -1,15 +1,18 @@
 import type { ObjectSchema } from 'realm';
 
 /**
- * Realm schemas — must match the external iOS schemaVersion=23 exactly so
- * that exported `.realm` files can be opened on either side without migration.
+ * Realm schemas — iOS interop is at version 23. Version 24 adds the
+ * elaws-viewer–only `FolderEntity` class for folder tree metadata; iOS
+ * does not write to it so opening an exported version-24 file on iOS
+ * simply ignores the unknown class. (Importing a version-23 file back
+ * here is a pure schema-additive migration: no field/PK changes.)
  *
- * Field nullability, `indexed`, and primary keys are transcribed from
- * Realm probe output and locked here. Do NOT change without bumping
- * `SCHEMA_VERSION` and providing a migration.
+ * Field nullability, `indexed`, and primary keys for the legacy classes
+ * are transcribed from Realm probe output and locked here. Do NOT change
+ * those without bumping `SCHEMA_VERSION` again and providing a migration.
  */
 
-export const SCHEMA_VERSION = 23 as const;
+export const SCHEMA_VERSION = 24 as const;
 
 export const BookmarkSchema: ObjectSchema = {
   name: 'Bookmark',
@@ -135,6 +138,26 @@ export const TagEntitySchema: ObjectSchema = {
   },
 };
 
+/**
+ * elaws-viewer–local folder tree. Not present on the iOS side. Each
+ * row represents a node in the folder hierarchy; laws are attached by
+ * setting `DownloadedLaw.filepath` to the folder's full path string
+ * (e.g. "/会社法務/民事/").
+ */
+export const FolderEntitySchema: ObjectSchema = {
+  name: 'FolderEntity',
+  primaryKey: 'uuid',
+  properties: {
+    uuid: 'string',
+    title: 'string',
+    parentUuid: { type: 'string', optional: true },
+    order: 'int',
+    isDeleted: 'bool',
+    createdAt: 'date',
+    updatedAt: 'date',
+  },
+};
+
 export const ALL_SCHEMAS: ObjectSchema[] = [
   BookmarkSchema,
   DownloadedLawSchema,
@@ -143,4 +166,5 @@ export const ALL_SCHEMAS: ObjectSchema[] = [
   SelectionObjectSchema,
   TagSchema,
   TagEntitySchema,
+  FolderEntitySchema,
 ];

@@ -134,3 +134,64 @@ export function anchorArticleKey(anchor: string): string | null {
   if (p.kind === 'preamble') return '前0';
   return `条${p.article}`;
 }
+
+export interface CompoundAnchorParts {
+  /** Article number, required */
+  article: number;
+  /** Sub-article (枝条) — `article` の `of` 値 */
+  of?: number | null;
+  paragraph?: number | null;
+  /** 号 (item). 既存スキーマでは 号 アンカーは無いが、
+   *  ジャンプ時の fallback で `号I` も降り段として組み立てる */
+  item?: number | null;
+}
+
+/**
+ * Build an anchor string from numeric テンキー inputs.
+ * Examples:
+ *   { article: 576, of: 2 }                       → "条576_2"
+ *   { article: 2, paragraph: 1, item: 3 }         → "条2/項1/号3"
+ *   { article: 400, paragraph: 1 }                → "条400/項1"
+ *   { article: 400 }                              → "条400"
+ */
+export function buildCompoundAnchor(p: CompoundAnchorParts): string {
+  let base = `条${p.article}`;
+  if (p.of != null) base += `_${p.of}`;
+  if (p.paragraph != null) base += `/項${p.paragraph}`;
+  if (p.item != null) base += `/号${p.item}`;
+  return base;
+}
+
+/**
+ * For a compound anchor like "条N_M/項P/号I", return progressively coarser
+ * anchors so the viewer can scroll to the nearest matching DOM node when the
+ * exact 号/項-level anchor isn't rendered.
+ *
+ *   "条2_3/項1/号5" → ["条2_3/項1/号5", "条2_3/項1", "条2_3", "条2"]
+ *   "条400/項1"     → ["条400/項1", "条400"]
+ */
+export function anchorFallbackChain(anchor: string): string[] {
+  const out: string[] = [anchor];
+  let cur = anchor;
+  while (true) {
+    const next = cur.replace(/\/号\d+$/, '');
+    if (next !== cur) {
+      out.push(next);
+      cur = next;
+      continue;
+    }
+    const next2 = cur.replace(/\/項\d+$/, '');
+    if (next2 !== cur) {
+      out.push(next2);
+      cur = next2;
+      continue;
+    }
+    const m = cur.match(/^(条\d+)_\d+$/);
+    if (m) {
+      out.push(m[1]!);
+      break;
+    }
+    break;
+  }
+  return out;
+}
