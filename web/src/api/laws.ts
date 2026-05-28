@@ -22,8 +22,14 @@ export interface DownloadResponse {
   uuid: string;
 }
 
-export function downloadLaw(lawId: string): Promise<DownloadResponse> {
-  return apiPost<DownloadResponse>(`/api/laws/${encodeURIComponent(lawId)}/download`);
+export function downloadLaw(
+  lawId: string,
+  revisionId?: string,
+): Promise<DownloadResponse> {
+  const qs = revisionId ? `?revisionId=${encodeURIComponent(revisionId)}` : '';
+  return apiPost<DownloadResponse>(
+    `/api/laws/${encodeURIComponent(lawId)}/download${qs}`,
+  );
 }
 
 export interface EgovSearchResponse {
@@ -38,4 +44,12 @@ export interface EgovSearchResponse {
 
 export function searchLawsRemote(q: string): Promise<EgovSearchResponse> {
   return apiGet<EgovSearchResponse>(`/api/laws/search?q=${encodeURIComponent(q)}`);
+}
+
+export function fetchLawRevisions(
+  lawNumOrId: string,
+): Promise<EgovSearchResponse> {
+  return apiGet<EgovSearchResponse>(
+    `/api/laws/revisions/${encodeURIComponent(lawNumOrId)}`,
+  );
 }

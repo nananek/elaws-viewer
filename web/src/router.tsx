@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
   createRouter,
   createRootRoute,
@@ -15,9 +16,33 @@ import { SettingsPage } from './routes/Settings.js';
 import { LawTabs } from './components/LawTabs.js';
 import { ShortcutHelp } from './components/ShortcutHelp.js';
 import { UpdateBanner } from './components/UpdateBanner.js';
+import { GlobalLawSearchModal } from './components/GlobalLawSearchModal.js';
+import { AddLawModal } from './components/AddLawModal.js';
 
 const rootRoute = createRootRoute({
   component: function RootLayout() {
+    const [searchOpen, setSearchOpen] = useState(false);
+    const [addOpen, setAddOpen] = useState<{ initialQuery: string } | null>(null);
+
+    // `/` opens the global law-name search modal when no input is focused.
+    useEffect(() => {
+      function onKey(e: KeyboardEvent) {
+        if (e.metaKey || e.ctrlKey || e.altKey) return;
+        const t = e.target as HTMLElement | null;
+        const inField =
+          t &&
+          (t.tagName === 'INPUT' ||
+            t.tagName === 'TEXTAREA' ||
+            t.isContentEditable);
+        if (e.key === '/' && !inField) {
+          e.preventDefault();
+          setSearchOpen(true);
+        }
+      }
+      window.addEventListener('keydown', onKey);
+      return () => window.removeEventListener('keydown', onKey);
+    }, []);
+
     return (
       <div className="min-h-screen flex flex-col">
         <UpdateBanner />
@@ -30,17 +55,34 @@ const rootRoute = createRootRoute({
           </Link>
           <nav className="heading-gothic text-sm text-neutral-600 flex gap-3">
             <Link to="/" className="hover:underline">法令一覧</Link>
-            <Link to="/search" className="hover:underline">検索</Link>
-            <Link to="/bookmarks" className="hover:underline">ブックマーク</Link>
-            <Link to="/tags" className="hover:underline">タグ</Link>
             <Link to="/settings" className="hover:underline">設定</Link>
           </nav>
+          <button
+            type="button"
+            onClick={() => setSearchOpen(true)}
+            className="ml-auto text-xs text-neutral-500 hover:text-ink border border-neutral-200 rounded px-2 py-0.5"
+            title="法令名検索 ( / )"
+          >
+            / 検索
+          </button>
         </header>
         <LawTabs />
         <main className="flex-1 min-h-0">
           <Outlet />
         </main>
         <ShortcutHelp />
+        {searchOpen && (
+          <GlobalLawSearchModal
+            onClose={() => setSearchOpen(false)}
+            onRemoteHit={(_lawId, title) => setAddOpen({ initialQuery: title })}
+          />
+        )}
+        {addOpen && (
+          <AddLawModal
+            onClose={() => setAddOpen(null)}
+            initialQuery={addOpen.initialQuery}
+          />
+        )}
       </div>
     );
   },

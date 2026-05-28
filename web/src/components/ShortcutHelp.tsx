@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 
 const SHORTCUTS: Array<{ keys: string; what: string }> = [
-  { keys: '?',                what: 'このヘルプを開く / 閉じる' },
-  { keys: '/',                what: '法令ビューア: 条番号入力にフォーカス' },
-  { keys: 'g 数字 Enter',     what: '法令ビューア: 第N条にジャンプ (例 g 400 Enter)' },
-  { keys: 'g 数字 の 数字 Enter', what: '枝条 (例 g 2 の 7 Enter → 第2条の7)' },
-  { keys: 'Esc',              what: '入力欄からフォーカスを外す / ジャンプバッファ取消' },
-  { keys: 'Backspace',        what: 'ジャンプバッファを1文字削除' },
+  { keys: '?',          what: 'このヘルプを開く / 閉じる' },
+  { keys: '/',          what: '法令名検索モーダルを開く (タブ / 既DL / e-Gov)' },
+  { keys: '=',          what: '法令ビューア: 条文番号ジャンプ (テンキー UI)' },
+  { keys: '0–9',        what: 'ジャンプモーダル: アクティブフィールドに数字追記' },
+  { keys: '/ * - +',    what: 'ジャンプモーダル: 条→の→項→号 にフォーカス移動' },
+  { keys: 'Enter',      what: 'ジャンプモーダル / 検索モーダルで決定' },
+  { keys: 'Esc',        what: 'モーダル / 入力欄を閉じる' },
 ];
 
 export function ShortcutHelp() {

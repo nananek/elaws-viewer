@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { listDownloadedLaws } from '../realm/downloads.js';
-import { fetchLawXml, searchLaws } from '../egov/client.js';
+import { fetchLawXml, searchLaws, searchLawRevisions } from '../egov/client.js';
 import { parseLawXml } from '../egov/parse.js';
 import {
   getLawMeta, upsertLawMeta, storeLawXml, loadLawXml,
@@ -24,10 +24,24 @@ lawsRouter.get('/search', async (c) => {
   return c.json(data);
 });
 
+lawsRouter.get('/revisions/:lawNumOrId', async (c) => {
+  const key = decodeURIComponent(c.req.param('lawNumOrId'));
+  try {
+    const data = await searchLawRevisions(key);
+    return c.json(data);
+  } catch (e) {
+    return c.json({ error: String(e) }, 502);
+  }
+});
+
 lawsRouter.post('/:lawId/download', async (c) => {
   const lawId = c.req.param('lawId');
-  console.log(`[egov] downloading ${lawId}`);
-  const xml = await fetchLawXml(lawId);
+  // Optional ?revisionId=<full law_revision_id> — when present, fetch
+  // that revision instead of the law's default current revision.
+  const revisionId = c.req.query('revisionId');
+  const fetchTarget = revisionId || lawId;
+  console.log(`[egov] downloading ${fetchTarget}`);
+  const xml = await fetchLawXml(fetchTarget);
   console.log(`[egov] got xml ${xml.length} bytes`);
 
   const body = parseLawXml(xml);

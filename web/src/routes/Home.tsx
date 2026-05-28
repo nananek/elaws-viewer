@@ -1,50 +1,54 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Link } from '@tanstack/react-router';
 import { fetchLaws } from '../api/laws.js';
+import { fetchFolders } from '../api/folders.js';
+import { FolderTree } from '../components/FolderTree.js';
+import { AddLawModal } from '../components/AddLawModal.js';
 
 export function HomePage() {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['laws'],
-    queryFn: fetchLaws,
+  const lawsQuery = useQuery({ queryKey: ['laws'], queryFn: fetchLaws });
+  const foldersQuery = useQuery({
+    queryKey: ['folders'],
+    queryFn: fetchFolders,
   });
+  const [addOpen, setAddOpen] = useState(false);
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <h1 className="heading-gothic text-2xl font-bold mb-4">ダウンロード済み法令</h1>
+      <div className="flex items-baseline gap-4 mb-4">
+        <h1 className="heading-gothic text-2xl font-bold">ダウンロード済み法令</h1>
+        <button
+          type="button"
+          onClick={() => setAddOpen(true)}
+          className="ml-auto text-sm px-3 py-1.5 rounded bg-ink text-paper hover:opacity-90"
+          data-testid="add-law-button"
+        >
+          + 法令を追加
+        </button>
+      </div>
 
-      {isLoading && <p className="text-sm">読み込み中…</p>}
-      {error && (
-        <p className="text-sm text-red-600">エラー: {String(error)}</p>
+      {(lawsQuery.isLoading || foldersQuery.isLoading) && (
+        <p className="text-sm">読み込み中…</p>
+      )}
+      {lawsQuery.error && (
+        <p className="text-sm text-red-600">
+          エラー: {String(lawsQuery.error)}
+        </p>
       )}
 
-      {data && (
+      {lawsQuery.data && foldersQuery.data && (
         <>
           <p className="text-sm text-neutral-600 mb-4">
-            {data.count} 件
+            {lawsQuery.data.count} 件 / {foldersQuery.data.count} フォルダ
           </p>
-          <ul className="space-y-1">
-            {data.laws.map((law) => (
-              <li key={law.uuid}>
-                <Link
-                  to="/law/$lawId"
-                  params={{ lawId: law.filename }}
-                  className="block px-3 py-2 rounded hover:bg-neutral-100"
-                >
-                  <div className="flex justify-between gap-4 items-baseline">
-                    <span className="font-medium">{law.lawTitle}</span>
-                    <span className="text-xs text-neutral-500 truncate">
-                      {law.lawNum}
-                    </span>
-                  </div>
-                  <div className="text-xs text-neutral-400">
-                    {law.filename}
-                  </div>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <FolderTree
+            folders={foldersQuery.data.folders}
+            laws={lawsQuery.data.laws}
+          />
         </>
       )}
+
+      {addOpen && <AddLawModal onClose={() => setAddOpen(false)} />}
     </div>
   );
 }

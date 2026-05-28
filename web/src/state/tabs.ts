@@ -11,6 +11,7 @@ interface TabsState {
   open: (tab: LawTab) => void;
   close: (lawId: string) => void;
   rename: (lawId: string, title: string) => void;
+  move: (fromLawId: string, toIndex: number) => void;
 }
 
 export const useTabs = create<TabsState>()(
@@ -38,6 +39,17 @@ export const useTabs = create<TabsState>()(
         set((s) => ({
           tabs: s.tabs.map((t) => (t.lawId === lawId ? { ...t, title } : t)),
         })),
+      move: (fromLawId, toIndex) =>
+        set((s) => {
+          const from = s.tabs.findIndex((t) => t.lawId === fromLawId);
+          if (from === -1) return s;
+          const clampedTo = Math.max(0, Math.min(s.tabs.length - 1, toIndex));
+          if (from === clampedTo) return s;
+          const next = s.tabs.slice();
+          const [moved] = next.splice(from, 1);
+          next.splice(clampedTo, 0, moved!);
+          return { tabs: next };
+        }),
     }),
     {
       name: 'elaws.tabs',

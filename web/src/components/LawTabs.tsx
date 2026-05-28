@@ -1,32 +1,85 @@
+import { useState } from 'react';
 import { Link, useMatchRoute, useNavigate } from '@tanstack/react-router';
 import { useTabs } from '../state/tabs.js';
 
 export function LawTabs() {
   const tabs = useTabs((s) => s.tabs);
   const close = useTabs((s) => s.close);
+  const move = useTabs((s) => s.move);
   const matchRoute = useMatchRoute();
   const navigate = useNavigate();
+  const [dragLawId, setDragLawId] = useState<string | null>(null);
+  const [dropIndex, setDropIndex] = useState<number | null>(null);
 
   if (tabs.length === 0) return null;
 
   return (
     <div className="heading-gothic border-b border-neutral-200 bg-paper px-2 py-1 flex flex-wrap gap-1 text-sm">
-      {tabs.map((t) => {
+      {tabs.map((t, i) => {
         const active = matchRoute({ to: '/law/$lawId', params: { lawId: t.lawId } });
+        const isDragging = dragLawId === t.lawId;
+        const dropBefore = dropIndex === i && dragLawId !== null && dragLawId !== t.lawId;
+        const dropAfter =
+          dropIndex === i + 1 && dragLawId !== null && dragLawId !== t.lawId;
         return (
           <div
             key={t.lawId}
-            className={`flex items-center gap-1 px-2 py-1 rounded ${
+            draggable
+            onDragStart={(e) => {
+              setDragLawId(t.lawId);
+              e.dataTransfer.effectAllowed = 'move';
+              e.dataTransfer.setData('text/plain', t.lawId);
+            }}
+            onDragOver={(e) => {
+              if (dragLawId === null) return;
+              e.preventDefault();
+              e.dataTransfer.dropEffect = 'move';
+              const rect = e.currentTarget.getBoundingClientRect();
+              const before = e.clientX < rect.left + rect.width / 2;
+              setDropIndex(before ? i : i + 1);
+            }}
+            onDragLeave={() => {
+              // only clear if we leave this specific element; the next dragOver fixes it
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              if (dragLawId === null) return;
+              const from = tabs.findIndex((x) => x.lawId === dragLawId);
+              let to = dropIndex ?? i;
+              if (from !== -1 && from < to) to -= 1;
+              move(dragLawId, to);
+              setDragLawId(null);
+              setDropIndex(null);
+            }}
+            onDragEnd={() => {
+              setDragLawId(null);
+              setDropIndex(null);
+            }}
+            data-tab-law-id={t.lawId}
+            className={`relative flex items-center gap-1 px-2 py-1 rounded ${
               active
                 ? 'bg-white border border-neutral-300'
                 : 'hover:bg-neutral-100'
-            }`}
+            } ${isDragging ? 'opacity-40' : ''}`}
           >
+            {dropBefore && (
+              <span
+                aria-hidden
+                className="absolute -left-0.5 top-1 bottom-1 w-0.5 bg-ink rounded"
+              />
+            )}
+            {dropAfter && (
+              <span
+                aria-hidden
+                className="absolute -right-0.5 top-1 bottom-1 w-0.5 bg-ink rounded"
+              />
+            )}
             <Link
               to="/law/$lawId"
               params={{ lawId: t.lawId }}
               className="truncate max-w-[16rem]"
               title={t.title}
+              draggable={false}
             >
               {t.title}
             </Link>

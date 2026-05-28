@@ -252,6 +252,11 @@ export async function installApiMocks(
     r.fulfill({ status: 200, headers: apiHeaders, body: JSON.stringify({ count: 0, laws: [] }) }),
   );
 
+  // GET /api/folders -> empty (Home page reads this to build the FolderTree)
+  await page.route('**/api/folders', (r) =>
+    r.fulfill({ status: 200, headers: apiHeaders, body: JSON.stringify({ count: 0, folders: [] }) }),
+  );
+
   // GET /api/laws/:lawId/body — supports LAW_ID, KENPO_LAW_ID, REAL_KENPO_LAW_ID
   await page.route(/\/api\/laws\/[^/]+\/body$/, (r) => {
     const url = new URL(r.request().url());

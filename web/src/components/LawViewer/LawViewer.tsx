@@ -1,19 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { LawBody, LawNode, SelectionObject } from '@elaws/shared/types';
-import { normalizeArticleInput } from '@elaws/shared/anchor';
+import { anchorFallbackChain } from '@elaws/shared/anchor';
 import { TocSidebar } from './TocSidebar.js';
 import { renderNode } from './anchorDom.js';
 import {
   fetchSelectionsForLaw, createSelection, deleteSelection, updateSelectionStyle,
 } from '../../api/selections.js';
-import { createBookmark } from '../../api/bookmarks.js';
 import { applyOverlays, unwrapOverlays } from './overlay.js';
 import { findOverlappingOlder } from './overlap.js';
 import { useSelectionCapture } from './useSelectionCapture.js';
-import { useArticleJumpShortcut } from './useArticleJumpShortcut.js';
 import { SelectionMenu } from './SelectionMenu.js';
 import { EditSelectionMenu } from './EditSelectionMenu.js';
+import { AnchorJumpModal } from '../AnchorJumpModal.js';
 
 interface Props {
   body: LawBody;
@@ -22,29 +21,22 @@ interface Props {
 export function LawViewer({ body }: Props) {
   const contentRef = useRef<HTMLDivElement>(null);
   const articleRef = useRef<HTMLElement>(null);
-  const jumpInputRef = useRef<HTMLInputElement>(null);
-  const [jumpInput, setJumpInput] = useState('');
+  const [jumpOpen, setJumpOpen] = useState(false);
 
-  const jumpBuffer = useArticleJumpShortcut((anchor) =>
-    scrollToAnchor(contentRef.current, anchor),
-  );
-
-  // `/` focuses the article jump input, `Escape` clears + blurs it.
+  // `=` opens AnchorJumpModal (Issue #4). `g` + `/` shortcuts removed.
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
       const t = e.target as HTMLElement | null;
       const inField =
         t &&
         (t.tagName === 'INPUT' ||
           t.tagName === 'TEXTAREA' ||
           t.isContentEditable);
-      if (e.key === '/' && !inField && !e.metaKey && !e.ctrlKey) {
+      if (inField) return;
+      if (e.key === '=') {
         e.preventDefault();
-        jumpInputRef.current?.focus();
-        jumpInputRef.current?.select();
-      } else if (e.key === 'Escape' && t === jumpInputRef.current) {
-        setJumpInput('');
-        jumpInputRef.current?.blur();
+        setJumpOpen(true);
       }
     }
     window.addEventListener('keydown', onKey);
@@ -97,36 +89,6 @@ export function LawViewer({ body }: Props) {
       void queryClient.invalidateQueries({ queryKey: ['selections', body.lawId] });
     },
   });
-
-  const bookmarkMutation = useMutation({
-    mutationFn: createBookmark,
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
-    },
-  });
-
-  function handleBookmark() {
-    // Bookmark the currently top-visible article
-    const root = articleRef.current;
-    if (!root) return;
-    const articles = Array.from(root.querySelectorAll<HTMLElement>('article[data-anchor]'));
-    const containerScroll = contentRef.current?.scrollTop ?? 0;
-    const headerOffset = 80;
-    const topVisible = articles.find((a) => {
-      const offset = a.offsetTop - containerScroll;
-      return offset >= headerOffset - 10;
-    }) ?? articles[0];
-    if (!topVisible) return;
-    const anchor = topVisible.dataset.anchor!;
-    const titleEl = topVisible.querySelector<HTMLElement>('h6');
-    const captionEl = topVisible.querySelector<HTMLElement>('div.text-xs.text-neutral-500');
-    const title = `${titleEl?.textContent ?? anchor} ${captionEl?.textContent ?? ''}`.trim();
-    bookmarkMutation.mutate({
-      lawNo: body.lawNum,
-      anchor,
-      title: title || anchor,
-    });
-  }
 
   function handlePick(style: number) {
     if (!pickerSelection) return;
@@ -191,21 +153,12 @@ export function LawViewer({ body }: Props) {
   // Build TOC entries (Part/Chapter/Section/Article level) from the flat node list
   const toc = useMemo(() => buildToc(body.nodes), [body.nodes]);
 
-  // Scroll to anchor when ?at= is in the URL or jumpInput is submitted
+  // Scroll to anchor when ?at= is in the URL
   useEffect(() => {
     const at = new URLSearchParams(window.location.search).get('at');
     if (!at) return;
     requestAnimationFrame(() => scrollToAnchor(contentRef.current, at));
   }, [body.lawId]);
-
-  function handleJump(e: React.FormEvent) {
-    e.preventDefault();
-    const normalized = normalizeArticleInput(jumpInput);
-    if (!normalized) return;
-    const anchor = `条${normalized}`;
-    scrollToAnchor(contentRef.current, anchor);
-    setJumpInput('');
-  }
 
   return (
     <div className="flex h-[calc(100vh-3rem)]">
@@ -217,22 +170,14 @@ export function LawViewer({ body }: Props) {
         <div className="sticky top-0 bg-paper/95 backdrop-blur border-b border-neutral-200 px-4 py-2 flex flex-wrap items-baseline gap-3 z-10">
           <h1 className="heading-gothic text-lg font-bold">{body.lawTitle}</h1>
           <span className="text-xs text-neutral-500">{body.lawNum}</span>
-          <form onSubmit={handleJump} className="ml-auto flex gap-2">
-            <input
-              ref={jumpInputRef}
-              type="text"
-              placeholder="条番号にジャンプ (/ でフォーカス、g 数字 Enter)"
-              value={jumpInput}
-              onChange={(e) => setJumpInput(e.target.value)}
-              className="text-sm px-2 py-1 rounded border border-neutral-300 bg-white w-72"
-            />
-            <button
-              type="submit"
-              className="text-sm px-3 py-1 rounded border border-neutral-300 hover:bg-neutral-100"
-            >
-              移動
-            </button>
-          </form>
+          <button
+            type="button"
+            onClick={() => setJumpOpen(true)}
+            className="ml-auto text-sm px-3 py-1 rounded border border-neutral-300 bg-white hover:bg-neutral-50"
+            title="条文番号ジャンプ (= キー)"
+          >
+            = 条文ジャンプ
+          </button>
         </div>
 
         <article
@@ -246,14 +191,6 @@ export function LawViewer({ body }: Props) {
             {selectionsQuery.data.count} 件のハイライト
           </div>
         )}
-        <button
-          type="button"
-          onClick={handleBookmark}
-          className="fixed bottom-4 right-4 px-3 py-2 rounded-full shadow-md bg-ink text-paper text-sm hover:opacity-90"
-          title="この位置をブックマーク"
-        >
-          ★ ブックマーク
-        </button>
         {pickerSelection && (
           <SelectionMenu
             x={pickerSelection.popupX}
@@ -278,10 +215,11 @@ export function LawViewer({ body }: Props) {
             onDismiss={() => setEditTarget(null)}
           />
         )}
-        {jumpBuffer !== null && (
-          <div className="fixed bottom-4 left-4 px-3 py-1.5 rounded-md font-mono text-sm shadow-md bg-ink text-paper">
-            g{jumpBuffer || '_'} <span className="opacity-60 text-xs">Enter</span>
-          </div>
+        {jumpOpen && (
+          <AnchorJumpModal
+            onClose={() => setJumpOpen(false)}
+            onJump={(anchor) => scrollToAnchor(contentRef.current, anchor)}
+          />
         )}
       </section>
     </div>
@@ -315,20 +253,12 @@ function buildToc(nodes: LawNode[]): TocEntry[] {
 
 function scrollToAnchor(container: HTMLElement | null, anchor: string): void {
   if (!container) return;
-  // Try exact match first, then ancestor article
-  let target = container.querySelector<HTMLElement>(`[data-anchor="${cssEscape(anchor)}"]`);
-  if (!target && anchor.startsWith('条')) {
-    target = container.querySelector<HTMLElement>(`[data-anchor="${cssEscape(anchor)}"]`);
-  }
-  if (!target) {
-    // try article-only
-    const m = anchor.match(/^条([\d_]+)/);
-    if (m) {
-      target = container.querySelector<HTMLElement>(`[data-anchor="${cssEscape(`条${m[1]}`)}"]`);
+  for (const a of anchorFallbackChain(anchor)) {
+    const target = container.querySelector<HTMLElement>(`[data-anchor="${cssEscape(a)}"]`);
+    if (target) {
+      target.scrollIntoView({ block: 'start', behavior: 'auto' });
+      return;
     }
-  }
-  if (target) {
-    target.scrollIntoView({ block: 'start', behavior: 'auto' });
   }
 }
 
