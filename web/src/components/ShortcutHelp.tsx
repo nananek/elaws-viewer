@@ -39,15 +39,15 @@ export function ShortcutHelp() {
       onClick={() => setOpen(false)}
     >
       <div
-        className="bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 rounded-lg shadow-xl p-5 max-w-md w-full mx-4"
+        className="bg-paper text-ink rounded-lg shadow-xl p-5 max-w-md w-full mx-4"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-baseline justify-between mb-3">
-          <h2 className="text-lg font-bold">キーボードショートカット</h2>
+          <h2 className="heading-gothic text-lg font-bold">キーボードショートカット</h2>
           <button
             type="button"
             onClick={() => setOpen(false)}
-            className="text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100"
+            className="text-neutral-500 hover:text-ink"
             aria-label="閉じる"
           >
             ×
@@ -56,7 +56,7 @@ export function ShortcutHelp() {
         <table className="w-full text-sm">
           <tbody>
             {SHORTCUTS.map((s) => (
-              <tr key={s.keys} className="border-t border-neutral-200 dark:border-neutral-800 first:border-t-0">
+              <tr key={s.keys} className="border-t border-neutral-200 first:border-t-0">
                 <td className="py-1.5 pr-3 font-mono text-xs whitespace-nowrap">
                   {s.keys}
                 </td>

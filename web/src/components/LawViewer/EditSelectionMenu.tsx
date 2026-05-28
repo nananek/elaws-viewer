@@ -16,7 +16,7 @@ export function EditSelectionMenu({ x, y, currentStyle, onPick, onDelete, onDism
   return (
     <div
       role="dialog"
-      className="fixed z-50 bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-lg shadow-lg p-2 flex flex-col gap-1.5 -translate-x-1/2 -translate-y-[110%]"
+      className="fixed z-50 bg-paper border border-neutral-300 rounded-lg shadow-lg p-2 flex flex-col gap-1.5 -translate-x-1/2 -translate-y-[110%]"
       style={{ left: x, top: y }}
       onMouseDown={(e) => e.preventDefault()}
     >
@@ -33,8 +33,8 @@ export function EditSelectionMenu({ x, y, currentStyle, onPick, onDelete, onDism
               className={
                 'w-6 h-6 rounded shadow-sm border ' +
                 (active
-                  ? 'border-neutral-900 dark:border-neutral-100 ring-2 ring-neutral-900 dark:ring-neutral-100'
-                  : 'border-neutral-200 dark:border-neutral-700')
+                  ? 'border-ink ring-2 ring-ink'
+                  : 'border-neutral-200')
               }
               style={{ background: spec.hex }}
             />
@@ -52,10 +52,10 @@ export function EditSelectionMenu({ x, y, currentStyle, onPick, onDelete, onDism
               onClick={() => onPick(s)}
               title={`下線 ${spec.color} (style=${s})`}
               className={
-                'w-6 h-6 rounded-md border flex items-end justify-center pb-0.5 bg-neutral-50 dark:bg-neutral-950 ' +
+                'w-6 h-6 rounded-md border flex items-end justify-center pb-0.5 bg-neutral-50 ' +
                 (active
-                  ? 'border-neutral-900 dark:border-neutral-100 ring-2 ring-neutral-900 dark:ring-neutral-100'
-                  : 'border-neutral-200 dark:border-neutral-700')
+                  ? 'border-ink ring-2 ring-ink'
+                  : 'border-neutral-200')
               }
             >
               <span
@@ -70,7 +70,7 @@ export function EditSelectionMenu({ x, y, currentStyle, onPick, onDelete, onDism
         <button
           type="button"
           onClick={onDelete}
-          className="text-xs text-red-600 dark:text-red-400 hover:underline"
+          className="text-xs text-red-600 hover:underline"
         >
           削除
         </button>

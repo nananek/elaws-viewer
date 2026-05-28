@@ -32,7 +32,7 @@ export function TagsPage() {
 
   return (
     <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">タグ</h1>
+      <h1 className="heading-gothic text-2xl font-bold mb-4">タグ</h1>
       <p className="text-sm text-neutral-500 mb-4">
         タグは条文の anchor に種類だけ付ける機能（マーカーとは別）。8 つ固定。
       </p>
@@ -40,7 +40,7 @@ export function TagsPage() {
         {tagsQ.data?.tagEntities.map((t) => (
           <li
             key={t.tagNumber}
-            className="flex items-center gap-3 border border-neutral-200 dark:border-neutral-800 rounded p-2"
+            className="flex items-center gap-3 border border-neutral-200 rounded p-2"
           >
             <span
               className="w-5 h-5 rounded-full shrink-0"
@@ -54,12 +54,12 @@ export function TagsPage() {
                   autoFocus
                   value={draft}
                   onChange={(e) => setDraft(e.target.value)}
-                  className="flex-1 px-2 py-1 border border-neutral-300 dark:border-neutral-700 rounded bg-white dark:bg-neutral-900"
+                  className="flex-1 px-2 py-1 border border-neutral-300 rounded bg-white"
                 />
                 <button
                   type="button"
                   onClick={() => updateMutation.mutate({ tagNumber: t.tagNumber, title: draft })}
-                  className="text-sm px-2 py-1 rounded border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                  className="text-sm px-2 py-1 rounded border border-neutral-300 hover:bg-neutral-100"
                 >
                   保存
                 </button>

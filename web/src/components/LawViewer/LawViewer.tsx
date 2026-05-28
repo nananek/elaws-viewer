@@ -209,13 +209,13 @@ export function LawViewer({ body }: Props) {
 
   return (
     <div className="flex h-[calc(100vh-3rem)]">
-      <aside className="w-72 border-r border-neutral-200 dark:border-neutral-800 overflow-y-auto p-3 hidden md:block">
+      <aside className="w-72 border-r border-neutral-200 overflow-y-auto p-3 hidden md:block">
         <TocSidebar toc={toc} onJump={(a) => scrollToAnchor(contentRef.current, a)} />
       </aside>
 
       <section className="flex-1 overflow-y-auto" ref={contentRef}>
-        <div className="sticky top-0 bg-white/95 dark:bg-neutral-950/95 backdrop-blur border-b border-neutral-200 dark:border-neutral-800 px-4 py-2 flex flex-wrap items-baseline gap-3 z-10">
-          <h1 className="text-lg font-bold">{body.lawTitle}</h1>
+        <div className="sticky top-0 bg-paper/95 backdrop-blur border-b border-neutral-200 px-4 py-2 flex flex-wrap items-baseline gap-3 z-10">
+          <h1 className="heading-gothic text-lg font-bold">{body.lawTitle}</h1>
           <span className="text-xs text-neutral-500">{body.lawNum}</span>
           <form onSubmit={handleJump} className="ml-auto flex gap-2">
             <input
@@ -224,11 +224,11 @@ export function LawViewer({ body }: Props) {
               placeholder="条番号にジャンプ (/ でフォーカス、g 数字 Enter)"
               value={jumpInput}
               onChange={(e) => setJumpInput(e.target.value)}
-              className="text-sm px-2 py-1 rounded border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 w-72"
+              className="text-sm px-2 py-1 rounded border border-neutral-300 bg-white w-72"
             />
             <button
               type="submit"
-              className="text-sm px-3 py-1 rounded border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-900"
+              className="text-sm px-3 py-1 rounded border border-neutral-300 hover:bg-neutral-100"
             >
               移動
             </button>
@@ -249,7 +249,7 @@ export function LawViewer({ body }: Props) {
         <button
           type="button"
           onClick={handleBookmark}
-          className="fixed bottom-4 right-4 px-3 py-2 rounded-full shadow-md bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900 text-sm hover:opacity-90"
+          className="fixed bottom-4 right-4 px-3 py-2 rounded-full shadow-md bg-ink text-paper text-sm hover:opacity-90"
           title="この位置をブックマーク"
         >
           ★ ブックマーク
@@ -279,7 +279,7 @@ export function LawViewer({ body }: Props) {
           />
         )}
         {jumpBuffer !== null && (
-          <div className="fixed bottom-4 left-4 px-3 py-1.5 rounded-md font-mono text-sm shadow-md bg-neutral-900 text-neutral-100 dark:bg-neutral-100 dark:text-neutral-900">
+          <div className="fixed bottom-4 left-4 px-3 py-1.5 rounded-md font-mono text-sm shadow-md bg-ink text-paper">
             g{jumpBuffer || '_'} <span className="opacity-60 text-xs">Enter</span>
           </div>
         )}

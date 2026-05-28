@@ -12,7 +12,6 @@ import { SearchPage } from './routes/Search.js';
 import { BookmarksPage } from './routes/Bookmarks.js';
 import { TagsPage } from './routes/Tags.js';
 import { SettingsPage } from './routes/Settings.js';
-import { ThemeToggle } from './components/ThemeToggle.js';
 import { LawTabs } from './components/LawTabs.js';
 import { ShortcutHelp } from './components/ShortcutHelp.js';
 import { UpdateBanner } from './components/UpdateBanner.js';
@@ -22,23 +21,20 @@ const rootRoute = createRootRoute({
     return (
       <div className="min-h-screen flex flex-col">
         <UpdateBanner />
-        <header className="border-b border-neutral-200 dark:border-neutral-800 px-4 py-2 flex items-center gap-4">
+        <header className="border-b border-neutral-200 px-4 py-2 flex items-center gap-4">
           <Link
             to="/"
-            className="font-bold text-neutral-900 dark:text-neutral-100 hover:underline"
+            className="heading-gothic font-bold text-ink hover:underline"
           >
             elaws-viewer
           </Link>
-          <nav className="text-sm text-neutral-600 dark:text-neutral-400 flex gap-3">
+          <nav className="heading-gothic text-sm text-neutral-600 flex gap-3">
             <Link to="/" className="hover:underline">法令一覧</Link>
             <Link to="/search" className="hover:underline">検索</Link>
             <Link to="/bookmarks" className="hover:underline">ブックマーク</Link>
             <Link to="/tags" className="hover:underline">タグ</Link>
             <Link to="/settings" className="hover:underline">設定</Link>
           </nav>
-          <div className="ml-auto">
-            <ThemeToggle />
-          </div>
         </header>
         <LawTabs />
         <main className="flex-1 min-h-0">

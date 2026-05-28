@@ -10,16 +10,16 @@ interface Props {
 }
 
 const INDENT: Record<TocEntry['level'], string> = {
-  part: 'pl-0 font-semibold text-neutral-900 dark:text-neutral-100 mt-3',
+  part: 'pl-0 font-semibold text-ink mt-3',
   chapter: 'pl-2 font-medium',
   section: 'pl-4',
   subsection: 'pl-6 text-sm',
-  article: 'pl-8 text-xs text-neutral-600 dark:text-neutral-400',
+  article: 'pl-8 text-xs text-neutral-600',
 };
 
 export function TocSidebar({ toc, onJump }: Props) {
   return (
-    <nav className="text-sm">
+    <nav className="heading-gothic text-sm">
       <h2 className="text-xs uppercase text-neutral-500 mb-2">目次</h2>
       <ul>
         {toc.map((e, i) => (
