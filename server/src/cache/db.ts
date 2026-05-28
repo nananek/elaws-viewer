@@ -82,4 +82,13 @@ function migrate(d: Database.Database): void {
       INSERT INTO schema_version(version) VALUES (1);
     `);
   }
+
+  if (current < 2) {
+    // Track which parser version produced the cached body. The /body endpoint
+    // ignores cached rows with a stale parser_version and re-parses from XML.
+    d.exec(`
+      ALTER TABLE laws_body ADD COLUMN parser_version INTEGER NOT NULL DEFAULT 0;
+      UPDATE schema_version SET version = 2;
+    `);
+  }
 }
