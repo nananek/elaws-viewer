@@ -1,4 +1,6 @@
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { parseLawXml } from './parse.js';
 import type { LawNode } from '@elaws/shared/types';
 
@@ -129,72 +131,60 @@ describe('parseLawXml', () => {
   });
 });
 
-const KENPO_FIXTURE = `<?xml version="1.0" encoding="UTF-8"?>
-<law_data_response>
-  <law_info>
-    <law_id>321CONSTITUTION</law_id>
-    <law_num>昭和二十一年憲法</law_num>
-  </law_info>
-  <revision_info>
-    <law_title>日本国憲法</law_title>
-  </revision_info>
-  <law_full_text>
-    <Law>
-      <LawBody>
-        <LawTitle>日本国憲法</LawTitle>
-        <Preamble>
-          <Paragraph Num="1">
-            <Sentence>日本国民は、正当に選挙された国会における代表者を通じて行動し…</Sentence>
-            <Sentence>われらは、これに反する一切の憲法、法令及び詔勅を排除する。</Sentence>
-          </Paragraph>
-        </Preamble>
-        <MainProvision>
-          <Chapter Num="1">
-            <ChapterTitle>第一章 天皇</ChapterTitle>
-            <Article Num="1">
-              <ArticleTitle>第一条</ArticleTitle>
-              <Paragraph Num="1">
-                <ParagraphSentence>
-                  <Sentence>天皇は、日本国の象徴であり日本国民統合の象徴であって…</Sentence>
-                </ParagraphSentence>
-              </Paragraph>
-            </Article>
-          </Chapter>
-          <Chapter Num="11">
-            <ChapterTitle>第十一章 補則</ChapterTitle>
-            <Article Num="103">
-              <ArticleTitle>第百三条</ArticleTitle>
-              <Paragraph Num="1">
-                <ParagraphSentence>
-                  <Sentence>この憲法施行の際現に在職する国務大臣…</Sentence>
-                </ParagraphSentence>
-              </Paragraph>
-            </Article>
-          </Chapter>
-        </MainProvision>
-      </LawBody>
-    </Law>
-  </law_full_text>
-</law_data_response>`;
+/* ---------- Real e-Gov 憲法 XML (public domain — 著作権法 13 条) ---------- */
 
-describe('parseLawXml — 憲法 (Preamble + bare Sentence)', () => {
-  const body = parseLawXml(KENPO_FIXTURE);
+const KENPO_XML = readFileSync(
+  resolve(import.meta.dirname, 'fixtures', 'kenpo.xml'),
+  'utf-8',
+);
 
-  it('emits a preamble node with at least one sentence', () => {
-    const preamble = body.nodes.find((n) => n.kind === 'preamble');
-    expect(preamble).toBeDefined();
-    // sentences are inside paragraph(s)
-    const para = preamble?.children?.find((c) => c.kind === 'paragraph');
-    expect(para).toBeDefined();
-    const sentences = (para?.children ?? []).filter((c) => c.kind === 'sentence');
-    expect(sentences.length).toBeGreaterThanOrEqual(2);
-    expect(sentences[0]!.text).toContain('日本国民は');
+describe('parseLawXml — 日本国憲法 (real e-Gov XML)', () => {
+  const body = parseLawXml(KENPO_XML);
+
+  it('extracts law metadata', () => {
+    expect(body.lawId).toContain('321CONSTITUTION');
+    expect(body.lawTitle).toBe('日本国憲法');
+    expect(body.lawNum).toBe('昭和二十一年憲法');
   });
 
-  it('reaches the final article (第百三条)', () => {
-    expect(findByAnchor(body.nodes, '条103')).not.toBeNull();
+  it('emits a preamble with all 4 paragraphs', () => {
+    const preamble = body.nodes.find((n) => n.kind === 'preamble');
+    expect(preamble).toBeDefined();
+    const paras = (preamble?.children ?? []).filter((c) => c.kind === 'paragraph');
+    expect(paras).toHaveLength(4);
+    // Each paragraph carries at least one sentence (ParagraphSentence-wrapped)
+    for (const p of paras) {
+      const sentences = (p.children ?? []).filter((c) => c.kind === 'sentence');
+      expect(sentences.length).toBeGreaterThanOrEqual(1);
+    }
+    const firstSentence = (paras[0]!.children ?? []).find((c) => c.kind === 'sentence');
+    expect(firstSentence?.text).toContain('日本国民は');
+  });
+
+  it('reaches every article from 第一条 to 第百三条', () => {
+    for (let n = 1; n <= 103; n++) {
+      const anchor = `条${n}`;
+      expect(findByAnchor(body.nodes, anchor), `missing ${anchor}`).not.toBeNull();
+    }
+  });
+
+  it('emits all 11 chapters', () => {
+    const chapters = body.nodes.flatMap(function flat(n: LawNode): LawNode[] {
+      return [n, ...(n.children ?? []).flatMap(flat)];
+    }).filter((n) => n.kind === 'chapter');
+    expect(chapters).toHaveLength(11);
+  });
+
+  it('第一条 contains the symbol-of-state sentence', () => {
+    const s1 = findByAnchor(body.nodes, '条1/項1/文1');
+    expect(s1?.text).toContain('天皇は、日本国の象徴');
+  });
+
+  it('第百三条 is the last article and is reachable by anchor', () => {
     const last = findByAnchor(body.nodes, '条103/頭');
     expect(last?.text).toBe('第百三条');
+    const s = findByAnchor(body.nodes, '条103/項1/文1');
+    expect(s?.text).toContain('この憲法施行');
   });
 });
 
