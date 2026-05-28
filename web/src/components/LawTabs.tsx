@@ -10,7 +10,7 @@ export function LawTabs() {
   if (tabs.length === 0) return null;
 
   return (
-    <div className="border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950 px-2 py-1 flex flex-wrap gap-1 text-sm">
+    <div className="heading-gothic border-b border-neutral-200 bg-paper px-2 py-1 flex flex-wrap gap-1 text-sm">
       {tabs.map((t) => {
         const active = matchRoute({ to: '/law/$lawId', params: { lawId: t.lawId } });
         return (
@@ -18,8 +18,8 @@ export function LawTabs() {
             key={t.lawId}
             className={`flex items-center gap-1 px-2 py-1 rounded ${
               active
-                ? 'bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700'
-                : 'hover:bg-neutral-100 dark:hover:bg-neutral-900'
+                ? 'bg-white border border-neutral-300'
+                : 'hover:bg-neutral-100'
             }`}
           >
             <Link
@@ -48,7 +48,7 @@ export function LawTabs() {
                   }
                 }
               }}
-              className="text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 px-1"
+              className="text-neutral-400 hover:text-neutral-700 px-1"
               aria-label={`Close tab ${t.title}`}
               title="閉じる"
             >

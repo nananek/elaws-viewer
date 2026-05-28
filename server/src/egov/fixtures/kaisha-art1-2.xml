@@ -1,0 +1,1684 @@
+<law_data_response><attached_files_info/><law_info><law_type>Act</law_type><law_id>417AC0000000086</law_id><law_num>平成十七年法律第八十六号</law_num><law_num_era>Heisei</law_num_era><law_num_year>17</law_num_year><law_num_type>Act</law_num_type><law_num_num>086</law_num_num><promulgation_date>2005-07-26</promulgation_date></law_info><revision_info><law_revision_id>417AC0000000086_20260521_504AC0000000048</law_revision_id><law_type>Act</law_type><law_title>会社法</law_title><law_title_kana>かいしゃほう</law_title_kana><abbrev></abbrev><category>民事</category><updated>2025-12-19T15:58:44+09:00</updated><amendment_promulgate_date>2022-05-25</amendment_promulgate_date><amendment_enforcement_date>2026-05-21</amendment_enforcement_date><amendment_enforcement_comment/><amendment_scheduled_enforcement_date/><amendment_law_id>504AC0000000048</amendment_law_id><amendment_law_title>民事訴訟法等の一部を改正する法律</amendment_law_title><amendment_law_title_kana/><amendment_law_num>令和四年法律第四十八号</amendment_law_num><amendment_type>3</amendment_type><repeal_status>None</repeal_status><repeal_date/><remain_in_force>false</remain_in_force><mission>New</mission><current_revision_status>CurrentEnforced</current_revision_status></revision_info><law_full_text><Law Era="Heisei" Lang="ja" LawType="Act" Num="086" PromulgateDay="26" PromulgateMonth="07" Year="17"><LawNum>平成十七年法律第八十六号</LawNum><LawBody><LawTitle Abbrev="" AbbrevKana="" Kana="かいしゃほう">会社法</LawTitle>
+    <TOC>
+      <TOCLabel>目次</TOCLabel>
+      <TOCPart Num="1">
+        <PartTitle>第一編　総則</PartTitle>
+        <TOCChapter Num="1">
+          <ChapterTitle>第一章　通則</ChapterTitle>
+          <ArticleRange>（第一条―第五条）</ArticleRange>
+        </TOCChapter>
+        <TOCChapter Num="2">
+          <ChapterTitle>第二章　会社の商号</ChapterTitle>
+          <ArticleRange>（第六条―第九条）</ArticleRange>
+        </TOCChapter>
+        <TOCChapter Num="3">
+          <ChapterTitle>第三章　会社の使用人等</ChapterTitle>
+          <TOCSection Num="1">
+            <SectionTitle>第一節　会社の使用人</SectionTitle>
+            <ArticleRange>（第十条―第十五条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="2">
+            <SectionTitle>第二節　会社の代理商</SectionTitle>
+            <ArticleRange>（第十六条―第二十条）</ArticleRange>
+          </TOCSection>
+        </TOCChapter>
+        <TOCChapter Num="4">
+          <ChapterTitle>第四章　事業の譲渡をした場合の競業の禁止等</ChapterTitle>
+          <ArticleRange>（第二十一条―第二十四条）</ArticleRange>
+        </TOCChapter>
+      </TOCPart>
+      <TOCPart Num="2">
+        <PartTitle>第二編　株式会社</PartTitle>
+        <TOCChapter Num="1">
+          <ChapterTitle>第一章　設立</ChapterTitle>
+          <TOCSection Num="1">
+            <SectionTitle>第一節　総則</SectionTitle>
+            <ArticleRange>（第二十五条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="2">
+            <SectionTitle>第二節　定款の作成</SectionTitle>
+            <ArticleRange>（第二十六条―第三十一条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="3">
+            <SectionTitle>第三節　出資</SectionTitle>
+            <ArticleRange>（第三十二条―第三十七条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="4">
+            <SectionTitle>第四節　設立時役員等の選任及び解任</SectionTitle>
+            <ArticleRange>（第三十八条―第四十五条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="5">
+            <SectionTitle>第五節　設立時取締役等による調査</SectionTitle>
+            <ArticleRange>（第四十六条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="6">
+            <SectionTitle>第六節　設立時代表取締役等の選定等</SectionTitle>
+            <ArticleRange>（第四十七条・第四十八条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="7">
+            <SectionTitle>第七節　株式会社の成立</SectionTitle>
+            <ArticleRange>（第四十九条―第五十一条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="8">
+            <SectionTitle>第八節　発起人等の責任等</SectionTitle>
+            <ArticleRange>（第五十二条―第五十六条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="9">
+            <SectionTitle>第九節　募集による設立</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　設立時発行株式を引き受ける者の募集</SubsectionTitle>
+              <ArticleRange>（第五十七条―第六十四条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　創立総会等</SubsectionTitle>
+              <ArticleRange>（第六十五条―第八十六条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="3">
+              <SubsectionTitle>第三款　設立に関する事項の報告</SubsectionTitle>
+              <ArticleRange>（第八十七条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="4">
+              <SubsectionTitle>第四款　設立時取締役等の選任及び解任</SubsectionTitle>
+              <ArticleRange>（第八十八条―第九十二条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="5">
+              <SubsectionTitle>第五款　設立時取締役等による調査</SubsectionTitle>
+              <ArticleRange>（第九十三条・第九十四条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="6">
+              <SubsectionTitle>第六款　定款の変更</SubsectionTitle>
+              <ArticleRange>（第九十五条―第百一条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="7">
+              <SubsectionTitle>第七款　設立手続等の特則等</SubsectionTitle>
+              <ArticleRange>（第百二条―第百三条）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+        </TOCChapter>
+        <TOCChapter Num="2">
+          <ChapterTitle>第二章　株式</ChapterTitle>
+          <TOCSection Num="1">
+            <SectionTitle>第一節　総則</SectionTitle>
+            <ArticleRange>（第百四条―第百二十条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="2">
+            <SectionTitle>第二節　株主名簿</SectionTitle>
+            <ArticleRange>（第百二十一条―第百二十六条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="3">
+            <SectionTitle>第三節　株式の譲渡等</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　株式の譲渡</SubsectionTitle>
+              <ArticleRange>（第百二十七条―第百三十五条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　株式の譲渡に係る承認手続</SubsectionTitle>
+              <ArticleRange>（第百三十六条―第百四十五条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="3">
+              <SubsectionTitle>第三款　株式の質入れ</SubsectionTitle>
+              <ArticleRange>（第百四十六条―第百五十四条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="4">
+              <SubsectionTitle>第四款　信託財産に属する株式についての対抗要件等</SubsectionTitle>
+              <ArticleRange>（第百五十四条の二）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="4">
+            <SectionTitle>第四節　株式会社による自己の株式の取得</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　総則</SubsectionTitle>
+              <ArticleRange>（第百五十五条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　株主との合意による取得</SubsectionTitle>
+              <TOCDivision Num="1">
+                <DivisionTitle>第一目　総則</DivisionTitle>
+                <ArticleRange>（第百五十六条―第百五十九条）</ArticleRange>
+              </TOCDivision>
+              <TOCDivision Num="2">
+                <DivisionTitle>第二目　特定の株主からの取得</DivisionTitle>
+                <ArticleRange>（第百六十条―第百六十四条）</ArticleRange>
+              </TOCDivision>
+              <TOCDivision Num="3">
+                <DivisionTitle>第三目　市場取引等による株式の取得</DivisionTitle>
+                <ArticleRange>（第百六十五条）</ArticleRange>
+              </TOCDivision>
+            </TOCSubsection>
+            <TOCSubsection Num="3">
+              <SubsectionTitle>第三款　取得請求権付株式及び取得条項付株式の取得</SubsectionTitle>
+              <TOCDivision Num="1">
+                <DivisionTitle>第一目　取得請求権付株式の取得の請求</DivisionTitle>
+                <ArticleRange>（第百六十六条・第百六十七条）</ArticleRange>
+              </TOCDivision>
+              <TOCDivision Num="2">
+                <DivisionTitle>第二目　取得条項付株式の取得</DivisionTitle>
+                <ArticleRange>（第百六十八条―第百七十条）</ArticleRange>
+              </TOCDivision>
+            </TOCSubsection>
+            <TOCSubsection Num="4">
+              <SubsectionTitle>第四款　全部取得条項付種類株式の取得</SubsectionTitle>
+              <ArticleRange>（第百七十一条―第百七十三条の二）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="5">
+              <SubsectionTitle>第五款　相続人等に対する売渡しの請求</SubsectionTitle>
+              <ArticleRange>（第百七十四条―第百七十七条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="6">
+              <SubsectionTitle>第六款　株式の消却</SubsectionTitle>
+              <ArticleRange>（第百七十八条）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="4_2">
+            <SectionTitle>第四節の二　特別支配株主の株式等売渡請求</SectionTitle>
+            <ArticleRange>（第百七十九条―第百七十九条の十）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="5">
+            <SectionTitle>第五節　株式の併合等</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　株式の併合</SubsectionTitle>
+              <ArticleRange>（第百八十条―第百八十二条の六）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　株式の分割</SubsectionTitle>
+              <ArticleRange>（第百八十三条・第百八十四条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="3">
+              <SubsectionTitle>第三款　株式無償割当て</SubsectionTitle>
+              <ArticleRange>（第百八十五条―第百八十七条）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="6">
+            <SectionTitle>第六節　単元株式数</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　総則</SubsectionTitle>
+              <ArticleRange>（第百八十八条―第百九十一条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　単元未満株主の買取請求</SubsectionTitle>
+              <ArticleRange>（第百九十二条・第百九十三条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="3">
+              <SubsectionTitle>第三款　単元未満株主の売渡請求</SubsectionTitle>
+              <ArticleRange>（第百九十四条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="4">
+              <SubsectionTitle>第四款　単元株式数の変更等</SubsectionTitle>
+              <ArticleRange>（第百九十五条）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="7">
+            <SectionTitle>第七節　株主に対する通知の省略等</SectionTitle>
+            <ArticleRange>（第百九十六条―第百九十八条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="8">
+            <SectionTitle>第八節　募集株式の発行等</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　募集事項の決定等</SubsectionTitle>
+              <ArticleRange>（第百九十九条―第二百二条の二）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　募集株式の割当て</SubsectionTitle>
+              <ArticleRange>（第二百三条―第二百六条の二）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="3">
+              <SubsectionTitle>第三款　金銭以外の財産の出資</SubsectionTitle>
+              <ArticleRange>（第二百七条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="4">
+              <SubsectionTitle>第四款　出資の履行等</SubsectionTitle>
+              <ArticleRange>（第二百八条・第二百九条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="5">
+              <SubsectionTitle>第五款　募集株式の発行等をやめることの請求</SubsectionTitle>
+              <ArticleRange>（第二百十条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="6">
+              <SubsectionTitle>第六款　募集に係る責任等</SubsectionTitle>
+              <ArticleRange>（第二百十一条―第二百十三条の三）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="9">
+            <SectionTitle>第九節　株券</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　総則</SubsectionTitle>
+              <ArticleRange>（第二百十四条―第二百十八条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　株券の提出等</SubsectionTitle>
+              <ArticleRange>（第二百十九条・第二百二十条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="3">
+              <SubsectionTitle>第三款　株券喪失登録</SubsectionTitle>
+              <ArticleRange>（第二百二十一条―第二百三十三条）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="10">
+            <SectionTitle>第十節　雑則</SectionTitle>
+            <ArticleRange>（第二百三十四条・第二百三十五条）</ArticleRange>
+          </TOCSection>
+        </TOCChapter>
+        <TOCChapter Num="3">
+          <ChapterTitle>第三章　新株予約権</ChapterTitle>
+          <TOCSection Num="1">
+            <SectionTitle>第一節　総則</SectionTitle>
+            <ArticleRange>（第二百三十六条・第二百三十七条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="2">
+            <SectionTitle>第二節　新株予約権の発行</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　募集事項の決定等</SubsectionTitle>
+              <ArticleRange>（第二百三十八条―第二百四十一条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　募集新株予約権の割当て</SubsectionTitle>
+              <ArticleRange>（第二百四十二条―第二百四十五条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="3">
+              <SubsectionTitle>第三款　募集新株予約権に係る払込み</SubsectionTitle>
+              <ArticleRange>（第二百四十六条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="4">
+              <SubsectionTitle>第四款　募集新株予約権の発行をやめることの請求</SubsectionTitle>
+              <ArticleRange>（第二百四十七条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="5">
+              <SubsectionTitle>第五款　雑則</SubsectionTitle>
+              <ArticleRange>（第二百四十八条）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="3">
+            <SectionTitle>第三節　新株予約権原簿</SectionTitle>
+            <ArticleRange>（第二百四十九条―第二百五十三条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="4">
+            <SectionTitle>第四節　新株予約権の譲渡等</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　新株予約権の譲渡</SubsectionTitle>
+              <ArticleRange>（第二百五十四条―第二百六十一条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　新株予約権の譲渡の制限</SubsectionTitle>
+              <ArticleRange>（第二百六十二条―第二百六十六条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="3">
+              <SubsectionTitle>第三款　新株予約権の質入れ</SubsectionTitle>
+              <ArticleRange>（第二百六十七条―第二百七十二条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="4">
+              <SubsectionTitle>第四款　信託財産に属する新株予約権についての対抗要件等</SubsectionTitle>
+              <ArticleRange>（第二百七十二条の二）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="5">
+            <SectionTitle>第五節　株式会社による自己の新株予約権の取得</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　募集事項の定めに基づく新株予約権の取得</SubsectionTitle>
+              <ArticleRange>（第二百七十三条―第二百七十五条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　新株予約権の消却</SubsectionTitle>
+              <ArticleRange>（第二百七十六条）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="6">
+            <SectionTitle>第六節　新株予約権無償割当て</SectionTitle>
+            <ArticleRange>（第二百七十七条―第二百七十九条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="7">
+            <SectionTitle>第七節　新株予約権の行使</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　総則</SubsectionTitle>
+              <ArticleRange>（第二百八十条―第二百八十三条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　金銭以外の財産の出資</SubsectionTitle>
+              <ArticleRange>（第二百八十四条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="3">
+              <SubsectionTitle>第三款　責任</SubsectionTitle>
+              <ArticleRange>（第二百八十五条―第二百八十六条の三）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="4">
+              <SubsectionTitle>第四款　雑則</SubsectionTitle>
+              <ArticleRange>（第二百八十七条）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="8">
+            <SectionTitle>第八節　新株予約権に係る証券</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　新株予約権証券</SubsectionTitle>
+              <ArticleRange>（第二百八十八条―第二百九十一条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　新株予約権付社債券</SubsectionTitle>
+              <ArticleRange>（第二百九十二条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="3">
+              <SubsectionTitle>第三款　新株予約権証券等の提出</SubsectionTitle>
+              <ArticleRange>（第二百九十三条・第二百九十四条）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+        </TOCChapter>
+        <TOCChapter Num="4">
+          <ChapterTitle>第四章　機関</ChapterTitle>
+          <TOCSection Num="1">
+            <SectionTitle>第一節　株主総会及び種類株主総会等</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　株主総会</SubsectionTitle>
+              <ArticleRange>（第二百九十五条―第三百二十条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　種類株主総会</SubsectionTitle>
+              <ArticleRange>（第三百二十一条―第三百二十五条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="3">
+              <SubsectionTitle>第三款　電子提供措置</SubsectionTitle>
+              <ArticleRange>（第三百二十五条の二―第三百二十五条の七）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="2">
+            <SectionTitle>第二節　株主総会以外の機関の設置</SectionTitle>
+            <ArticleRange>（第三百二十六条―第三百二十八条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="3">
+            <SectionTitle>第三節　役員及び会計監査人の選任及び解任</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　選任</SubsectionTitle>
+              <ArticleRange>（第三百二十九条―第三百三十八条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　解任</SubsectionTitle>
+              <ArticleRange>（第三百三十九条・第三百四十条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="3">
+              <SubsectionTitle>第三款　選任及び解任の手続に関する特則</SubsectionTitle>
+              <ArticleRange>（第三百四十一条―第三百四十七条）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="4">
+            <SectionTitle>第四節　取締役</SectionTitle>
+            <ArticleRange>（第三百四十八条―第三百六十一条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="5">
+            <SectionTitle>第五節　取締役会</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　権限等</SubsectionTitle>
+              <ArticleRange>（第三百六十二条―第三百六十五条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　運営</SubsectionTitle>
+              <ArticleRange>（第三百六十六条―第三百七十三条）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="6">
+            <SectionTitle>第六節　会計参与</SectionTitle>
+            <ArticleRange>（第三百七十四条―第三百八十条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="7">
+            <SectionTitle>第七節　監査役</SectionTitle>
+            <ArticleRange>（第三百八十一条―第三百八十九条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="8">
+            <SectionTitle>第八節　監査役会</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　権限等</SubsectionTitle>
+              <ArticleRange>（第三百九十条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　運営</SubsectionTitle>
+              <ArticleRange>（第三百九十一条―第三百九十五条）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="9">
+            <SectionTitle>第九節　会計監査人</SectionTitle>
+            <ArticleRange>（第三百九十六条―第三百九十九条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="9_2">
+            <SectionTitle>第九節の二　監査等委員会</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　権限等</SubsectionTitle>
+              <ArticleRange>（第三百九十九条の二―第三百九十九条の七）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　運営</SubsectionTitle>
+              <ArticleRange>（第三百九十九条の八―第三百九十九条の十二）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="3">
+              <SubsectionTitle>第三款　監査等委員会設置会社の取締役会の権限等</SubsectionTitle>
+              <ArticleRange>（第三百九十九条の十三・第三百九十九条の十四）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="10">
+            <SectionTitle>第十節　指名委員会等及び執行役</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　委員の選定、執行役の選任等</SubsectionTitle>
+              <ArticleRange>（第四百条―第四百三条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　指名委員会等の権限等</SubsectionTitle>
+              <ArticleRange>（第四百四条―第四百九条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="3">
+              <SubsectionTitle>第三款　指名委員会等の運営</SubsectionTitle>
+              <ArticleRange>（第四百十条―第四百十四条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="4">
+              <SubsectionTitle>第四款　指名委員会等設置会社の取締役の権限等</SubsectionTitle>
+              <ArticleRange>（第四百十五条―第四百十七条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="5">
+              <SubsectionTitle>第五款　執行役の権限等</SubsectionTitle>
+              <ArticleRange>（第四百十八条―第四百二十二条）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="11">
+            <SectionTitle>第十一節　役員等の損害賠償責任</SectionTitle>
+            <ArticleRange>（第四百二十三条―第四百三十条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="12">
+            <SectionTitle>第十二節　補償契約及び役員等のために締結される保険契約</SectionTitle>
+            <ArticleRange>（第四百三十条の二・第四百三十条の三）</ArticleRange>
+          </TOCSection>
+        </TOCChapter>
+        <TOCChapter Num="5">
+          <ChapterTitle>第五章　計算等</ChapterTitle>
+          <TOCSection Num="1">
+            <SectionTitle>第一節　会計の原則</SectionTitle>
+            <ArticleRange>（第四百三十一条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="2">
+            <SectionTitle>第二節　会計帳簿等</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　会計帳簿</SubsectionTitle>
+              <ArticleRange>（第四百三十二条―第四百三十四条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　計算書類等</SubsectionTitle>
+              <ArticleRange>（第四百三十五条―第四百四十三条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="3">
+              <SubsectionTitle>第三款　連結計算書類</SubsectionTitle>
+              <ArticleRange>（第四百四十四条）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="3">
+            <SectionTitle>第三節　資本金の額等</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　総則</SubsectionTitle>
+              <ArticleRange>（第四百四十五条・第四百四十六条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　資本金の額の減少等</SubsectionTitle>
+              <TOCDivision Num="1">
+                <DivisionTitle>第一目　資本金の額の減少等</DivisionTitle>
+                <ArticleRange>（第四百四十七条―第四百四十九条）</ArticleRange>
+              </TOCDivision>
+              <TOCDivision Num="2">
+                <DivisionTitle>第二目　資本金の額の増加等</DivisionTitle>
+                <ArticleRange>（第四百五十条・第四百五十一条）</ArticleRange>
+              </TOCDivision>
+              <TOCDivision Num="3">
+                <DivisionTitle>第三目　剰余金についてのその他の処分</DivisionTitle>
+                <ArticleRange>（第四百五十二条）</ArticleRange>
+              </TOCDivision>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="4">
+            <SectionTitle>第四節　剰余金の配当</SectionTitle>
+            <ArticleRange>（第四百五十三条―第四百五十八条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="5">
+            <SectionTitle>第五節　剰余金の配当等を決定する機関の特則</SectionTitle>
+            <ArticleRange>（第四百五十九条・第四百六十条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="6">
+            <SectionTitle>第六節　剰余金の配当等に関する責任</SectionTitle>
+            <ArticleRange>（第四百六十一条―第四百六十五条）</ArticleRange>
+          </TOCSection>
+        </TOCChapter>
+        <TOCChapter Num="6">
+          <ChapterTitle>第六章　定款の変更</ChapterTitle>
+          <ArticleRange>（第四百六十六条）</ArticleRange>
+        </TOCChapter>
+        <TOCChapter Num="7">
+          <ChapterTitle>第七章　事業の譲渡等</ChapterTitle>
+          <ArticleRange>（第四百六十七条―第四百七十条）</ArticleRange>
+        </TOCChapter>
+        <TOCChapter Num="8">
+          <ChapterTitle>第八章　解散</ChapterTitle>
+          <ArticleRange>（第四百七十一条―第四百七十四条）</ArticleRange>
+        </TOCChapter>
+        <TOCChapter Num="9">
+          <ChapterTitle>第九章　清算</ChapterTitle>
+          <TOCSection Num="1">
+            <SectionTitle>第一節　総則</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　清算の開始</SubsectionTitle>
+              <ArticleRange>（第四百七十五条・第四百七十六条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　清算株式会社の機関</SubsectionTitle>
+              <TOCDivision Num="1">
+                <DivisionTitle>第一目　株主総会以外の機関の設置</DivisionTitle>
+                <ArticleRange>（第四百七十七条）</ArticleRange>
+              </TOCDivision>
+              <TOCDivision Num="2">
+                <DivisionTitle>第二目　清算人の就任及び解任並びに監査役の退任</DivisionTitle>
+                <ArticleRange>（第四百七十八条―第四百八十条）</ArticleRange>
+              </TOCDivision>
+              <TOCDivision Num="3">
+                <DivisionTitle>第三目　清算人の職務等</DivisionTitle>
+                <ArticleRange>（第四百八十一条―第四百八十八条）</ArticleRange>
+              </TOCDivision>
+              <TOCDivision Num="4">
+                <DivisionTitle>第四目　清算人会</DivisionTitle>
+                <ArticleRange>（第四百八十九条・第四百九十条）</ArticleRange>
+              </TOCDivision>
+              <TOCDivision Num="5">
+                <DivisionTitle>第五目　取締役等に関する規定の適用</DivisionTitle>
+                <ArticleRange>（第四百九十一条）</ArticleRange>
+              </TOCDivision>
+            </TOCSubsection>
+            <TOCSubsection Num="3">
+              <SubsectionTitle>第三款　財産目録等</SubsectionTitle>
+              <ArticleRange>（第四百九十二条―第四百九十八条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="4">
+              <SubsectionTitle>第四款　債務の弁済等</SubsectionTitle>
+              <ArticleRange>（第四百九十九条―第五百三条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="5">
+              <SubsectionTitle>第五款　残余財産の分配</SubsectionTitle>
+              <ArticleRange>（第五百四条―第五百六条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="6">
+              <SubsectionTitle>第六款　清算事務の終了等</SubsectionTitle>
+              <ArticleRange>（第五百七条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="7">
+              <SubsectionTitle>第七款　帳簿資料の保存</SubsectionTitle>
+              <ArticleRange>（第五百八条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="8">
+              <SubsectionTitle>第八款　適用除外等</SubsectionTitle>
+              <ArticleRange>（第五百九条）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="2">
+            <SectionTitle>第二節　特別清算</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　特別清算の開始</SubsectionTitle>
+              <ArticleRange>（第五百十条―第五百十八条の二）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　裁判所による監督及び調査</SubsectionTitle>
+              <ArticleRange>（第五百十九条―第五百二十二条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="3">
+              <SubsectionTitle>第三款　清算人</SubsectionTitle>
+              <ArticleRange>（第五百二十三条―第五百二十六条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="4">
+              <SubsectionTitle>第四款　監督委員</SubsectionTitle>
+              <ArticleRange>（第五百二十七条―第五百三十二条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="5">
+              <SubsectionTitle>第五款　調査委員</SubsectionTitle>
+              <ArticleRange>（第五百三十三条・第五百三十四条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="6">
+              <SubsectionTitle>第六款　清算株式会社の行為の制限等</SubsectionTitle>
+              <ArticleRange>（第五百三十五条―第五百三十九条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="7">
+              <SubsectionTitle>第七款　清算の監督上必要な処分等</SubsectionTitle>
+              <ArticleRange>（第五百四十条―第五百四十五条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="8">
+              <SubsectionTitle>第八款　債権者集会</SubsectionTitle>
+              <ArticleRange>（第五百四十六条―第五百六十二条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="9">
+              <SubsectionTitle>第九款　協定</SubsectionTitle>
+              <ArticleRange>（第五百六十三条―第五百七十二条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="10">
+              <SubsectionTitle>第十款　特別清算の終了</SubsectionTitle>
+              <ArticleRange>（第五百七十三条・第五百七十四条）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+        </TOCChapter>
+      </TOCPart>
+      <TOCPart Num="3">
+        <PartTitle>第三編　持分会社</PartTitle>
+        <TOCChapter Num="1">
+          <ChapterTitle>第一章　設立</ChapterTitle>
+          <ArticleRange>（第五百七十五条―第五百七十九条）</ArticleRange>
+        </TOCChapter>
+        <TOCChapter Num="2">
+          <ChapterTitle>第二章　社員</ChapterTitle>
+          <TOCSection Num="1">
+            <SectionTitle>第一節　社員の責任等</SectionTitle>
+            <ArticleRange>（第五百八十条―第五百八十四条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="2">
+            <SectionTitle>第二節　持分の譲渡等</SectionTitle>
+            <ArticleRange>（第五百八十五条―第五百八十七条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="3">
+            <SectionTitle>第三節　誤認行為の責任</SectionTitle>
+            <ArticleRange>（第五百八十八条・第五百八十九条）</ArticleRange>
+          </TOCSection>
+        </TOCChapter>
+        <TOCChapter Num="3">
+          <ChapterTitle>第三章　管理</ChapterTitle>
+          <TOCSection Num="1">
+            <SectionTitle>第一節　総則</SectionTitle>
+            <ArticleRange>（第五百九十条―第五百九十二条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="2">
+            <SectionTitle>第二節　業務を執行する社員</SectionTitle>
+            <ArticleRange>（第五百九十三条―第六百二条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="3">
+            <SectionTitle>第三節　業務を執行する社員の職務を代行する者</SectionTitle>
+            <ArticleRange>（第六百三条）</ArticleRange>
+          </TOCSection>
+        </TOCChapter>
+        <TOCChapter Num="4">
+          <ChapterTitle>第四章　社員の加入及び退社</ChapterTitle>
+          <TOCSection Num="1">
+            <SectionTitle>第一節　社員の加入</SectionTitle>
+            <ArticleRange>（第六百四条・第六百五条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="2">
+            <SectionTitle>第二節　社員の退社</SectionTitle>
+            <ArticleRange>（第六百六条―第六百十三条）</ArticleRange>
+          </TOCSection>
+        </TOCChapter>
+        <TOCChapter Num="5">
+          <ChapterTitle>第五章　計算等</ChapterTitle>
+          <TOCSection Num="1">
+            <SectionTitle>第一節　会計の原則</SectionTitle>
+            <ArticleRange>（第六百十四条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="2">
+            <SectionTitle>第二節　会計帳簿</SectionTitle>
+            <ArticleRange>（第六百十五条・第六百十六条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="3">
+            <SectionTitle>第三節　計算書類</SectionTitle>
+            <ArticleRange>（第六百十七条―第六百十九条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="4">
+            <SectionTitle>第四節　資本金の額の減少</SectionTitle>
+            <ArticleRange>（第六百二十条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="5">
+            <SectionTitle>第五節　利益の配当</SectionTitle>
+            <ArticleRange>（第六百二十一条―第六百二十三条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="6">
+            <SectionTitle>第六節　出資の払戻し</SectionTitle>
+            <ArticleRange>（第六百二十四条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="7">
+            <SectionTitle>第七節　合同会社の計算等に関する特則</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　計算書類の閲覧に関する特則</SubsectionTitle>
+              <ArticleRange>（第六百二十五条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　資本金の額の減少に関する特則</SubsectionTitle>
+              <ArticleRange>（第六百二十六条・第六百二十七条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="3">
+              <SubsectionTitle>第三款　利益の配当に関する特則</SubsectionTitle>
+              <ArticleRange>（第六百二十八条―第六百三十一条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="4">
+              <SubsectionTitle>第四款　出資の払戻しに関する特則</SubsectionTitle>
+              <ArticleRange>（第六百三十二条―第六百三十四条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="5">
+              <SubsectionTitle>第五款　退社に伴う持分の払戻しに関する特則</SubsectionTitle>
+              <ArticleRange>（第六百三十五条・第六百三十六条）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+        </TOCChapter>
+        <TOCChapter Num="6">
+          <ChapterTitle>第六章　定款の変更</ChapterTitle>
+          <ArticleRange>（第六百三十七条―第六百四十条）</ArticleRange>
+        </TOCChapter>
+        <TOCChapter Num="7">
+          <ChapterTitle>第七章　解散</ChapterTitle>
+          <ArticleRange>（第六百四十一条―第六百四十三条）</ArticleRange>
+        </TOCChapter>
+        <TOCChapter Num="8">
+          <ChapterTitle>第八章　清算</ChapterTitle>
+          <TOCSection Num="1">
+            <SectionTitle>第一節　清算の開始</SectionTitle>
+            <ArticleRange>（第六百四十四条・第六百四十五条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="2">
+            <SectionTitle>第二節　清算人</SectionTitle>
+            <ArticleRange>（第六百四十六条―第六百五十七条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="3">
+            <SectionTitle>第三節　財産目録等</SectionTitle>
+            <ArticleRange>（第六百五十八条・第六百五十九条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="4">
+            <SectionTitle>第四節　債務の弁済等</SectionTitle>
+            <ArticleRange>（第六百六十条―第六百六十五条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="5">
+            <SectionTitle>第五節　残余財産の分配</SectionTitle>
+            <ArticleRange>（第六百六十六条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="6">
+            <SectionTitle>第六節　清算事務の終了等</SectionTitle>
+            <ArticleRange>（第六百六十七条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="7">
+            <SectionTitle>第七節　任意清算</SectionTitle>
+            <ArticleRange>（第六百六十八条―第六百七十一条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="8">
+            <SectionTitle>第八節　帳簿資料の保存</SectionTitle>
+            <ArticleRange>（第六百七十二条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="9">
+            <SectionTitle>第九節　社員の責任の消滅時効</SectionTitle>
+            <ArticleRange>（第六百七十三条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="10">
+            <SectionTitle>第十節　適用除外等</SectionTitle>
+            <ArticleRange>（第六百七十四条・第六百七十五条）</ArticleRange>
+          </TOCSection>
+        </TOCChapter>
+      </TOCPart>
+      <TOCPart Num="4">
+        <PartTitle>第四編　社債</PartTitle>
+        <TOCChapter Num="1">
+          <ChapterTitle>第一章　総則</ChapterTitle>
+          <ArticleRange>（第六百七十六条―第七百一条）</ArticleRange>
+        </TOCChapter>
+        <TOCChapter Num="2">
+          <ChapterTitle>第二章　社債管理者</ChapterTitle>
+          <ArticleRange>（第七百二条―第七百十四条）</ArticleRange>
+        </TOCChapter>
+        <TOCChapter Num="2_2">
+          <ChapterTitle>第二章の二　社債管理補助者</ChapterTitle>
+          <ArticleRange>（第七百十四条の二―第七百十四条の七）</ArticleRange>
+        </TOCChapter>
+        <TOCChapter Num="3">
+          <ChapterTitle>第三章　社債権者集会</ChapterTitle>
+          <ArticleRange>（第七百十五条―第七百四十二条）</ArticleRange>
+        </TOCChapter>
+      </TOCPart>
+      <TOCPart Num="5">
+        <PartTitle>第五編　組織変更、合併、会社分割、株式交換、株式移転及び株式交付</PartTitle>
+        <TOCChapter Num="1">
+          <ChapterTitle>第一章　組織変更</ChapterTitle>
+          <TOCSection Num="1">
+            <SectionTitle>第一節　通則</SectionTitle>
+            <ArticleRange>（第七百四十三条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="2">
+            <SectionTitle>第二節　株式会社の組織変更</SectionTitle>
+            <ArticleRange>（第七百四十四条・第七百四十五条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="3">
+            <SectionTitle>第三節　持分会社の組織変更</SectionTitle>
+            <ArticleRange>（第七百四十六条・第七百四十七条）</ArticleRange>
+          </TOCSection>
+        </TOCChapter>
+        <TOCChapter Num="2">
+          <ChapterTitle>第二章　合併</ChapterTitle>
+          <TOCSection Num="1">
+            <SectionTitle>第一節　通則</SectionTitle>
+            <ArticleRange>（第七百四十八条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="2">
+            <SectionTitle>第二節　吸収合併</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　株式会社が存続する吸収合併</SubsectionTitle>
+              <ArticleRange>（第七百四十九条・第七百五十条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　持分会社が存続する吸収合併</SubsectionTitle>
+              <ArticleRange>（第七百五十一条・第七百五十二条）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="3">
+            <SectionTitle>第三節　新設合併</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　株式会社を設立する新設合併</SubsectionTitle>
+              <ArticleRange>（第七百五十三条・第七百五十四条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　持分会社を設立する新設合併</SubsectionTitle>
+              <ArticleRange>（第七百五十五条・第七百五十六条）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+        </TOCChapter>
+        <TOCChapter Num="3">
+          <ChapterTitle>第三章　会社分割</ChapterTitle>
+          <TOCSection Num="1">
+            <SectionTitle>第一節　吸収分割</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　通則</SubsectionTitle>
+              <ArticleRange>（第七百五十七条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　株式会社に権利義務を承継させる吸収分割</SubsectionTitle>
+              <ArticleRange>（第七百五十八条・第七百五十九条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="3">
+              <SubsectionTitle>第三款　持分会社に権利義務を承継させる吸収分割</SubsectionTitle>
+              <ArticleRange>（第七百六十条・第七百六十一条）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="2">
+            <SectionTitle>第二節　新設分割</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　通則</SubsectionTitle>
+              <ArticleRange>（第七百六十二条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　株式会社を設立する新設分割</SubsectionTitle>
+              <ArticleRange>（第七百六十三条・第七百六十四条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="3">
+              <SubsectionTitle>第三款　持分会社を設立する新設分割</SubsectionTitle>
+              <ArticleRange>（第七百六十五条・第七百六十六条）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+        </TOCChapter>
+        <TOCChapter Num="4">
+          <ChapterTitle>第四章　株式交換及び株式移転</ChapterTitle>
+          <TOCSection Num="1">
+            <SectionTitle>第一節　株式交換</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　通則</SubsectionTitle>
+              <ArticleRange>（第七百六十七条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　株式会社に発行済株式を取得させる株式交換</SubsectionTitle>
+              <ArticleRange>（第七百六十八条・第七百六十九条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="3">
+              <SubsectionTitle>第三款　合同会社に発行済株式を取得させる株式交換</SubsectionTitle>
+              <ArticleRange>（第七百七十条・第七百七十一条）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="2">
+            <SectionTitle>第二節　株式移転</SectionTitle>
+            <ArticleRange>（第七百七十二条―第七百七十四条）</ArticleRange>
+          </TOCSection>
+        </TOCChapter>
+        <TOCChapter Num="4_2">
+          <ChapterTitle>第四章の二　株式交付</ChapterTitle>
+          <ArticleRange>（第七百七十四条の二―第七百七十四条の十一）</ArticleRange>
+        </TOCChapter>
+        <TOCChapter Num="5">
+          <ChapterTitle>第五章　組織変更、合併、会社分割、株式交換、株式移転及び株式交付の手続</ChapterTitle>
+          <TOCSection Num="1">
+            <SectionTitle>第一節　組織変更の手続</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　株式会社の手続</SubsectionTitle>
+              <ArticleRange>（第七百七十五条―第七百八十条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　持分会社の手続</SubsectionTitle>
+              <ArticleRange>（第七百八十一条）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="2">
+            <SectionTitle>第二節　吸収合併等の手続</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　吸収合併消滅会社、吸収分割会社及び株式交換完全子会社の手続</SubsectionTitle>
+              <TOCDivision Num="1">
+                <DivisionTitle>第一目　株式会社の手続</DivisionTitle>
+                <ArticleRange>（第七百八十二条―第七百九十二条）</ArticleRange>
+              </TOCDivision>
+              <TOCDivision Num="2">
+                <DivisionTitle>第二目　持分会社の手続</DivisionTitle>
+                <ArticleRange>（第七百九十三条）</ArticleRange>
+              </TOCDivision>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　吸収合併存続会社、吸収分割承継会社及び株式交換完全親会社の手続</SubsectionTitle>
+              <TOCDivision Num="1">
+                <DivisionTitle>第一目　株式会社の手続</DivisionTitle>
+                <ArticleRange>（第七百九十四条―第八百一条）</ArticleRange>
+              </TOCDivision>
+              <TOCDivision Num="2">
+                <DivisionTitle>第二目　持分会社の手続</DivisionTitle>
+                <ArticleRange>（第八百二条）</ArticleRange>
+              </TOCDivision>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="3">
+            <SectionTitle>第三節　新設合併等の手続</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　新設合併消滅会社、新設分割会社及び株式移転完全子会社の手続</SubsectionTitle>
+              <TOCDivision Num="1">
+                <DivisionTitle>第一目　株式会社の手続</DivisionTitle>
+                <ArticleRange>（第八百三条―第八百十二条）</ArticleRange>
+              </TOCDivision>
+              <TOCDivision Num="2">
+                <DivisionTitle>第二目　持分会社の手続</DivisionTitle>
+                <ArticleRange>（第八百十三条）</ArticleRange>
+              </TOCDivision>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　新設合併設立会社、新設分割設立会社及び株式移転設立完全親会社の手続</SubsectionTitle>
+              <TOCDivision Num="1">
+                <DivisionTitle>第一目　株式会社の手続</DivisionTitle>
+                <ArticleRange>（第八百十四条・第八百十五条）</ArticleRange>
+              </TOCDivision>
+              <TOCDivision Num="2">
+                <DivisionTitle>第二目　持分会社の手続</DivisionTitle>
+                <ArticleRange>（第八百十六条）</ArticleRange>
+              </TOCDivision>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="4">
+            <SectionTitle>第四節　株式交付の手続</SectionTitle>
+            <ArticleRange>（第八百十六条の二―第八百十六条の十）</ArticleRange>
+          </TOCSection>
+        </TOCChapter>
+      </TOCPart>
+      <TOCPart Num="6">
+        <PartTitle>第六編　外国会社</PartTitle>
+        <ArticleRange>（第八百十七条―第八百二十三条）</ArticleRange>
+      </TOCPart>
+      <TOCPart Num="7">
+        <PartTitle>第七編　雑則</PartTitle>
+        <TOCChapter Num="1">
+          <ChapterTitle>第一章　会社の解散命令等</ChapterTitle>
+          <TOCSection Num="1">
+            <SectionTitle>第一節　会社の解散命令</SectionTitle>
+            <ArticleRange>（第八百二十四条―第八百二十六条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="2">
+            <SectionTitle>第二節　外国会社の取引継続禁止又は営業所閉鎖の命令</SectionTitle>
+            <ArticleRange>（第八百二十七条）</ArticleRange>
+          </TOCSection>
+        </TOCChapter>
+        <TOCChapter Num="2">
+          <ChapterTitle>第二章　訴訟</ChapterTitle>
+          <TOCSection Num="1">
+            <SectionTitle>第一節　会社の組織に関する訴え</SectionTitle>
+            <ArticleRange>（第八百二十八条―第八百四十六条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="1_2">
+            <SectionTitle>第一節の二　売渡株式等の取得の無効の訴え</SectionTitle>
+            <ArticleRange>（第八百四十六条の二―第八百四十六条の九）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="2">
+            <SectionTitle>第二節　株式会社における責任追及等の訴え</SectionTitle>
+            <ArticleRange>（第八百四十七条―第八百五十三条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="3">
+            <SectionTitle>第三節　株式会社の役員の解任の訴え</SectionTitle>
+            <ArticleRange>（第八百五十四条―第八百五十六条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="4">
+            <SectionTitle>第四節　特別清算に関する訴え</SectionTitle>
+            <ArticleRange>（第八百五十七条・第八百五十八条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="5">
+            <SectionTitle>第五節　持分会社の社員の除名の訴え等</SectionTitle>
+            <ArticleRange>（第八百五十九条―第八百六十二条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="6">
+            <SectionTitle>第六節　清算持分会社の財産処分の取消しの訴え</SectionTitle>
+            <ArticleRange>（第八百六十三条・第八百六十四条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="7">
+            <SectionTitle>第七節　社債発行会社の弁済等の取消しの訴え</SectionTitle>
+            <ArticleRange>（第八百六十五条―第八百六十七条）</ArticleRange>
+          </TOCSection>
+        </TOCChapter>
+        <TOCChapter Num="3">
+          <ChapterTitle>第三章　非訟</ChapterTitle>
+          <TOCSection Num="1">
+            <SectionTitle>第一節　総則</SectionTitle>
+            <ArticleRange>（第八百六十八条―第八百七十六条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="2">
+            <SectionTitle>第二節　新株発行の無効判決後の払戻金増減の手続に関する特則</SectionTitle>
+            <ArticleRange>（第八百七十七条・第八百七十八条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="3">
+            <SectionTitle>第三節　特別清算の手続に関する特則</SectionTitle>
+            <TOCSubsection Num="1">
+              <SubsectionTitle>第一款　通則</SubsectionTitle>
+              <ArticleRange>（第八百七十九条―第八百八十七条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="2">
+              <SubsectionTitle>第二款　特別清算の開始の手続に関する特則</SubsectionTitle>
+              <ArticleRange>（第八百八十八条―第八百九十一条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="3">
+              <SubsectionTitle>第三款　特別清算の実行の手続に関する特則</SubsectionTitle>
+              <ArticleRange>（第八百九十二条―第九百一条）</ArticleRange>
+            </TOCSubsection>
+            <TOCSubsection Num="4">
+              <SubsectionTitle>第四款　特別清算の終了の手続に関する特則</SubsectionTitle>
+              <ArticleRange>（第九百二条）</ArticleRange>
+            </TOCSubsection>
+          </TOCSection>
+          <TOCSection Num="4">
+            <SectionTitle>第四節　外国会社の清算の手続に関する特則</SectionTitle>
+            <ArticleRange>（第九百三条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="5">
+            <SectionTitle>第五節　会社の解散命令等の手続に関する特則</SectionTitle>
+            <ArticleRange>（第九百四条―第九百六条）</ArticleRange>
+          </TOCSection>
+        </TOCChapter>
+        <TOCChapter Num="4">
+          <ChapterTitle>第四章　登記</ChapterTitle>
+          <TOCSection Num="1">
+            <SectionTitle>第一節　総則</SectionTitle>
+            <ArticleRange>（第九百七条―第九百十条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="2">
+            <SectionTitle>第二節　会社の登記</SectionTitle>
+            <ArticleRange>（第九百十一条―第九百三十二条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="3">
+            <SectionTitle>第三節　外国会社の登記</SectionTitle>
+            <ArticleRange>（第九百三十三条―第九百三十六条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="4">
+            <SectionTitle>第四節　登記の嘱託</SectionTitle>
+            <ArticleRange>（第九百三十七条・第九百三十八条）</ArticleRange>
+          </TOCSection>
+        </TOCChapter>
+        <TOCChapter Num="5">
+          <ChapterTitle>第五章　公告</ChapterTitle>
+          <TOCSection Num="1">
+            <SectionTitle>第一節　総則</SectionTitle>
+            <ArticleRange>（第九百三十九条・第九百四十条）</ArticleRange>
+          </TOCSection>
+          <TOCSection Num="2">
+            <SectionTitle>第二節　電子公告調査機関</SectionTitle>
+            <ArticleRange>（第九百四十一条―第九百五十九条）</ArticleRange>
+          </TOCSection>
+        </TOCChapter>
+      </TOCPart>
+      <TOCPart Num="8">
+        <PartTitle>第八編　罰則</PartTitle>
+        <ArticleRange>（第九百六十条―第九百七十九条）</ArticleRange>
+      </TOCPart>
+      <TOCSupplProvision>
+        <SupplProvisionLabel>附則</SupplProvisionLabel>
+      </TOCSupplProvision>
+    </TOC>
+    <MainProvision>
+      <Part Num="1">
+        <PartTitle>第一編　総則</PartTitle>
+        <Chapter Num="1">
+          <ChapterTitle>第一章　通則</ChapterTitle>
+          <Article Num="1">
+            <ArticleCaption>（趣旨）</ArticleCaption>
+            <ArticleTitle>第一条</ArticleTitle>
+            <Paragraph Num="1">
+              <ParagraphNum/>
+              <ParagraphSentence>
+                <Sentence Num="1" WritingMode="vertical">会社の設立、組織、運営及び管理については、他の法律に特別の定めがある場合を除くほか、この法律の定めるところによる。</Sentence>
+              </ParagraphSentence>
+            </Paragraph>
+          </Article>
+          <Article Num="2">
+            <ArticleCaption>（定義）</ArticleCaption>
+            <ArticleTitle>第二条</ArticleTitle>
+            <Paragraph Num="1">
+              <ParagraphNum/>
+              <ParagraphSentence>
+                <Sentence Num="1" WritingMode="vertical">この法律において、次の各号に掲げる用語の意義は、当該各号に定めるところによる。</Sentence>
+              </ParagraphSentence>
+              <Item Num="1">
+                <ItemTitle>一</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">会社</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">株式会社、合名会社、合資会社又は合同会社をいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="2">
+                <ItemTitle>二</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">外国会社</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">外国の法令に準拠して設立された法人その他の外国の団体であって、会社と同種のもの又は会社に類似するものをいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="3">
+                <ItemTitle>三</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">子会社</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">会社がその総株主の議決権の過半数を有する株式会社その他の当該会社がその経営を支配している法人として法務省令で定めるものをいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="3_2">
+                <ItemTitle>三の二</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">子会社等</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">次のいずれかに該当する者をいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+                <Subitem1 Num="1">
+                  <Subitem1Title>イ</Subitem1Title>
+                  <Subitem1Sentence>
+                    <Sentence Num="1" WritingMode="vertical">子会社</Sentence>
+                  </Subitem1Sentence>
+                </Subitem1>
+                <Subitem1 Num="2">
+                  <Subitem1Title>ロ</Subitem1Title>
+                  <Subitem1Sentence>
+                    <Sentence Num="1" WritingMode="vertical">会社以外の者がその経営を支配している法人として法務省令で定めるもの</Sentence>
+                  </Subitem1Sentence>
+                </Subitem1>
+              </Item>
+              <Item Num="4">
+                <ItemTitle>四</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">親会社</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">株式会社を子会社とする会社その他の当該株式会社の経営を支配している法人として法務省令で定めるものをいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="4_2">
+                <ItemTitle>四の二</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">親会社等</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">次のいずれかに該当する者をいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+                <Subitem1 Num="1">
+                  <Subitem1Title>イ</Subitem1Title>
+                  <Subitem1Sentence>
+                    <Sentence Num="1" WritingMode="vertical">親会社</Sentence>
+                  </Subitem1Sentence>
+                </Subitem1>
+                <Subitem1 Num="2">
+                  <Subitem1Title>ロ</Subitem1Title>
+                  <Subitem1Sentence>
+                    <Sentence Num="1" WritingMode="vertical">株式会社の経営を支配している者（法人であるものを除く。）として法務省令で定めるもの</Sentence>
+                  </Subitem1Sentence>
+                </Subitem1>
+              </Item>
+              <Item Num="5">
+                <ItemTitle>五</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">公開会社</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">その発行する全部又は一部の株式の内容として譲渡による当該株式の取得について株式会社の承認を要する旨の定款の定めを設けていない株式会社をいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="6">
+                <ItemTitle>六</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">大会社</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">次に掲げる要件のいずれかに該当する株式会社をいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+                <Subitem1 Num="1">
+                  <Subitem1Title>イ</Subitem1Title>
+                  <Subitem1Sentence>
+                    <Sentence Num="1" WritingMode="vertical">最終事業年度に係る貸借対照表（第四百三十九条前段に規定する場合にあっては、同条の規定により定時株主総会に報告された貸借対照表をいい、株式会社の成立後最初の定時株主総会までの間においては、第四百三十五条第一項の貸借対照表をいう。ロにおいて同じ。）に資本金として計上した額が五億円以上であること。</Sentence>
+                  </Subitem1Sentence>
+                </Subitem1>
+                <Subitem1 Num="2">
+                  <Subitem1Title>ロ</Subitem1Title>
+                  <Subitem1Sentence>
+                    <Sentence Num="1" WritingMode="vertical">最終事業年度に係る貸借対照表の負債の部に計上した額の合計額が二百億円以上であること。</Sentence>
+                  </Subitem1Sentence>
+                </Subitem1>
+              </Item>
+              <Item Num="7">
+                <ItemTitle>七</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">取締役会設置会社</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">取締役会を置く株式会社又はこの法律の規定により取締役会を置かなければならない株式会社をいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="8">
+                <ItemTitle>八</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">会計参与設置会社</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">会計参与を置く株式会社をいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="9">
+                <ItemTitle>九</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">監査役設置会社</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">監査役を置く株式会社（その監査役の監査の範囲を会計に関するものに限定する旨の定款の定めがあるものを除く。）又はこの法律の規定により監査役を置かなければならない株式会社をいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="10">
+                <ItemTitle>十</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">監査役会設置会社</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">監査役会を置く株式会社又はこの法律の規定により監査役会を置かなければならない株式会社をいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="11">
+                <ItemTitle>十一</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">会計監査人設置会社</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">会計監査人を置く株式会社又はこの法律の規定により会計監査人を置かなければならない株式会社をいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="11_2">
+                <ItemTitle>十一の二</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">監査等委員会設置会社</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">監査等委員会を置く株式会社をいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="12">
+                <ItemTitle>十二</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">指名委員会等設置会社</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">指名委員会、監査委員会及び報酬委員会（以下「指名委員会等」という。）を置く株式会社をいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="13">
+                <ItemTitle>十三</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">種類株式発行会社</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">剰余金の配当その他の第百八条第一項各号に掲げる事項について内容の異なる二以上の種類の株式を発行する株式会社をいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="14">
+                <ItemTitle>十四</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">種類株主総会</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">種類株主（種類株式発行会社におけるある種類の株式の株主をいう。以下同じ。）の総会をいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="15">
+                <ItemTitle>十五</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">社外取締役</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">株式会社の取締役であって、次に掲げる要件のいずれにも該当するものをいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+                <Subitem1 Num="1">
+                  <Subitem1Title>イ</Subitem1Title>
+                  <Subitem1Sentence>
+                    <Sentence Num="1" WritingMode="vertical">当該株式会社又はその子会社の業務執行取締役（株式会社の第三百六十三条第一項各号に掲げる取締役及び当該株式会社の業務を執行したその他の取締役をいう。以下同じ。）若しくは執行役又は支配人その他の使用人（以下「業務執行取締役等」という。）でなく、かつ、その就任の前十年間当該株式会社又はその子会社の業務執行取締役等であったことがないこと。</Sentence>
+                  </Subitem1Sentence>
+                </Subitem1>
+                <Subitem1 Num="2">
+                  <Subitem1Title>ロ</Subitem1Title>
+                  <Subitem1Sentence>
+                    <Sentence Num="1" WritingMode="vertical">その就任の前十年内のいずれかの時において当該株式会社又はその子会社の取締役、会計参与（会計参与が法人であるときは、その職務を行うべき社員）又は監査役であったことがある者（業務執行取締役等であったことがあるものを除く。）にあっては、当該取締役、会計参与又は監査役への就任の前十年間当該株式会社又はその子会社の業務執行取締役等であったことがないこと。</Sentence>
+                  </Subitem1Sentence>
+                </Subitem1>
+                <Subitem1 Num="3">
+                  <Subitem1Title>ハ</Subitem1Title>
+                  <Subitem1Sentence>
+                    <Sentence Num="1" WritingMode="vertical">当該株式会社の親会社等（自然人であるものに限る。）又は親会社等の取締役若しくは執行役若しくは支配人その他の使用人でないこと。</Sentence>
+                  </Subitem1Sentence>
+                </Subitem1>
+                <Subitem1 Num="4">
+                  <Subitem1Title>ニ</Subitem1Title>
+                  <Subitem1Sentence>
+                    <Sentence Num="1" WritingMode="vertical">当該株式会社の親会社等の子会社等（当該株式会社及びその子会社を除く。）の業務執行取締役等でないこと。</Sentence>
+                  </Subitem1Sentence>
+                </Subitem1>
+                <Subitem1 Num="5">
+                  <Subitem1Title>ホ</Subitem1Title>
+                  <Subitem1Sentence>
+                    <Sentence Num="1" WritingMode="vertical">当該株式会社の取締役若しくは執行役若しくは支配人その他の重要な使用人又は親会社等（自然人であるものに限る。）の配偶者又は二親等内の親族でないこと。</Sentence>
+                  </Subitem1Sentence>
+                </Subitem1>
+              </Item>
+              <Item Num="16">
+                <ItemTitle>十六</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">社外監査役</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">株式会社の監査役であって、次に掲げる要件のいずれにも該当するものをいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+                <Subitem1 Num="1">
+                  <Subitem1Title>イ</Subitem1Title>
+                  <Subitem1Sentence>
+                    <Sentence Num="1" WritingMode="vertical">その就任の前十年間当該株式会社又はその子会社の取締役、会計参与（会計参与が法人であるときは、その職務を行うべき社員。ロにおいて同じ。）若しくは執行役又は支配人その他の使用人であったことがないこと。</Sentence>
+                  </Subitem1Sentence>
+                </Subitem1>
+                <Subitem1 Num="2">
+                  <Subitem1Title>ロ</Subitem1Title>
+                  <Subitem1Sentence>
+                    <Sentence Num="1" WritingMode="vertical">その就任の前十年内のいずれかの時において当該株式会社又はその子会社の監査役であったことがある者にあっては、当該監査役への就任の前十年間当該株式会社又はその子会社の取締役、会計参与若しくは執行役又は支配人その他の使用人であったことがないこと。</Sentence>
+                  </Subitem1Sentence>
+                </Subitem1>
+                <Subitem1 Num="3">
+                  <Subitem1Title>ハ</Subitem1Title>
+                  <Subitem1Sentence>
+                    <Sentence Num="1" WritingMode="vertical">当該株式会社の親会社等（自然人であるものに限る。）又は親会社等の取締役、監査役若しくは執行役若しくは支配人その他の使用人でないこと。</Sentence>
+                  </Subitem1Sentence>
+                </Subitem1>
+                <Subitem1 Num="4">
+                  <Subitem1Title>ニ</Subitem1Title>
+                  <Subitem1Sentence>
+                    <Sentence Num="1" WritingMode="vertical">当該株式会社の親会社等の子会社等（当該株式会社及びその子会社を除く。）の業務執行取締役等でないこと。</Sentence>
+                  </Subitem1Sentence>
+                </Subitem1>
+                <Subitem1 Num="5">
+                  <Subitem1Title>ホ</Subitem1Title>
+                  <Subitem1Sentence>
+                    <Sentence Num="1" WritingMode="vertical">当該株式会社の取締役若しくは支配人その他の重要な使用人又は親会社等（自然人であるものに限る。）の配偶者又は二親等内の親族でないこと。</Sentence>
+                  </Subitem1Sentence>
+                </Subitem1>
+              </Item>
+              <Item Num="17">
+                <ItemTitle>十七</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">譲渡制限株式</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">株式会社がその発行する全部又は一部の株式の内容として譲渡による当該株式の取得について当該株式会社の承認を要する旨の定めを設けている場合における当該株式をいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="18">
+                <ItemTitle>十八</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">取得請求権付株式</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">株式会社がその発行する全部又は一部の株式の内容として株主が当該株式会社に対して当該株式の取得を請求することができる旨の定めを設けている場合における当該株式をいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="19">
+                <ItemTitle>十九</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">取得条項付株式</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">株式会社がその発行する全部又は一部の株式の内容として当該株式会社が一定の事由が生じたことを条件として当該株式を取得することができる旨の定めを設けている場合における当該株式をいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="20">
+                <ItemTitle>二十</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">単元株式数</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">株式会社がその発行する株式について、一定の数の株式をもって株主が株主総会又は種類株主総会において一個の議決権を行使することができる一単元の株式とする旨の定款の定めを設けている場合における当該一定の数をいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="21">
+                <ItemTitle>二十一</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">新株予約権</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">株式会社に対して行使することにより当該株式会社の株式の交付を受けることができる権利をいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="22">
+                <ItemTitle>二十二</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">新株予約権付社債</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">新株予約権を付した社債をいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="23">
+                <ItemTitle>二十三</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">社債</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">この法律の規定により会社が行う割当てにより発生する当該会社を債務者とする金銭債権であって、第六百七十六条各号に掲げる事項についての定めに従い償還されるものをいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="24">
+                <ItemTitle>二十四</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">最終事業年度</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">各事業年度に係る第四百三十五条第二項に規定する計算書類につき第四百三十八条第二項の承認（第四百三十九条前段に規定する場合にあっては、第四百三十六条第三項の承認）を受けた場合における当該各事業年度のうち最も遅いものをいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="25">
+                <ItemTitle>二十五</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">配当財産</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">株式会社が剰余金の配当をする場合における配当する財産をいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="26">
+                <ItemTitle>二十六</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">組織変更</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">次のイ又はロに掲げる会社がその組織を変更することにより当該イ又はロに定める会社となることをいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+                <Subitem1 Num="1">
+                  <Subitem1Title>イ</Subitem1Title>
+                  <Subitem1Sentence>
+                    <Column Num="1">
+                      <Sentence Num="1" WritingMode="vertical">株式会社</Sentence>
+                    </Column>
+                    <Column Num="2">
+                      <Sentence Num="1" WritingMode="vertical">合名会社、合資会社又は合同会社</Sentence>
+                    </Column>
+                  </Subitem1Sentence>
+                </Subitem1>
+                <Subitem1 Num="2">
+                  <Subitem1Title>ロ</Subitem1Title>
+                  <Subitem1Sentence>
+                    <Column Num="1">
+                      <Sentence Num="1" WritingMode="vertical">合名会社、合資会社又は合同会社</Sentence>
+                    </Column>
+                    <Column Num="2">
+                      <Sentence Num="1" WritingMode="vertical">株式会社</Sentence>
+                    </Column>
+                  </Subitem1Sentence>
+                </Subitem1>
+              </Item>
+              <Item Num="27">
+                <ItemTitle>二十七</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">吸収合併</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">会社が他の会社とする合併であって、合併により消滅する会社の権利義務の全部を合併後存続する会社に承継させるものをいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="28">
+                <ItemTitle>二十八</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">新設合併</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">二以上の会社がする合併であって、合併により消滅する会社の権利義務の全部を合併により設立する会社に承継させるものをいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="29">
+                <ItemTitle>二十九</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">吸収分割</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">株式会社又は合同会社がその事業に関して有する権利義務の全部又は一部を分割後他の会社に承継させることをいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="30">
+                <ItemTitle>三十</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">新設分割</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">一又は二以上の株式会社又は合同会社がその事業に関して有する権利義務の全部又は一部を分割により設立する会社に承継させることをいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="31">
+                <ItemTitle>三十一</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">株式交換</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">株式会社がその発行済株式（株式会社が発行している株式をいう。以下同じ。）の全部を他の株式会社又は合同会社に取得させることをいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="32">
+                <ItemTitle>三十二</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">株式移転</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">一又は二以上の株式会社がその発行済株式の全部を新たに設立する株式会社に取得させることをいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="32_2">
+                <ItemTitle>三十二の二</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">株式交付</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">株式会社が他の株式会社をその子会社（法務省令で定めるものに限る。第七百七十四条の三第二項において同じ。）とするために当該他の株式会社の株式を譲り受け、当該株式の譲渡人に対して当該株式の対価として当該株式会社の株式を交付することをいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="33">
+                <ItemTitle>三十三</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">公告方法</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">会社（外国会社を含む。）が公告（この法律又は他の法律の規定により官報に掲載する方法によりしなければならないものとされているものを除く。）をする方法をいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+              <Item Num="34">
+                <ItemTitle>三十四</ItemTitle>
+                <ItemSentence>
+                  <Column Num="1">
+                    <Sentence Num="1" WritingMode="vertical">電子公告</Sentence>
+                  </Column>
+                  <Column Num="2">
+                    <Sentence Num="1" WritingMode="vertical">公告方法のうち、電磁的方法（電子情報処理組織を使用する方法その他の情報通信の技術を利用する方法であって法務省令で定めるものをいう。以下同じ。）により不特定多数の者が公告すべき内容である情報の提供を受けることができる状態に置く措置であって法務省令で定めるものをとる方法をいう。</Sentence>
+                  </Column>
+                </ItemSentence>
+              </Item>
+            </Paragraph>
+          </Article></Chapter></Part></MainProvision></LawBody></Law></law_full_text></law_data_response>

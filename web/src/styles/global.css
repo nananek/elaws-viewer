@@ -1,13 +1,33 @@
 @import "tailwindcss";
 @import "./highlights.css";
 
-/* Class-based dark mode: applies when <html class="dark"> is set. */
-@custom-variant dark (&:where(.dark, .dark *));
+/* Paper-like palette + 明朝/ゴシック フォントトークン.
+   Tailwind v4 picks these up as utilities: bg-paper, text-ink, font-mincho, font-gothic. */
+@theme {
+  --color-paper: #faf6ee;
+  --color-ink: #2b2a26;
+  --font-mincho: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP", serif;
+  --font-gothic: ui-sans-serif, "Hiragino Sans", "Yu Gothic UI", "Noto Sans JP", system-ui, sans-serif;
+}
 
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
-    font-family: ui-sans-serif, system-ui, "Hiragino Sans", "Yu Gothic UI",
-      "Segoe UI", sans-serif;
+    font-family: var(--font-mincho);
   }
+
+  /* Definition-list paragraphs (会社法 2 条 etc.) flip to vertical writing.
+     Marked by anchorDom when ≥4 sibling items each begin with 「. */
+  [data-vertical="1"] {
+    writing-mode: vertical-rl;
+    max-height: 60vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+  }
+}
+
+/* Gothic for headings (and anything else explicitly tagged). */
+.heading-gothic {
+  font-family: var(--font-gothic);
 }

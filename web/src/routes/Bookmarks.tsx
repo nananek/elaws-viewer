@@ -30,7 +30,7 @@ export function BookmarksPage() {
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">ブックマーク</h1>
+      <h1 className="heading-gothic text-2xl font-bold mb-4">ブックマーク</h1>
       {bookmarksQ.isLoading && <p className="text-sm">読み込み中…</p>}
       {bookmarksQ.data && bookmarksQ.data.count === 0 && (
         <p className="text-sm text-neutral-500">まだブックマークがありません。法令ビューアの右下のボタンから追加できます。</p>
@@ -40,7 +40,7 @@ export function BookmarksPage() {
         const arr = items as any[];
         return (
           <section key={lawNo} className="mb-6">
-            <h2 className="font-semibold mb-2">{law?.lawTitle ?? lawNo}</h2>
+            <h2 className="heading-gothic font-semibold mb-2">{law?.lawTitle ?? lawNo}</h2>
             <ul className="space-y-1">
               {arr.map((b) => (
                 <li key={b.uuid} className="flex items-center gap-2">
@@ -49,7 +49,7 @@ export function BookmarksPage() {
                       to="/law/$lawId"
                       params={{ lawId: law.lawId }}
                       search={{ at: b.anchor }}
-                      className="flex-1 px-2 py-1 rounded hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                      className="flex-1 px-2 py-1 rounded hover:bg-neutral-100"
                     >
                       <span className="text-xs text-neutral-500 mr-2">{b.anchor}</span>
                       <span>{b.title}</span>

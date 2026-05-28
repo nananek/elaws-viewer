@@ -28,13 +28,13 @@ export function SearchPage() {
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">横断検索</h1>
+      <h1 className="heading-gothic text-2xl font-bold mb-4">横断検索</h1>
       <input
         autoFocus
         value={q}
         onChange={(e) => setQ(e.target.value)}
         placeholder="キーワード (2文字以上)…"
-        className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-700 rounded mb-3 bg-white dark:bg-neutral-900"
+        className="w-full px-3 py-2 border border-neutral-300 rounded mb-3 bg-white"
       />
       {search.isFetching && <p className="text-sm text-neutral-500">検索中…</p>}
       {search.data && (
@@ -47,7 +47,7 @@ export function SearchPage() {
               // Search returns lawId already; if not match, fall back to lawTitle
               const targetLawId = h.lawId;
               return (
-                <li key={`${h.lawId}-${i}`} className="border border-neutral-200 dark:border-neutral-800 rounded p-3">
+                <li key={`${h.lawId}-${i}`} className="border border-neutral-200 rounded p-3">
                   <Link
                     to="/law/$lawId"
                     params={{ lawId: targetLawId }}

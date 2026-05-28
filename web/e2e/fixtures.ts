@@ -27,6 +27,20 @@ export function loadRealKenpoBody(): RealKenpoBody {
 
 export const REAL_KENPO_LAW_ID = 'REAL_KENPO';
 
+// 会社法 第一条 + 第二条 — real e-Gov XML (slimmed to 2 articles to keep
+// the fixture small). 第二条 is the definitions article with 38 items
+// including イ/ロ Subitem groups, which is the exact shape that drove
+// the renderer changes in Issue #3.
+export const REAL_KAISHA_LAW_ID = 'REAL_KAISHA';
+
+let _realKaishaBody: RealKenpoBody | null = null;
+export function loadRealKaishaBody(): RealKenpoBody {
+  if (_realKaishaBody) return _realKaishaBody;
+  const jsonPath = resolve(__dirname, 'fixtures', 'kaisha-body.json');
+  _realKaishaBody = JSON.parse(readFileSync(jsonPath, 'utf-8')) as RealKenpoBody;
+  return _realKaishaBody;
+}
+
 /**
  * Minimal LawBody fixture mirroring what /api/laws/:lawId/body returns.
  * Two articles, each with a single sentence in 項1.
@@ -253,6 +267,10 @@ export async function installApiMocks(
       const body = loadRealKenpoBody();
       return r.fulfill({ status: 200, headers: apiHeaders, body: JSON.stringify({ ...body, nodeCount: body.nodes.length }) });
     }
+    if (id === REAL_KAISHA_LAW_ID) {
+      const body = loadRealKaishaBody();
+      return r.fulfill({ status: 200, headers: apiHeaders, body: JSON.stringify({ ...body, nodeCount: body.nodes.length }) });
+    }
     return r.fulfill({ status: 404, headers: apiHeaders, body: JSON.stringify({ error: 'not downloaded' }) });
   });
 
@@ -261,7 +279,7 @@ export async function installApiMocks(
     const url = new URL(r.request().url());
     const match = url.pathname.match(/\/api\/laws\/([^/]+)\/selections$/);
     const id = match ? decodeURIComponent(match[1]!) : '';
-    if (id === KENPO_LAW_ID || id === REAL_KENPO_LAW_ID) {
+    if (id === KENPO_LAW_ID || id === REAL_KENPO_LAW_ID || id === REAL_KAISHA_LAW_ID) {
       return r.fulfill({
         status: 200,
         headers: apiHeaders,
