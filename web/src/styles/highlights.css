@@ -14,7 +14,6 @@
 .sel-marker-104 {
   background-color: #b4b2af;
   color: transparent;
-  transition: color .15s, background-color .15s;
   cursor: pointer;
 }
 .sel-marker-104:hover,

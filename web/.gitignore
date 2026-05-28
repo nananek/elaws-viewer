@@ -1,2 +1,4 @@
 dev-dist/
 dist/
+playwright-report/
+test-results/

@@ -150,11 +150,22 @@ function textOf(el: OrderedElement): string {
 function walkPreamble(el: OrderedElement, ctx: WalkCtx, out: LawNode[]): void {
   const node: LawNode = { anchor: '前0', row: ++ctx.row, kind: 'preamble', text: '', children: [] };
   let paraIndex = 0;
+  let directSentenceIdx = 0;
   for (const c of children(el)) {
     const t = tagName(c);
     if (t === 'Paragraph') {
       paraIndex++;
       walkParagraph(c, ctx, '前0', paraIndex, node.children!);
+    } else if (t === 'Sentence') {
+      // Some sources put bare <Sentence> directly under <Preamble>.
+      directSentenceIdx++;
+      const txt = flattenText(children(c));
+      node.children!.push({
+        anchor: `前0/文${directSentenceIdx}`,
+        row: ++ctx.row,
+        kind: 'sentence',
+        text: txt,
+      });
     }
   }
   out.push(node);
@@ -269,6 +280,17 @@ function walkParagraph(
           });
         }
       }
+    } else if (ct === 'Sentence') {
+      // Some sources (e.g. 憲法 Preamble) wrap sentences directly under
+      // Paragraph without a ParagraphSentence container.
+      sentenceIdx++;
+      const txt = flattenText(children(c));
+      paraNode.children!.push({
+        anchor: `${paraAnchor}/文${sentenceIdx}`,
+        row: ++ctx.row,
+        kind: 'sentence',
+        text: txt,
+      });
     } else if (ct === 'Item') {
       itemIdx++;
       walkItem(c, ctx, paraAnchor, itemIdx, paraNode.children!);

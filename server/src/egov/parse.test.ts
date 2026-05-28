@@ -128,3 +128,103 @@ describe('parseLawXml', () => {
     expect(title?.text).toBe('第四百条');
   });
 });
+
+const KENPO_FIXTURE = `<?xml version="1.0" encoding="UTF-8"?>
+<law_data_response>
+  <law_info>
+    <law_id>321CONSTITUTION</law_id>
+    <law_num>昭和二十一年憲法</law_num>
+  </law_info>
+  <revision_info>
+    <law_title>日本国憲法</law_title>
+  </revision_info>
+  <law_full_text>
+    <Law>
+      <LawBody>
+        <LawTitle>日本国憲法</LawTitle>
+        <Preamble>
+          <Paragraph Num="1">
+            <Sentence>日本国民は、正当に選挙された国会における代表者を通じて行動し…</Sentence>
+            <Sentence>われらは、これに反する一切の憲法、法令及び詔勅を排除する。</Sentence>
+          </Paragraph>
+        </Preamble>
+        <MainProvision>
+          <Chapter Num="1">
+            <ChapterTitle>第一章 天皇</ChapterTitle>
+            <Article Num="1">
+              <ArticleTitle>第一条</ArticleTitle>
+              <Paragraph Num="1">
+                <ParagraphSentence>
+                  <Sentence>天皇は、日本国の象徴であり日本国民統合の象徴であって…</Sentence>
+                </ParagraphSentence>
+              </Paragraph>
+            </Article>
+          </Chapter>
+          <Chapter Num="11">
+            <ChapterTitle>第十一章 補則</ChapterTitle>
+            <Article Num="103">
+              <ArticleTitle>第百三条</ArticleTitle>
+              <Paragraph Num="1">
+                <ParagraphSentence>
+                  <Sentence>この憲法施行の際現に在職する国務大臣…</Sentence>
+                </ParagraphSentence>
+              </Paragraph>
+            </Article>
+          </Chapter>
+        </MainProvision>
+      </LawBody>
+    </Law>
+  </law_full_text>
+</law_data_response>`;
+
+describe('parseLawXml — 憲法 (Preamble + bare Sentence)', () => {
+  const body = parseLawXml(KENPO_FIXTURE);
+
+  it('emits a preamble node with at least one sentence', () => {
+    const preamble = body.nodes.find((n) => n.kind === 'preamble');
+    expect(preamble).toBeDefined();
+    // sentences are inside paragraph(s)
+    const para = preamble?.children?.find((c) => c.kind === 'paragraph');
+    expect(para).toBeDefined();
+    const sentences = (para?.children ?? []).filter((c) => c.kind === 'sentence');
+    expect(sentences.length).toBeGreaterThanOrEqual(2);
+    expect(sentences[0]!.text).toContain('日本国民は');
+  });
+
+  it('reaches the final article (第百三条)', () => {
+    expect(findByAnchor(body.nodes, '条103')).not.toBeNull();
+    const last = findByAnchor(body.nodes, '条103/頭');
+    expect(last?.text).toBe('第百三条');
+  });
+});
+
+const PREAMBLE_BARE_FIXTURE = `<?xml version="1.0" encoding="UTF-8"?>
+<law_data_response>
+  <law_info><law_id>X</law_id><law_num>Y</law_num></law_info>
+  <revision_info><law_title>テスト</law_title></revision_info>
+  <law_full_text>
+    <Law>
+      <LawBody>
+        <Preamble>
+          <Sentence>前文の直下に Sentence が来るケース。</Sentence>
+        </Preamble>
+        <MainProvision>
+          <Article Num="1"><ArticleTitle>第一条</ArticleTitle>
+            <Paragraph Num="1"><ParagraphSentence><Sentence>本文。</Sentence></ParagraphSentence></Paragraph>
+          </Article>
+        </MainProvision>
+      </LawBody>
+    </Law>
+  </law_full_text>
+</law_data_response>`;
+
+describe('parseLawXml — Preamble with bare <Sentence> child', () => {
+  it('captures direct Sentence children under Preamble', () => {
+    const body = parseLawXml(PREAMBLE_BARE_FIXTURE);
+    const preamble = body.nodes.find((n) => n.kind === 'preamble');
+    expect(preamble).toBeDefined();
+    const sentences = (preamble?.children ?? []).filter((c) => c.kind === 'sentence');
+    expect(sentences.length).toBe(1);
+    expect(sentences[0]!.anchor).toBe('前0/文1');
+  });
+});
