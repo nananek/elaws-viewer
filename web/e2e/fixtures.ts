@@ -1,4 +1,31 @@
 import type { Page, Route } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// Pre-built body JSON from running the server's parser against the real
+// e-Gov 憲法 XML. See web/e2e/fixtures/build-kenpo-body.mjs for the script
+// that regenerates it. Driving the e2e renderer with the actual parser
+// output catches body-shape bugs that a hand-rolled fixture cannot.
+export interface RealKenpoBody {
+  lawId: string;
+  lawNum: string;
+  lawTitle: string;
+  enforcementDate: string | null;
+  nodes: unknown[];
+}
+
+let _realKenpoBody: RealKenpoBody | null = null;
+export function loadRealKenpoBody(): RealKenpoBody {
+  if (_realKenpoBody) return _realKenpoBody;
+  const jsonPath = resolve(__dirname, 'fixtures', 'kenpo-body.json');
+  _realKenpoBody = JSON.parse(readFileSync(jsonPath, 'utf-8')) as RealKenpoBody;
+  return _realKenpoBody;
+}
+
+export const REAL_KENPO_LAW_ID = 'REAL_KENPO';
 
 /**
  * Minimal LawBody fixture mirroring what /api/laws/:lawId/body returns.
@@ -11,7 +38,16 @@ export const LAW_TITLE = 'テスト法';
 export const SENTENCE_1 = '善管注意義務を負うものとする。';
 export const SENTENCE_2 = 'これに違反した者は責めを負う。';
 
-export function buildLawBody() {
+interface LawBodyShape {
+  lawId: string;
+  lawNum: string;
+  lawTitle: string;
+  enforcementDate: string | null;
+  nodeCount: number;
+  nodes: Array<Record<string, unknown>>;
+}
+
+export function buildLawBody(): LawBodyShape {
   return {
     lawId: LAW_ID,
     lawNum: LAW_NUM,
@@ -51,6 +87,81 @@ export function buildLawBody() {
             text: '',
             children: [
               { anchor: '条2/項1/文1', row: 4, kind: 'sentence', text: SENTENCE_2 },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+}
+
+/** A second law with a Preamble + 2 articles — exercises tab-switching to a
+ *  body that contains a preamble (the case Issue #2 actually reports). */
+export const KENPO_LAW_ID = 'TESTKENPO';
+export const KENPO_LAW_NUM = '昭和二十一年憲法';
+export const KENPO_LAW_TITLE = 'テスト憲法';
+export const KENPO_PREAMBLE_SENTENCE =
+  'テスト憲法の前文。タブ切替で本文が欠落しないことを確認する。';
+export const KENPO_ARTICLE_1 = 'テスト憲法第一条の本文。';
+export const KENPO_ARTICLE_103 = 'テスト憲法最終条の本文。';
+
+export function buildKenpoBody(): LawBodyShape {
+  return {
+    lawId: KENPO_LAW_ID,
+    lawNum: KENPO_LAW_NUM,
+    lawTitle: KENPO_LAW_TITLE,
+    enforcementDate: '1947-05-03',
+    nodeCount: 3,
+    nodes: [
+      {
+        anchor: '前0',
+        row: 1,
+        kind: 'preamble',
+        text: '',
+        children: [
+          {
+            anchor: '前0/項1',
+            row: 2,
+            kind: 'paragraph',
+            text: '',
+            children: [
+              { anchor: '前0/項1/文1', row: 2, kind: 'sentence', text: KENPO_PREAMBLE_SENTENCE },
+            ],
+          },
+        ],
+      },
+      {
+        anchor: '条1',
+        row: 3,
+        kind: 'article',
+        text: '',
+        children: [
+          { anchor: '条1/頭', row: 3, kind: 'articleTitle', text: '第一条' },
+          {
+            anchor: '条1/項1',
+            row: 4,
+            kind: 'paragraph',
+            text: '',
+            children: [
+              { anchor: '条1/項1/文1', row: 4, kind: 'sentence', text: KENPO_ARTICLE_1 },
+            ],
+          },
+        ],
+      },
+      {
+        anchor: '条103',
+        row: 5,
+        kind: 'article',
+        text: '',
+        children: [
+          { anchor: '条103/頭', row: 5, kind: 'articleTitle', text: '第百三条' },
+          {
+            anchor: '条103/項1',
+            row: 6,
+            kind: 'paragraph',
+            text: '',
+            children: [
+              { anchor: '条103/項1/文1', row: 6, kind: 'sentence', text: KENPO_ARTICLE_103 },
             ],
           },
         ],
@@ -112,13 +223,36 @@ export async function installApiMocks(page: Page, state: MockState): Promise<voi
     r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ count: 0, laws: [] }) }),
   );
 
-  // GET /api/laws/:lawId/body
-  await page.route(`**/api/laws/${LAW_ID}/body`, (r) =>
-    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(buildLawBody()) }),
-  );
+  // GET /api/laws/:lawId/body — supports LAW_ID, KENPO_LAW_ID, REAL_KENPO_LAW_ID
+  await page.route(/\/api\/laws\/[^/]+\/body$/, (r) => {
+    const url = new URL(r.request().url());
+    const match = url.pathname.match(/\/api\/laws\/([^/]+)\/body$/);
+    const id = match ? decodeURIComponent(match[1]!) : '';
+    if (id === LAW_ID) {
+      return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(buildLawBody()) });
+    }
+    if (id === KENPO_LAW_ID) {
+      return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(buildKenpoBody()) });
+    }
+    if (id === REAL_KENPO_LAW_ID) {
+      const body = loadRealKenpoBody();
+      return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ...body, nodeCount: body.nodes.length }) });
+    }
+    return r.fulfill({ status: 404, contentType: 'application/json', body: JSON.stringify({ error: 'not downloaded' }) });
+  });
 
-  // GET /api/laws/:lawId/selections
-  await page.route(`**/api/laws/${LAW_ID}/selections`, (r) => {
+  // GET /api/laws/:lawId/selections — empty for KENPO variants, live state for LAW
+  await page.route(/\/api\/laws\/[^/]+\/selections$/, (r) => {
+    const url = new URL(r.request().url());
+    const match = url.pathname.match(/\/api\/laws\/([^/]+)\/selections$/);
+    const id = match ? decodeURIComponent(match[1]!) : '';
+    if (id === KENPO_LAW_ID || id === REAL_KENPO_LAW_ID) {
+      return r.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ lawNum: KENPO_LAW_NUM, count: 0, selections: [] }),
+      });
+    }
     const live = state.selections.filter((s) => !s.isDeleted);
     return r.fulfill({
       status: 200,

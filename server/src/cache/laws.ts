@@ -1,5 +1,6 @@
 import { getDb } from './db.js';
 import type { LawBody } from '@elaws/shared/types';
+import { PARSER_VERSION } from '../egov/parse.js';
 
 export interface LawMetaRow {
   law_id: string;
@@ -55,13 +56,25 @@ export function loadLawXml(lawId: string): string | null {
 export function storeLawBody(lawId: string, body: LawBody): void {
   const db = getDb();
   db.prepare(`
-    INSERT INTO laws_body(law_id, body_json) VALUES (?, ?)
-    ON CONFLICT(law_id) DO UPDATE SET body_json = excluded.body_json
-  `).run(lawId, JSON.stringify(body));
+    INSERT INTO laws_body(law_id, body_json, parser_version) VALUES (?, ?, ?)
+    ON CONFLICT(law_id) DO UPDATE SET
+      body_json = excluded.body_json,
+      parser_version = excluded.parser_version
+  `).run(lawId, JSON.stringify(body), PARSER_VERSION);
 }
 
+/**
+ * Returns the cached body only when it was produced by the current parser
+ * version. Older rows are ignored so the caller re-parses from XML — this
+ * guarantees a parser change actually invalidates downstream cache without
+ * needing to wipe storage.
+ */
 export function loadLawBody(lawId: string): LawBody | null {
   const db = getDb();
-  const row = db.prepare('SELECT body_json FROM laws_body WHERE law_id = ?').get(lawId) as { body_json: string } | undefined;
-  return row ? (JSON.parse(row.body_json) as LawBody) : null;
+  const row = db.prepare(
+    'SELECT body_json, parser_version FROM laws_body WHERE law_id = ?',
+  ).get(lawId) as { body_json: string; parser_version: number } | undefined;
+  if (!row) return null;
+  if (row.parser_version !== PARSER_VERSION) return null;
+  return JSON.parse(row.body_json) as LawBody;
 }

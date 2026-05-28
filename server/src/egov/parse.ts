@@ -1,6 +1,16 @@
 import { XMLParser } from 'fast-xml-parser';
 import type { LawBody, LawNode } from '@elaws/shared/types';
 
+/**
+ * Bumped whenever this parser changes shape/coverage. The /body cache
+ * (laws_body.parser_version) stores this value; mismatched cached bodies
+ * are re-parsed from the stored XML on next request.
+ *
+ * 1: initial parser
+ * 2: walkParagraph / walkPreamble accept bare <Sentence> children
+ */
+export const PARSER_VERSION = 2;
+
 const parser = new XMLParser({
   preserveOrder: true,
   ignoreAttributes: false,
