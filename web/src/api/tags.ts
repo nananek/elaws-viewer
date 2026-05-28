@@ -1,5 +1,5 @@
 import type { TagEntity, Tag } from '@elaws/shared/types';
-import { apiGet } from './client.js';
+import { apiGet, apiPatch } from './client.js';
 
 export interface TagsResponse {
   tagEntities: TagEntity[];
@@ -11,11 +11,6 @@ export function fetchTags(lawNo?: string): Promise<TagsResponse> {
   return apiGet<TagsResponse>(`/api/tags${qs}`);
 }
 
-export async function updateTagTitle(tagNumber: number, title: string): Promise<void> {
-  const res = await fetch(`/api/tags/${tagNumber}`, {
-    method: 'PATCH',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ title }),
-  });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+export function updateTagTitle(tagNumber: number, title: string): Promise<unknown> {
+  return apiPatch(`/api/tags/${tagNumber}`, { title });
 }

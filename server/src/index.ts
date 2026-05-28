@@ -14,21 +14,35 @@ import { tagsRouter } from './routes/tags.js';
 import { ioRealmRouter } from './routes/ioRealm.js';
 import { startBackupScheduler } from './realm/backup-scheduler.js';
 import { runDailyBackup } from './realm/backup.js';
+import { APP_VERSION } from './version.js';
 
 const app = new Hono();
 
 app.use('*', logger());
-app.use('/api/*', cors({ origin: (origin) => origin ?? '*', credentials: true }));
+// Stamp every /api response with the server's current build version so the
+// client can detect a mismatch with its own embedded version and prompt for
+// reload. Must run before cors so Access-Control-Expose-Headers picks it up.
+app.use('/api/*', async (c, next) => {
+  c.header('X-App-Version', APP_VERSION);
+  await next();
+});
+app.use('/api/*', cors({
+  origin: (origin) => origin ?? '*',
+  credentials: true,
+  exposeHeaders: ['X-App-Version'],
+}));
 app.use('/api/*', tailscaleAuth());
 
 app.get('/api/health', (c) =>
   c.json({
     ok: true,
     service: 'elaws-viewer',
-    version: '0.0.0',
+    version: APP_VERSION,
     time: new Date().toISOString(),
   }),
 );
+
+app.get('/api/version', (c) => c.json({ version: APP_VERSION }));
 
 app.route('/api/laws', lawsRouter);
 app.route('/api', selectionsRouter);

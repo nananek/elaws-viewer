@@ -197,11 +197,26 @@ export function createMockState(): MockState {
   return { selections: [], uuidCounter: 0 };
 }
 
+export interface MockOptions {
+  /** If set, sent as X-App-Version on every /api response. When omitted,
+   *  the header is not added — the client treats this like a server that
+   *  predates the version-handshake feature and keeps the banner hidden. */
+  serverVersion?: string;
+}
+
 /**
  * Install mocks for all server API calls used by the LawViewer. State is
  * mutated in-place so tests can inspect selections after interactions.
  */
-export async function installApiMocks(page: Page, state: MockState): Promise<void> {
+export async function installApiMocks(
+  page: Page,
+  state: MockState,
+  options: MockOptions = {},
+): Promise<void> {
+  const versionHeaders: Record<string, string> = options.serverVersion
+    ? { 'X-App-Version': options.serverVersion }
+    : {};
+  const apiHeaders = { 'content-type': 'application/json', ...versionHeaders };
   // Block the PWA service worker — it would NetworkFirst-cache /selections
   // responses and beat our route mocks, causing stale data after refetch.
   await page.addInitScript(() => {
@@ -220,7 +235,7 @@ export async function installApiMocks(page: Page, state: MockState): Promise<voi
 
   // GET /api/laws -> list (empty is fine; we navigate directly to /law/:id)
   await page.route('**/api/laws', (r) =>
-    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ count: 0, laws: [] }) }),
+    r.fulfill({ status: 200, headers: apiHeaders, body: JSON.stringify({ count: 0, laws: [] }) }),
   );
 
   // GET /api/laws/:lawId/body — supports LAW_ID, KENPO_LAW_ID, REAL_KENPO_LAW_ID
@@ -229,16 +244,16 @@ export async function installApiMocks(page: Page, state: MockState): Promise<voi
     const match = url.pathname.match(/\/api\/laws\/([^/]+)\/body$/);
     const id = match ? decodeURIComponent(match[1]!) : '';
     if (id === LAW_ID) {
-      return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(buildLawBody()) });
+      return r.fulfill({ status: 200, headers: apiHeaders, body: JSON.stringify(buildLawBody()) });
     }
     if (id === KENPO_LAW_ID) {
-      return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(buildKenpoBody()) });
+      return r.fulfill({ status: 200, headers: apiHeaders, body: JSON.stringify(buildKenpoBody()) });
     }
     if (id === REAL_KENPO_LAW_ID) {
       const body = loadRealKenpoBody();
-      return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ...body, nodeCount: body.nodes.length }) });
+      return r.fulfill({ status: 200, headers: apiHeaders, body: JSON.stringify({ ...body, nodeCount: body.nodes.length }) });
     }
-    return r.fulfill({ status: 404, contentType: 'application/json', body: JSON.stringify({ error: 'not downloaded' }) });
+    return r.fulfill({ status: 404, headers: apiHeaders, body: JSON.stringify({ error: 'not downloaded' }) });
   });
 
   // GET /api/laws/:lawId/selections — empty for KENPO variants, live state for LAW
@@ -249,14 +264,14 @@ export async function installApiMocks(page: Page, state: MockState): Promise<voi
     if (id === KENPO_LAW_ID || id === REAL_KENPO_LAW_ID) {
       return r.fulfill({
         status: 200,
-        contentType: 'application/json',
+        headers: apiHeaders,
         body: JSON.stringify({ lawNum: KENPO_LAW_NUM, count: 0, selections: [] }),
       });
     }
     const live = state.selections.filter((s) => !s.isDeleted);
     return r.fulfill({
       status: 200,
-      contentType: 'application/json',
+      headers: apiHeaders,
       body: JSON.stringify({ lawNum: LAW_NUM, count: live.length, selections: live }),
     });
   });
@@ -294,7 +309,7 @@ export async function installApiMocks(page: Page, state: MockState): Promise<voi
         createdAt: now,
         updatedAt: now,
       });
-      return route.fulfill({ status: 201, contentType: 'application/json', body: JSON.stringify({ uuid }) });
+      return route.fulfill({ status: 201, headers: apiHeaders, body: JSON.stringify({ uuid }) });
     }
 
     const patchMatch = pathname.match(/\/api\/selections\/([^/]+)$/);
@@ -302,31 +317,31 @@ export async function installApiMocks(page: Page, state: MockState): Promise<voi
       const uuid = decodeURIComponent(patchMatch[1]!);
       const found = state.selections.find((s) => s.uuid === uuid);
       if (!found) {
-        return route.fulfill({ status: 404, contentType: 'application/json', body: '{}' });
+        return route.fulfill({ status: 404, headers: apiHeaders, body: '{}' });
       }
       if (method === 'DELETE') {
         found.isDeleted = true;
         found.updatedAt = new Date().toISOString();
-        return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ uuid, deleted: true }) });
+        return route.fulfill({ status: 200, headers: apiHeaders, body: JSON.stringify({ uuid, deleted: true }) });
       }
       if (method === 'PATCH') {
         const body = req.postDataJSON() as Record<string, unknown>;
         if (typeof body.style === 'number') found.style = body.style;
         if ('notes' in body) found.notes = (body.notes as string | null) ?? null;
         found.updatedAt = new Date().toISOString();
-        return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ uuid, updated: true }) });
+        return route.fulfill({ status: 200, headers: apiHeaders, body: JSON.stringify({ uuid, updated: true }) });
       }
     }
 
     // Fallback: empty success
-    return route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
+    return route.fulfill({ status: 200, headers: apiHeaders, body: '{}' });
   });
 
   // Bookmarks / tags read endpoints — minimal stubs
   await page.route('**/api/bookmarks', (r) =>
-    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ count: 0, bookmarks: [] }) }),
+    r.fulfill({ status: 200, headers: apiHeaders, body: JSON.stringify({ count: 0, bookmarks: [] }) }),
   );
   await page.route('**/api/tags/entities', (r) =>
-    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ entities: [] }) }),
+    r.fulfill({ status: 200, headers: apiHeaders, body: JSON.stringify({ entities: [] }) }),
   );
 }

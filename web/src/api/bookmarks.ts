@@ -1,5 +1,5 @@
 import type { Bookmark } from '@elaws/shared/types';
-import { apiGet, apiPost } from './client.js';
+import { apiDelete, apiGet, apiPost } from './client.js';
 
 export interface BookmarksResponse {
   count: number;
@@ -23,7 +23,6 @@ export function createBookmark(p: CreateBookmarkPayload): Promise<{ uuid: string
   return apiPost<{ uuid: string }>('/api/bookmarks', p);
 }
 
-export async function deleteBookmark(uuid: string): Promise<void> {
-  const res = await fetch(`/api/bookmarks/${encodeURIComponent(uuid)}`, { method: 'DELETE' });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+export function deleteBookmark(uuid: string): Promise<void> {
+  return apiDelete(`/api/bookmarks/${encodeURIComponent(uuid)}`);
 }

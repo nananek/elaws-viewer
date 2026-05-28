@@ -1,5 +1,5 @@
 import type { SelectionObject } from '@elaws/shared/types';
-import { apiGet, apiPatch, apiPost } from './client.js';
+import { apiDelete, apiGet, apiPatch, apiPost } from './client.js';
 
 export interface SelectionsResponse {
   lawNum: string | null;
@@ -28,9 +28,8 @@ export function createSelection(p: CreateSelectionPayload): Promise<{ uuid: stri
   return apiPost<{ uuid: string }>('/api/selections', p);
 }
 
-export async function deleteSelection(uuid: string): Promise<void> {
-  const res = await fetch(`/api/selections/${encodeURIComponent(uuid)}`, { method: 'DELETE' });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+export function deleteSelection(uuid: string): Promise<void> {
+  return apiDelete(`/api/selections/${encodeURIComponent(uuid)}`);
 }
 
 export function updateSelectionStyle(
