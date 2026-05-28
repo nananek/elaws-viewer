@@ -1,9 +1,27 @@
+import { execSync } from 'node:child_process';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
+// App version embedded at build time. Sources, in order:
+//   1. $APP_VERSION (e.g. CI passes a tag or full SHA)
+//   2. git short SHA of HEAD
+//   3. literal "dev"
+function resolveAppVersion(): string {
+  if (process.env.APP_VERSION) return process.env.APP_VERSION;
+  try {
+    return execSync('git rev-parse --short HEAD', { encoding: 'utf-8' }).trim();
+  } catch {
+    return 'dev';
+  }
+}
+const APP_VERSION = resolveAppVersion();
+
 export default defineConfig({
+  define: {
+    __APP_VERSION__: JSON.stringify(APP_VERSION),
+  },
   plugins: [
     react(),
     tailwindcss(),
@@ -26,6 +44,10 @@ export default defineConfig({
         ],
       },
       workbox: {
+        // When the user clicks the update banner, we want the freshly fetched
+        // SW to take over immediately on reload — no second refresh required.
+        skipWaiting: true,
+        clientsClaim: true,
         runtimeCaching: [
           {
             urlPattern: ({ url }) => url.pathname.startsWith('/api/laws/') && url.pathname.includes('/body'),
