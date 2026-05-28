@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { listSelectionsForLaw, lookupLawNumByFilename } from '../realm/selections.js';
 import {
   createSelection, softDeleteSelection, updateSelectionNotes,
+  updateSelectionStyle,
 } from '../realm/selections-write.js';
 
 export const selectionsRouter = new Hono();
@@ -48,7 +49,10 @@ selectionsRouter.delete('/selections/:uuid', async (c) => {
 });
 
 const PatchBody = z.object({
-  notes: z.string().nullable(),
+  notes: z.string().nullable().optional(),
+  style: z.number().int().optional(),
+}).refine((v) => v.notes !== undefined || v.style !== undefined, {
+  message: 'either notes or style required',
 });
 
 selectionsRouter.patch('/selections/:uuid', async (c) => {
@@ -56,6 +60,16 @@ selectionsRouter.patch('/selections/:uuid', async (c) => {
   const body = await c.req.json();
   const parsed = PatchBody.safeParse(body);
   if (!parsed.success) return c.json({ error: 'invalid' }, 400);
-  const ok = await updateSelectionNotes(uuid, parsed.data.notes);
+  let ok = true;
+  let found = true;
+  if (parsed.data.notes !== undefined) {
+    const r = await updateSelectionNotes(uuid, parsed.data.notes);
+    found = found && r;
+  }
+  if (parsed.data.style !== undefined) {
+    const r = await updateSelectionStyle(uuid, parsed.data.style);
+    found = found && r;
+  }
+  ok = found;
   return c.json({ uuid, updated: ok }, ok ? 200 : 404);
 });

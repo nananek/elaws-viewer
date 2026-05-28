@@ -32,10 +32,22 @@ jobs:
       - name: Typecheck
         run: pnpm -r run typecheck
 
-      - name: Test
+      - name: Test (unit)
         run: pnpm -r run test --if-present || pnpm --filter @elaws/shared test
 
       - name: Build
         run: |
           pnpm --filter @elaws/web run build
           pnpm --filter @elaws/server run build
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Install Playwright browsers
+        run: pnpm --filter @elaws/web exec playwright install --with-deps chromium
+
+      - name: Test (e2e)
+        run: pnpm --filter @elaws/web run test:e2e

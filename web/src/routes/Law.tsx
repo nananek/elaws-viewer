@@ -60,5 +60,5 @@ export function LawPage() {
   }
   if (!query.data) return null;
 
-  return <LawViewer body={query.data} />;
+  return <LawViewer key={query.data.lawId} body={query.data} />;
 }

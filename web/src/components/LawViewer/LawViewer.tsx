@@ -1,15 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { LawBody, LawNode } from '@elaws/shared/types';
+import type { LawBody, LawNode, SelectionObject } from '@elaws/shared/types';
 import { normalizeArticleInput } from '@elaws/shared/anchor';
 import { TocSidebar } from './TocSidebar.js';
 import { renderNode } from './anchorDom.js';
-import { fetchSelectionsForLaw, createSelection } from '../../api/selections.js';
+import {
+  fetchSelectionsForLaw, createSelection, deleteSelection, updateSelectionStyle,
+} from '../../api/selections.js';
 import { createBookmark } from '../../api/bookmarks.js';
 import { applyOverlays, unwrapOverlays } from './overlay.js';
+import { findOverlappingOlder } from './overlap.js';
 import { useSelectionCapture } from './useSelectionCapture.js';
 import { useArticleJumpShortcut } from './useArticleJumpShortcut.js';
 import { SelectionMenu } from './SelectionMenu.js';
+import { EditSelectionMenu } from './EditSelectionMenu.js';
 
 interface Props {
   body: LawBody;
@@ -54,9 +58,41 @@ export function LawViewer({ body }: Props) {
   });
 
   const { selection: pickerSelection, clear: clearSelection } = useSelectionCapture(articleRef);
+  const [editTarget, setEditTarget] = useState<
+    { uuid: string; style: number; popupX: number; popupY: number } | null
+  >(null);
 
   const createMutation = useMutation({
     mutationFn: createSelection,
+    onSuccess: async (created, vars) => {
+      // After insert, soft-delete any same-kind older selections that overlap.
+      const existing = selectionsQuery.data?.selections ?? [];
+      const victims = findOverlappingOlder(existing, {
+        uuid: created.uuid,
+        style: vars.style,
+        row: vars.row,
+        startAnchor: vars.startAnchor,
+        startIndexInRow: vars.startIndexInRow,
+        startString: vars.startString,
+        updatedAt: new Date().toISOString(),
+      });
+      for (const v of victims) {
+        try { await deleteSelection(v.uuid); } catch (e) { console.warn('prune failed', v.uuid, e); }
+      }
+      void queryClient.invalidateQueries({ queryKey: ['selections', body.lawId] });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteSelection,
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['selections', body.lawId] });
+    },
+  });
+
+  const updateStyleMutation = useMutation({
+    mutationFn: ({ uuid, style }: { uuid: string; style: number }) =>
+      updateSelectionStyle(uuid, style),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['selections', body.lawId] });
     },
@@ -112,6 +148,7 @@ export function LawViewer({ body }: Props) {
   useEffect(() => {
     const root = articleRef.current;
     if (!root) return;
+    if (!root.children.length) return; // body not yet rendered
     if (!selectionsQuery.data) return;
     const { applied, missing } = applyOverlays(root, selectionsQuery.data.selections);
     console.log(`[overlay] applied=${applied} missing=${missing} of ${selectionsQuery.data.count}`);
@@ -119,6 +156,37 @@ export function LawViewer({ body }: Props) {
       unwrapOverlays(root);
     };
   }, [body.lawId, selectionsQuery.data]);
+
+  // Click an existing overlay span to open the edit menu.
+  useEffect(() => {
+    const root = articleRef.current;
+    if (!root) return;
+    function onClick(e: MouseEvent) {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+      const span = target.closest<HTMLElement>('span[data-sel-uuid]');
+      if (!span) return;
+      // Ignore if user has an active text selection (creating new overlay)
+      const userSel = window.getSelection();
+      if (userSel && !userSel.isCollapsed) return;
+      const uuid = span.dataset.selUuid!;
+      const found = (selectionsQuery.data?.selections ?? []).find(
+        (s: SelectionObject) => s.uuid === uuid,
+      );
+      if (!found) return;
+      const rect = span.getBoundingClientRect();
+      e.preventDefault();
+      e.stopPropagation();
+      setEditTarget({
+        uuid,
+        style: found.style,
+        popupX: rect.left + rect.width / 2,
+        popupY: rect.top,
+      });
+    }
+    root.addEventListener('click', onClick);
+    return () => root.removeEventListener('click', onClick);
+  }, [selectionsQuery.data]);
 
   // Build TOC entries (Part/Chapter/Section/Article level) from the flat node list
   const toc = useMemo(() => buildToc(body.nodes), [body.nodes]);
@@ -194,6 +262,22 @@ export function LawViewer({ body }: Props) {
             onDismiss={clearSelection}
           />
         )}
+        {editTarget && !pickerSelection && (
+          <EditSelectionMenu
+            x={editTarget.popupX}
+            y={editTarget.popupY}
+            currentStyle={editTarget.style}
+            onPick={(style) => {
+              updateStyleMutation.mutate({ uuid: editTarget.uuid, style });
+              setEditTarget(null);
+            }}
+            onDelete={() => {
+              deleteMutation.mutate(editTarget.uuid);
+              setEditTarget(null);
+            }}
+            onDismiss={() => setEditTarget(null)}
+          />
+        )}
         {jumpBuffer !== null && (
           <div className="fixed bottom-4 left-4 px-3 py-1.5 rounded-md font-mono text-sm shadow-md bg-neutral-900 text-neutral-100 dark:bg-neutral-100 dark:text-neutral-900">
             g{jumpBuffer || '_'} <span className="opacity-60 text-xs">Enter</span>
@@ -244,9 +328,7 @@ function scrollToAnchor(container: HTMLElement | null, anchor: string): void {
     }
   }
   if (target) {
-    target.scrollIntoView({ block: 'start', behavior: 'smooth' });
-    target.classList.add('ring-2', 'ring-yellow-400');
-    setTimeout(() => target?.classList.remove('ring-2', 'ring-yellow-400'), 1500);
+    target.scrollIntoView({ block: 'start', behavior: 'auto' });
   }
 }
 

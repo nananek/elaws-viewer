@@ -70,13 +70,17 @@ lawsRouter.post('/:lawId/download', async (c) => {
 lawsRouter.get('/:lawId/body', async (c) => {
   const lawId = c.req.param('lawId');
   let body = loadLawBody(lawId);
+  // Force re-parse if cached body is empty (likely a prior parser miss).
+  if (body && body.nodes.length === 0) {
+    body = null;
+  }
   if (!body) {
     const xml = loadLawXml(lawId);
     if (!xml) return c.json({ error: 'not downloaded' }, 404);
     body = parseLawXml(xml);
     storeLawBody(lawId, body);
   }
-  return c.json(body);
+  return c.json({ ...body, nodeCount: body.nodes.length });
 });
 
 lawsRouter.get('/:lawId/meta', async (c) => {
