@@ -207,7 +207,7 @@ export function LawViewer({ body }: Props) {
 
   const { selection: pickerSelection, clear: clearSelection } = useSelectionCapture(articleRef);
   const [editTarget, setEditTarget] = useState<
-    { uuid: string; style: number; popupX: number; popupY: number } | null
+    { uuid: string; style: number; popupX: number; popupY: number; popupBottom: number } | null
   >(null);
 
   const createMutation = useMutation({
@@ -317,6 +317,7 @@ export function LawViewer({ body }: Props) {
         style: found.style,
         popupX: rect.left + rect.width / 2,
         popupY: rect.top,
+        popupBottom: rect.bottom,
       });
     }
     root.addEventListener('click', onClick);
@@ -383,6 +384,7 @@ export function LawViewer({ body }: Props) {
           <SelectionMenu
             x={pickerSelection.popupX}
             y={pickerSelection.popupY}
+            bottom={pickerSelection.popupBottom}
             onPick={handlePick}
             onDismiss={clearSelection}
           />
@@ -391,6 +393,7 @@ export function LawViewer({ body }: Props) {
           <EditSelectionMenu
             x={editTarget.popupX}
             y={editTarget.popupY}
+            bottom={editTarget.popupBottom}
             currentStyle={editTarget.style}
             onPick={(style) => {
               updateStyleMutation.mutate({ uuid: editTarget.uuid, style });

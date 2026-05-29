@@ -220,7 +220,7 @@ export function AnchorJumpModal({ body, onClose, onJump }: Props) {
           <button
             type="button"
             onClick={backspace}
-            className="col-start-3 row-start-1 bg-white border border-neutral-300 rounded py-2 hover:bg-neutral-50 text-sm"
+            className="col-start-3 row-start-1 bg-white border border-neutral-300 rounded min-h-12 py-2 hover:bg-neutral-50 text-sm"
             aria-label="一文字削除"
           >
             ⌫
@@ -228,7 +228,7 @@ export function AnchorJumpModal({ body, onClose, onJump }: Props) {
           <button
             type="button"
             onClick={onClose}
-            className="col-start-4 row-start-1 bg-white border border-neutral-300 rounded py-2 hover:bg-neutral-50 text-sm"
+            className="col-start-4 row-start-1 bg-white border border-neutral-300 rounded min-h-12 py-2 hover:bg-neutral-50 text-sm"
             aria-label="閉じる"
           >
             ×
@@ -240,7 +240,7 @@ export function AnchorJumpModal({ body, onClose, onJump }: Props) {
               key={d}
               type="button"
               onClick={() => appendDigit(d)}
-              className={`bg-white border border-neutral-300 rounded py-2 hover:bg-neutral-50 ${cls}`}
+              className={`bg-white border border-neutral-300 rounded min-h-12 py-2 hover:bg-neutral-50 ${cls}`}
             >
               {d}
             </button>
@@ -251,7 +251,7 @@ export function AnchorJumpModal({ body, onClose, onJump }: Props) {
             type="button"
             onClick={advance}
             disabled={!dotEnabled}
-            className="col-start-4 row-start-2 row-span-2 bg-white border border-neutral-300 rounded hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed text-sm flex flex-col items-center justify-center"
+            className="col-start-4 row-start-2 row-span-2 bg-white border border-neutral-300 rounded min-h-12 hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed text-sm flex flex-col items-center justify-center"
             data-testid="plus-btn"
             title="次のフィールドへ ( + or . )"
           >
@@ -263,7 +263,7 @@ export function AnchorJumpModal({ body, onClose, onJump }: Props) {
           <button
             type="button"
             onClick={() => appendDigit('0')}
-            className="col-start-1 col-span-2 row-start-5 bg-white border border-neutral-300 rounded py-2 hover:bg-neutral-50"
+            className="col-start-1 col-span-2 row-start-5 bg-white border border-neutral-300 rounded min-h-12 py-2 hover:bg-neutral-50"
           >
             0
           </button>
@@ -273,7 +273,7 @@ export function AnchorJumpModal({ body, onClose, onJump }: Props) {
             type="button"
             onClick={advance}
             disabled={!dotEnabled}
-            className="col-start-3 row-start-5 bg-white border border-neutral-300 rounded py-2 hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="col-start-3 row-start-5 bg-white border border-neutral-300 rounded min-h-12 py-2 hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed"
             data-testid="dot-btn"
             title="次のフィールドへ ( . or + )"
           >
@@ -284,7 +284,7 @@ export function AnchorJumpModal({ body, onClose, onJump }: Props) {
           <button
             type="button"
             onClick={pressEnter}
-            className="col-start-4 row-start-4 row-span-2 bg-ink text-paper border border-ink rounded hover:opacity-90 text-sm flex items-center justify-center"
+            className="col-start-4 row-start-4 row-span-2 bg-ink text-paper border border-ink rounded min-h-12 hover:opacity-90 text-sm flex items-center justify-center"
             data-testid="enter-btn"
           >
             {enterLabel}
