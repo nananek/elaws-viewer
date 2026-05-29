@@ -154,7 +154,7 @@ export function renderNode(n: LawNode, depth = 0): JSX.Element {
           data-depth={depth}
           className={`${ITEM_INDENT[Math.min(depth, ITEM_INDENT.length - 1)]} my-0.5`}
         >
-          {(n.children ?? []).map((c) => renderNode(c, depth + 1))}
+          {withSentenceSpacers(n.children ?? [], depth + 1)}
         </div>
       );
 
@@ -205,3 +205,36 @@ const ITEM_INDENT = [
   'pl-16 -indent-4',
   'pl-20 -indent-4',
 ] as const;
+
+/**
+ * Inside an `item`, insert a thin spacer between consecutive `itemSentence`
+ * / `sentence` children so the「定義語」 and 「定義文」 (parsed from
+ * `<ItemSentence><Column>…</Column><Column>…</Column>` in e-Gov XML —
+ * 会社法 2 条 1 号: 「会社」「株式会社、合名会社…」) don't run together.
+ * The spacer is a real inline-flow element (not a CSS margin) so it
+ * survives <mark>/overlay rewrap without disturbing offsets.
+ */
+function withSentenceSpacers(
+  children: ReadonlyArray<LawNode>,
+  depth: number,
+): JSX.Element[] {
+  const out: JSX.Element[] = [];
+  let prevWasSentence = false;
+  for (const c of children) {
+    const isSentence = c.kind === 'itemSentence' || c.kind === 'sentence';
+    if (prevWasSentence && isSentence) {
+      out.push(
+        <span
+          key={c.anchor + '-spacer'}
+          className="inline-block mr-1"
+          aria-hidden="true"
+        >
+          {'　'}
+        </span>,
+      );
+    }
+    out.push(renderNode(c, depth));
+    prevWasSentence = isSentence;
+  }
+  return out;
+}
