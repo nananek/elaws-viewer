@@ -296,6 +296,14 @@ export async function installApiMocks(
     });
   });
 
+  // /api/tabs/events — SSE endpoint. Default mock returns 204 so the
+  // EventSource stops trying to reconnect; static tests don't care about
+  // real-time relay. Specs that exercise SSE (tab-sync-realtime.spec.ts)
+  // install their own page.exposeBinding / fake EventSource.
+  await page.route('**/api/tabs/events', (r) =>
+    r.fulfill({ status: 204, headers: apiHeaders }),
+  );
+
   // GET /api/laws/:lawId/body — supports LAW_ID, KENPO_LAW_ID, REAL_KENPO_LAW_ID
   await page.route(/\/api\/laws\/[^/]+\/body$/, (r) => {
     const url = new URL(r.request().url());
