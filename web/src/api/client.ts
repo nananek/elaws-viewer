@@ -45,6 +45,24 @@ export async function apiPatch<T>(path: string, body: unknown): Promise<T> {
   return (await res.json()) as T;
 }
 
+export async function apiPut<T>(path: string, body: unknown): Promise<T> {
+  const res = await fetch(path, {
+    method: 'PUT',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+    // keepalive lets the PUT outlive page navigation (cross-device tab
+    // sync was missing trailing updates because the user navigated away
+    // before the debounce flushed and the in-flight fetch was killed).
+    keepalive: true,
+  });
+  recordVersion(res);
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`${res.status} ${res.statusText}: ${path} ${text}`);
+  }
+  return (await res.json()) as T;
+}
+
 export async function apiDelete(path: string): Promise<void> {
   const res = await fetch(path, { method: 'DELETE' });
   recordVersion(res);

@@ -218,10 +218,12 @@ export interface MockState {
     updatedAt: string;
   }>;
   uuidCounter: number;
+  /** Open tabs (stateful for /api/tabs GET/PUT). */
+  tabs: Array<{ lawId: string; title: string }>;
 }
 
 export function createMockState(): MockState {
-  return { selections: [], uuidCounter: 0 };
+  return { selections: [], uuidCounter: 0, tabs: [] };
 }
 
 export interface MockOptions {
@@ -269,6 +271,30 @@ export async function installApiMocks(
   await page.route('**/api/folders', (r) =>
     r.fulfill({ status: 200, headers: apiHeaders, body: JSON.stringify({ count: 0, folders: [] }) }),
   );
+
+  // /api/tabs — open-tab sync endpoint. Default mock is STATEFUL within a
+  // single test: PUTs update an in-memory list that subsequent GETs see.
+  // That lets multi-navigation tests (which rely on tabs from earlier
+  // visits being remembered) work without each test wiring its own mock.
+  // Specs that exercise specific sync edge cases can override the route
+  // with page.route after installApiMocks.
+  await page.route('**/api/tabs', (r) => {
+    const req = r.request();
+    if (req.method() === 'PUT') {
+      try {
+        const body = JSON.parse(req.postData() ?? '{}') as { tabs?: Array<{ lawId: string; title: string }> };
+        state.tabs = Array.isArray(body.tabs) ? body.tabs : [];
+      } catch { /* malformed body → leave state.tabs untouched */ }
+      return r.fulfill({
+        status: 200, headers: apiHeaders,
+        body: JSON.stringify({ ok: true, count: state.tabs.length }),
+      });
+    }
+    return r.fulfill({
+      status: 200, headers: apiHeaders,
+      body: JSON.stringify({ tabs: state.tabs }),
+    });
+  });
 
   // GET /api/laws/:lawId/body — supports LAW_ID, KENPO_LAW_ID, REAL_KENPO_LAW_ID
   await page.route(/\/api\/laws\/[^/]+\/body$/, (r) => {

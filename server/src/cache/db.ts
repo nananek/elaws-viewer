@@ -4,14 +4,20 @@ import { mkdirSync } from 'node:fs';
 
 const REPO_ROOT = resolve(import.meta.dirname, '..', '..', '..');
 const STORAGE_DIR = resolve(REPO_ROOT, 'storage');
-const DB_PATH = resolve(STORAGE_DIR, 'cache.db');
+const DEFAULT_DB_PATH = resolve(STORAGE_DIR, 'cache.db');
 
 let db: Database.Database | null = null;
 
+/**
+ * Override at test time with `ELAWS_DB_PATH=/tmp/...` so unit tests
+ * don't trample the real `storage/cache.db`. Read inside getDb (not at
+ * module load) so callers can set it before the first connect.
+ */
 export function getDb(): Database.Database {
   if (db) return db;
-  mkdirSync(STORAGE_DIR, { recursive: true });
-  db = new Database(DB_PATH);
+  const dbPath = process.env.ELAWS_DB_PATH ?? DEFAULT_DB_PATH;
+  if (!process.env.ELAWS_DB_PATH) mkdirSync(STORAGE_DIR, { recursive: true });
+  db = new Database(dbPath);
   db.pragma('journal_mode = WAL');
   db.pragma('synchronous = NORMAL');
   db.pragma('foreign_keys = ON');
@@ -89,6 +95,24 @@ function migrate(d: Database.Database): void {
     d.exec(`
       ALTER TABLE laws_body ADD COLUMN parser_version INTEGER NOT NULL DEFAULT 0;
       UPDATE schema_version SET version = 2;
+    `);
+  }
+
+  if (current < 3) {
+    // Open-tabs sync: shared across the user's devices (iPad ↔ PC). Keyed
+    // by law_id so the same law can't be open twice; order_index preserves
+    // the user's intended left-to-right order. Single-row-per-tab table
+    // we fully replace on PUT — there's no Realm equivalent because the
+    // iOS Catalystwo schema (v23, locked) has no tabs concept.
+    d.exec(`
+      CREATE TABLE user_tabs (
+        law_id        TEXT PRIMARY KEY,
+        title         TEXT NOT NULL,
+        order_index   INTEGER NOT NULL,
+        updated_at    TEXT NOT NULL
+      );
+      CREATE INDEX idx_user_tabs_order ON user_tabs(order_index);
+      UPDATE schema_version SET version = 3;
     `);
   }
 }
