@@ -4,6 +4,7 @@ import {
   listBookmarks, listBookmarksForLaw,
   createBookmark, softDeleteBookmark,
 } from '../realm/bookmarks.js';
+import { publishChange } from '../events.js';
 
 export const bookmarksRouter = new Hono();
 
@@ -30,10 +31,14 @@ bookmarksRouter.post('/', async (c) => {
     return c.json({ error: 'invalid', issues: parsed.error.format() }, 400);
   }
   const uuid = await createBookmark(parsed.data);
+  publishChange({ resource: 'bookmarks', clientId: c.req.header('x-client-id') ?? null });
   return c.json({ uuid }, 201);
 });
 
 bookmarksRouter.delete('/:uuid', async (c) => {
   const ok = await softDeleteBookmark(c.req.param('uuid'));
+  if (ok) {
+    publishChange({ resource: 'bookmarks', clientId: c.req.header('x-client-id') ?? null });
+  }
   return c.json({ deleted: ok }, ok ? 200 : 404);
 });

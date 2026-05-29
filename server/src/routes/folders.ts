@@ -6,8 +6,13 @@ import {
   softDeleteFolder,
   setLawFolder,
 } from '../realm/folders.js';
+import { publishChange } from '../events.js';
 
 export const foldersRouter = new Hono();
+
+function publishFolders(c: { req: { header: (k: string) => string | undefined } }): void {
+  publishChange({ resource: 'folders', clientId: c.req.header('x-client-id') ?? null });
+}
 
 foldersRouter.get('/folders', async (c) => {
   const folders = await listFolders();
@@ -28,6 +33,7 @@ foldersRouter.post('/folders', async (c) => {
     parentUuid: body.parentUuid ?? null,
     order: body.order,
   });
+  publishFolders(c);
   return c.json({ folder }, 201);
 });
 
@@ -42,12 +48,14 @@ foldersRouter.patch('/folders/:uuid', async (c) => {
   } catch (e) {
     return c.json({ error: String(e) }, 404);
   }
+  publishFolders(c);
   return c.json({ ok: true });
 });
 
 foldersRouter.delete('/folders/:uuid', async (c) => {
   const uuid = c.req.param('uuid');
   await softDeleteFolder(uuid);
+  publishFolders(c);
   return c.json({ ok: true });
 });
 
@@ -62,5 +70,6 @@ foldersRouter.patch('/laws/:filename/parent', async (c) => {
   } catch (e) {
     return c.json({ error: String(e) }, 404);
   }
+  publishFolders(c);
   return c.json({ ok: true });
 });

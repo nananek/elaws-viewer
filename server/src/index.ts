@@ -14,6 +14,7 @@ import { tagsRouter } from './routes/tags.js';
 import { ioRealmRouter } from './routes/ioRealm.js';
 import { foldersRouter } from './routes/folders.js';
 import { tabsRouter } from './routes/tabs.js';
+import { eventsRouter } from './routes/events.js';
 import { startBackupScheduler } from './realm/backup-scheduler.js';
 import { runDailyBackup } from './realm/backup.js';
 import { APP_VERSION } from './version.js';
@@ -54,6 +55,7 @@ app.route('/api/tags', tagsRouter);
 app.route('/api', ioRealmRouter);
 app.route('/api', foldersRouter);
 app.route('/api/tabs', tabsRouter);
+app.route('/api/events', eventsRouter);
 
 app.post('/api/backup', async (c) => {
   try {

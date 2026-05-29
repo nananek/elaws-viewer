@@ -296,11 +296,11 @@ export async function installApiMocks(
     });
   });
 
-  // /api/tabs/events — SSE endpoint. Default mock returns 204 so the
-  // EventSource stops trying to reconnect; static tests don't care about
-  // real-time relay. Specs that exercise SSE (tab-sync-realtime.spec.ts)
-  // install their own page.exposeBinding / fake EventSource.
-  await page.route('**/api/tabs/events', (r) =>
+  // /api/events — unified change-feed SSE endpoint. Default mock
+  // returns 204 so the EventSource stops trying to reconnect; static
+  // tests don't care about real-time relay. Specs that exercise the
+  // feed install their own fake EventSource.
+  await page.route('**/api/events', (r) =>
     r.fulfill({ status: 204, headers: apiHeaders }),
   );
 

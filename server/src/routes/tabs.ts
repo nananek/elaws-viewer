@@ -1,7 +1,6 @@
 import { Hono } from 'hono';
-import { streamSSE } from 'hono/streaming';
 import { z } from 'zod';
-import { listTabs, replaceTabs, subscribeTabs, type TabsChange } from '../cache/tabs.js';
+import { listTabs, replaceTabs } from '../cache/tabs.js';
 
 export const tabsRouter = new Hono();
 
@@ -47,60 +46,5 @@ tabsRouter.put('/', async (c) => {
   return c.json({ ok: true, count: parsed.data.tabs.length });
 });
 
-/**
- * Server-Sent Events feed of tab changes.
- *
- *   * Emits a `tabs` event with the current snapshot immediately on
- *     connect, then once per replaceTabs() call.
- *   * Emits `ping` events every 30 s so idle proxies (Tailscale Funnel,
- *     nginx with proxy_read_timeout) don't tear the connection down.
- *   * Payload: `{ tabs: UserTab[], clientId: string | null }`. The
- *     originating client compares the broadcast clientId against its
- *     own session id and ignores self-echoes (no setState → no PUT
- *     loop). Other clients apply it.
- */
-tabsRouter.get('/events', (c) => {
-  return streamSSE(c, async (stream) => {
-    await stream.writeSSE({
-      event: 'tabs',
-      data: JSON.stringify({ tabs: listTabs(), clientId: null } satisfies TabsChange),
-    });
-
-    const queue: TabsChange[] = [];
-    let resolveOne: (() => void) | null = null;
-    const unsub = subscribeTabs((change) => {
-      queue.push(change);
-      resolveOne?.();
-      resolveOne = null;
-    });
-    stream.onAbort(() => {
-      unsub();
-      resolveOne?.();
-      resolveOne = null;
-    });
-
-    const heartbeat = setInterval(() => {
-      void stream.writeSSE({ event: 'ping', data: '' });
-    }, 30_000);
-
-    try {
-      while (!stream.aborted) {
-        if (queue.length === 0) {
-          await new Promise<void>((resolve) => {
-            resolveOne = resolve;
-          });
-        }
-        while (queue.length > 0 && !stream.aborted) {
-          const change = queue.shift()!;
-          await stream.writeSSE({
-            event: 'tabs',
-            data: JSON.stringify(change),
-          });
-        }
-      }
-    } finally {
-      clearInterval(heartbeat);
-      unsub();
-    }
-  });
-});
+// Tabs-specific SSE was replaced by the unified /api/events feed
+// in PR #30. `routes/events.ts` handles every resource on one stream.

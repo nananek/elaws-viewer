@@ -1,8 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import {
-  fetchTabs, putTabs, subscribeTabEvents, getClientId,
-} from '../api/tabs.js';
+import { fetchTabs, putTabs, getClientId } from '../api/tabs.js';
+import { subscribeChangeFeed } from '../api/events.js';
 
 export interface LawTab {
   lawId: string;
@@ -172,11 +171,12 @@ export function startTabsSync(): void {
     window.addEventListener('pagehide', flushPut);
   }
 
-  // Real-time multi-session sync. Other devices' PUTs come in here.
-  // We trust the broadcasted list and replace local state with it,
-  // suppressing our own echoes by clientId comparison.
+  // Real-time multi-session sync. Other devices' PUTs come in here
+  // through the unified change feed; we filter by resource and only
+  // act on `tabs` events. Self-echoes are dropped by clientId match.
   const myId = getClientId();
-  subscribeTabEvents((change) => {
+  subscribeChangeFeed((change) => {
+    if (change.resource !== 'tabs') return;
     if (change.clientId === myId) return; // self-echo, ignore
     const current = useTabs.getState().tabs;
     // No-op when the server's view already matches what we have (the

@@ -1,4 +1,5 @@
 import { getDb } from './db.js';
+import { publishChange } from '../events.js';
 
 export interface UserTab {
   lawId: string;
@@ -21,26 +22,10 @@ export function listTabs(): UserTab[] {
   return rows.map((r) => ({ lawId: r.law_id, title: r.title }));
 }
 
-export interface TabsChange {
-  tabs: UserTab[];
-  /** Who pushed this change. SSE subscribers compare against their own
-   *  client id to suppress echoing their own PUTs back to themselves. */
-  clientId: string | null;
-}
-
-type TabsListener = (change: TabsChange) => void;
-const listeners = new Set<TabsListener>();
-
-/** Subscribe to all replaceTabs() events. Returns an unsubscribe fn. */
-export function subscribeTabs(listener: TabsListener): () => void {
-  listeners.add(listener);
-  return () => listeners.delete(listener);
-}
-
 /**
- * Replace the entire open-tabs list atomically and notify listeners.
- * The SQL commit happens FIRST so an SSE subscriber that re-reads the
- * DB sees the new state; only then are listeners fanned out.
+ * Replace the entire open-tabs list atomically. SQL commit happens
+ * first; only then do we publish to the change feed so any subscriber
+ * that re-reads the DB sees the new state.
  */
 export function replaceTabs(tabs: UserTab[], clientId: string | null = null): void {
   const db = getDb();
@@ -55,14 +40,5 @@ export function replaceTabs(tabs: UserTab[], clientId: string | null = null): vo
     });
   });
   tx(tabs);
-  const change: TabsChange = { tabs, clientId };
-  for (const l of listeners) {
-    try {
-      l(change);
-    } catch (e) {
-      // A misbehaving subscriber must not break other subscribers
-      // (or the caller — replaceTabs is supposed to look atomic).
-      console.error('[tabs] listener threw:', e);
-    }
-  }
+  publishChange({ resource: 'tabs', tabs, clientId });
 }
