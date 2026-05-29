@@ -22,6 +22,7 @@ interface FolderNode {
 }
 
 const ROOT_PATH = '/';
+const UNCATEGORIZED_PATH = '__uncategorized__';
 
 function buildTree(folders: Folder[], laws: DownloadedLaw[]): FolderNode {
   const byParent = new Map<string | null, Folder[]>();
@@ -44,8 +45,16 @@ function buildTree(folders: Folder[], laws: DownloadedLaw[]): FolderNode {
     arr.sort((a, b) => a.lawTitle.localeCompare(b.lawTitle, 'ja'));
   }
 
+  // Track which filepaths the folder tree actually covers; any law whose
+  // filepath is not in this set is an "orphan" — surfaced under a single
+  // 未分類 bucket so the user can still find every downloaded law. This
+  // happens with Catalystwo imports where a DownloadedLaw can itself act
+  // as a folder container (e.g. マイ六法/商法/保険法).
+  const coveredPaths = new Set<string>([ROOT_PATH]);
+
   function makeNode(folder: Folder | null): FolderNode {
     const path = folder?.path ?? ROOT_PATH;
+    coveredPaths.add(path);
     const childFolders = byParent.get(folder?.uuid ?? null) ?? [];
     return {
       folder,
@@ -54,7 +63,30 @@ function buildTree(folders: Folder[], laws: DownloadedLaw[]): FolderNode {
     };
   }
 
-  return makeNode(null);
+  const tree = makeNode(null);
+
+  // Collect orphans (laws whose filepath was not visited by makeNode).
+  const orphans: DownloadedLaw[] = [];
+  for (const [p, arr] of byPath) {
+    if (!coveredPaths.has(p)) orphans.push(...arr);
+  }
+  if (orphans.length > 0) {
+    orphans.sort((a, b) => a.lawTitle.localeCompare(b.lawTitle, 'ja'));
+    tree.children.push({
+      folder: {
+        uuid: UNCATEGORIZED_PATH,
+        title: '未分類',
+        parentUuid: null,
+        order: Number.MAX_SAFE_INTEGER,
+        path: UNCATEGORIZED_PATH,
+        createdAt: '',
+        updatedAt: '',
+      },
+      children: [],
+      laws: orphans,
+    });
+  }
+  return tree;
 }
 
 export function FolderTree({ folders, laws }: Props) {
@@ -95,6 +127,7 @@ export function FolderTree({ folders, laws }: Props) {
 
   function renderNode(node: FolderNode, depth: number) {
     const path = node.folder?.path ?? ROOT_PATH;
+    const isSynthetic = node.folder?.uuid === UNCATEGORIZED_PATH;
     const indent = { paddingLeft: `${depth * 1}rem` };
     const isDropTarget = dropTargetPath === path;
     return (
@@ -104,6 +137,7 @@ export function FolderTree({ folders, laws }: Props) {
             isDropTarget ? 'bg-yellow-50 outline outline-1 outline-yellow-300' : ''
           }`}
           onDragOver={(e) => {
+            if (isSynthetic) return; // synthetic 未分類 isn't a real drop target
             if (!e.dataTransfer.types.includes('application/x-law-filename'))
               return;
             e.preventDefault();
@@ -113,7 +147,7 @@ export function FolderTree({ folders, laws }: Props) {
           onDragLeave={() => {
             if (dropTargetPath === path) setDropTargetPath(null);
           }}
-          onDrop={(e) => onDropLaw(path, e)}
+          onDrop={(e) => { if (!isSynthetic) onDropLaw(path, e); }}
         >
           {renameTarget === node.folder?.uuid ? (
             <form
@@ -147,22 +181,28 @@ export function FolderTree({ folders, laws }: Props) {
           ) : (
             <>
               <span className="heading-gothic text-sm font-semibold">
-                {node.folder ? `📁 ${node.folder.title}` : '🏠 ルート'}
+                {isSynthetic
+                  ? `📦 ${node.folder!.title}`
+                  : node.folder
+                    ? `📁 ${node.folder.title}`
+                    : '🏠 ルート'}
               </span>
-              <button
-                type="button"
-                onClick={() =>
-                  createMut.mutate({
-                    title: '新規フォルダ',
-                    parentUuid: node.folder?.uuid ?? null,
-                  })
-                }
-                className="text-xs text-neutral-500 underline hover:text-ink"
-                title="子フォルダを追加"
-              >
-                + 子
-              </button>
-              {node.folder && (
+              {!isSynthetic && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    createMut.mutate({
+                      title: '新規フォルダ',
+                      parentUuid: node.folder?.uuid ?? null,
+                    })
+                  }
+                  className="text-xs text-neutral-500 underline hover:text-ink"
+                  title="子フォルダを追加"
+                >
+                  + 子
+                </button>
+              )}
+              {node.folder && !isSynthetic && (
                 <>
                   <button
                     type="button"
