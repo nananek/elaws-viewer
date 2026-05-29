@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { fetchTabs, putTabs } from '../api/tabs.js';
+import {
+  fetchTabs, putTabs, subscribeTabEvents, getClientId,
+} from '../api/tabs.js';
 
 export interface LawTab {
   lawId: string;
@@ -85,6 +87,14 @@ export const useTabs = create<TabsState>()(
 // coalesce the 3–4 setState calls a drag-reorder fires in ~16ms each.
 const PUT_DEBOUNCE_MS = 80;
 let pendingPutTimer: ReturnType<typeof setTimeout> | null = null;
+/**
+ * When an SSE update is being applied to the store, we suppress the
+ * resulting subscribe callback from firing a PUT. Without this guard
+ * a → b → server-broadcast → b → PUT(b) → broadcast → a → PUT(a) → … loop
+ * is possible. Even with same-content guards a redundant PUT per peer
+ * per change would waste a round-trip.
+ */
+let applyingSseUpdate = false;
 
 function flushPut(): void {
   if (pendingPutTimer == null) return;
@@ -151,6 +161,7 @@ export function startTabsSync(): void {
   useTabs.subscribe((state, prev) => {
     if (!state.hydrated) return;
     if (state.tabs === prev.tabs) return;
+    if (applyingSseUpdate) return;
     schedulePut(state.tabs);
   });
 
@@ -160,4 +171,30 @@ export function startTabsSync(): void {
   if (typeof window !== 'undefined') {
     window.addEventListener('pagehide', flushPut);
   }
+
+  // Real-time multi-session sync. Other devices' PUTs come in here.
+  // We trust the broadcasted list and replace local state with it,
+  // suppressing our own echoes by clientId comparison.
+  const myId = getClientId();
+  subscribeTabEvents((change) => {
+    if (change.clientId === myId) return; // self-echo, ignore
+    const current = useTabs.getState().tabs;
+    // No-op when the server's view already matches what we have (the
+    // initial snapshot after our own PUT is the common case).
+    if (sameTabs(current, change.tabs)) return;
+    applyingSseUpdate = true;
+    try {
+      useTabs.setState({ tabs: change.tabs });
+    } finally {
+      applyingSseUpdate = false;
+    }
+  });
+}
+
+function sameTabs(a: { lawId: string; title: string }[], b: { lawId: string; title: string }[]): boolean {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i]!.lawId !== b[i]!.lawId || a[i]!.title !== b[i]!.title) return false;
+  }
+  return true;
 }
