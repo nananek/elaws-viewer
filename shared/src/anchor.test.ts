@@ -7,6 +7,7 @@ import {
   anchorArticleKey,
   buildCompoundAnchor,
   anchorFallbackChain,
+  formatNaturalAnchor,
 } from './anchor.js';
 
 describe('kanjiToNumber', () => {
@@ -106,6 +107,30 @@ describe('buildCompoundAnchor', () => {
     expect(
       buildCompoundAnchor({ article: 5, of: null, paragraph: null, item: null }),
     ).toBe('条5');
+  });
+});
+
+describe('formatNaturalAnchor', () => {
+  it('formats plain article', () => {
+    expect(formatNaturalAnchor({ article: 400 })).toBe('第400条');
+  });
+  it('formats sub-article', () => {
+    expect(formatNaturalAnchor({ article: 899, of: 2 })).toBe('第899条の2');
+  });
+  it('formats sub-article + 項', () => {
+    expect(formatNaturalAnchor({ article: 899, of: 2, paragraph: 1 })).toBe(
+      '第899条の2 第1項',
+    );
+  });
+  it('formats article + 項 + 号', () => {
+    expect(formatNaturalAnchor({ article: 2, paragraph: 1, item: 3 })).toBe(
+      '第2条 第1項第3号',
+    );
+  });
+  it('formats sub-article + 項 + 号', () => {
+    expect(
+      formatNaturalAnchor({ article: 2, of: 3, paragraph: 1, item: 5 }),
+    ).toBe('第2条の3 第1項第5号');
   });
 });
 

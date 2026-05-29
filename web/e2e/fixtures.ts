@@ -41,6 +41,19 @@ export function loadRealKaishaBody(): RealKenpoBody {
   return _realKaishaBody;
 }
 
+// 民法 — real e-Gov XML sliced to 第1条 (3 paragraphs, no sub) / 第400条
+// (1 paragraph, no sub) / 第899条 (1 paragraph, has 第899条の2 sub) /
+// 第899条の2 (2 paragraphs). Used by the テンキー spec to exercise the `.`
+// smart-skip logic with real parser output.
+export const REAL_MINPO_LAW_ID = 'REAL_MINPO';
+let _realMinpoBody: RealKenpoBody | null = null;
+export function loadRealMinpoBody(): RealKenpoBody {
+  if (_realMinpoBody) return _realMinpoBody;
+  const jsonPath = resolve(__dirname, 'fixtures', 'minpo-body.json');
+  _realMinpoBody = JSON.parse(readFileSync(jsonPath, 'utf-8')) as RealKenpoBody;
+  return _realMinpoBody;
+}
+
 /**
  * Minimal LawBody fixture mirroring what /api/laws/:lawId/body returns.
  * Two articles, each with a single sentence in 項1.
@@ -276,6 +289,10 @@ export async function installApiMocks(
       const body = loadRealKaishaBody();
       return r.fulfill({ status: 200, headers: apiHeaders, body: JSON.stringify({ ...body, nodeCount: body.nodes.length }) });
     }
+    if (id === REAL_MINPO_LAW_ID) {
+      const body = loadRealMinpoBody();
+      return r.fulfill({ status: 200, headers: apiHeaders, body: JSON.stringify({ ...body, nodeCount: body.nodes.length }) });
+    }
     return r.fulfill({ status: 404, headers: apiHeaders, body: JSON.stringify({ error: 'not downloaded' }) });
   });
 
@@ -284,7 +301,7 @@ export async function installApiMocks(
     const url = new URL(r.request().url());
     const match = url.pathname.match(/\/api\/laws\/([^/]+)\/selections$/);
     const id = match ? decodeURIComponent(match[1]!) : '';
-    if (id === KENPO_LAW_ID || id === REAL_KENPO_LAW_ID || id === REAL_KAISHA_LAW_ID) {
+    if (id === KENPO_LAW_ID || id === REAL_KENPO_LAW_ID || id === REAL_KAISHA_LAW_ID || id === REAL_MINPO_LAW_ID) {
       return r.fulfill({
         status: 200,
         headers: apiHeaders,

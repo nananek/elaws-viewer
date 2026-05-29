@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import {
-  LAW_ID, KENPO_LAW_ID,
+  LAW_ID, KENPO_LAW_ID, REAL_MINPO_LAW_ID,
   createMockState, installApiMocks,
 } from './fixtures.js';
 
@@ -41,43 +41,54 @@ test.describe('Phase 10 PR C — = AnchorJumpModal + / GlobalLawSearchModal (#4)
     const modal = page.getByTestId('anchor-jump-modal');
     await expect(modal).toBeVisible();
     await expect(modal.getByTestId('keypad')).toBeVisible();
-    await expect(modal.getByTestId('field-article')).toHaveAttribute('aria-pressed', 'true');
+    // Empty state: natural label shows the placeholder for 条.
+    await expect(modal.getByTestId('natural-label')).toContainText('第');
+    await expect(modal.getByTestId('natural-label')).toContainText('条');
+    // Enter button starts as 「条」 (confirms article number).
+    await expect(modal.getByTestId('enter-btn')).toHaveText('条');
   });
 
-  test('typing 2 in AnchorJumpModal then Enter scrolls to 第二条', async ({ page }) => {
+  test('typing 2 then Enter Enter scrolls to 第二条 (two-step Enter)', async ({ page }) => {
     await page.goto(`/law/${LAW_ID}`);
     await expect(page.locator('[data-anchor="条1/頭"]')).toHaveText('第一条');
 
     await page.locator('body').press('=');
-    await expect(page.getByTestId('anchor-jump-modal')).toBeVisible();
+    const modal = page.getByTestId('anchor-jump-modal');
+    await expect(modal).toBeVisible();
 
     await page.locator('body').press('2');
-    await expect(page.getByTestId('field-article')).toContainText('2');
+    await expect(modal.getByTestId('natural-label')).toContainText('第2');
 
+    // 1st Enter: confirm — modal stays open, Enter label flips to 「移動」.
+    await page.locator('body').press('Enter');
+    await expect(modal).toBeVisible();
+    await expect(modal.getByTestId('enter-btn')).toHaveText('移動');
+
+    // 2nd Enter: jump.
     await page.locator('body').press('Enter');
     await expect(page.getByTestId('anchor-jump-modal')).toHaveCount(0);
-
-    // 第二条 must be in viewport after the jump.
-    const target = page.locator('[data-anchor="条2"]');
-    await expect(target).toBeInViewport();
+    await expect(page.locator('[data-anchor="条2"]')).toBeInViewport();
   });
 
-  test('= → / advances to の field; * advances to 項; - advances to 号', async ({ page }) => {
+  test('/ is fully suppressed inside AnchorJumpModal (does NOT open GlobalLawSearchModal)', async ({ page }) => {
     await page.goto(`/law/${LAW_ID}`);
     await page.locator('body').press('=');
-    await expect(page.getByTestId('anchor-jump-modal')).toBeVisible();
+    const modal = page.getByTestId('anchor-jump-modal');
+    await expect(modal).toBeVisible();
 
+    await page.locator('body').press('8');
+    await page.locator('body').press('9');
+    await page.locator('body').press('9');
     await page.locator('body').press('/');
-    await expect(page.getByTestId('field-of')).toHaveAttribute('aria-pressed', 'true');
 
-    await page.locator('body').press('*');
-    await expect(page.getByTestId('field-paragraph')).toHaveAttribute('aria-pressed', 'true');
-
-    await page.locator('body').press('-');
-    await expect(page.getByTestId('field-item')).toHaveAttribute('aria-pressed', 'true');
+    // GlobalLawSearchModal must NOT open. AnchorJumpModal must remain open
+    // with 第899条 still in its label (the `/` key is a no-op here).
+    await expect(page.getByTestId('global-search-modal')).toHaveCount(0);
+    await expect(modal).toBeVisible();
+    await expect(modal.getByTestId('natural-label')).toContainText('第899');
   });
 
-  test('/ key (no focused input) opens GlobalLawSearchModal', async ({ page }) => {
+  test('/ key (no focused input, no modal) opens GlobalLawSearchModal', async ({ page }) => {
     await page.goto('/');
     await page.locator('body').press('/');
     const modal = page.getByTestId('global-search-modal');
@@ -91,6 +102,103 @@ test.describe('Phase 10 PR C — = AnchorJumpModal + / GlobalLawSearchModal (#4)
     await expect(page.getByTestId('anchor-jump-modal')).toBeVisible();
     await page.locator('body').press('Escape');
     await expect(page.getByTestId('anchor-jump-modal')).toHaveCount(0);
+  });
+});
+
+test.describe('Phase 10 PR C — テンキー `.` separator + smart-skip (民法 real fixture)', () => {
+  test.beforeEach(async ({ page }) => {
+    const state = createMockState();
+    await installApiMocks(page, state);
+  });
+
+  test('899.2.1 Enter Enter → 第899条の2 第1項 自然表記とジャンプ', async ({ page }) => {
+    await page.goto(`/law/${REAL_MINPO_LAW_ID}`);
+    await expect(page.locator('[data-anchor="条899/頭"]').first()).toBeVisible();
+
+    await page.locator('body').press('=');
+    const modal = page.getByTestId('anchor-jump-modal');
+    await expect(modal).toBeVisible();
+
+    for (const k of ['8', '9', '9', '.', '2', '.', '1']) {
+      await page.locator('body').press(k);
+    }
+    // Natural display should read 第899条の2 第1項
+    await expect(modal.getByTestId('natural-label')).toContainText('第899条の2');
+    await expect(modal.getByTestId('natural-label')).toContainText('第1項');
+    // Enter label is the current field 「項」 (typing paragraph).
+    await expect(modal.getByTestId('enter-btn')).toHaveText('項');
+
+    // Confirm → jump.
+    await page.locator('body').press('Enter');
+    await expect(modal.getByTestId('enter-btn')).toHaveText('移動');
+    await page.locator('body').press('Enter');
+
+    await expect(page.getByTestId('anchor-jump-modal')).toHaveCount(0);
+    await expect(page.locator('[data-anchor="条899_2/項1"]').first()).toBeInViewport();
+  });
+
+  test('400 + . is a no-op (民法400条 has no sub-articles and only 1 paragraph)', async ({ page }) => {
+    await page.goto(`/law/${REAL_MINPO_LAW_ID}`);
+    await page.locator('body').press('=');
+    const modal = page.getByTestId('anchor-jump-modal');
+    await expect(modal).toBeVisible();
+
+    for (const k of ['4', '0', '0']) {
+      await page.locator('body').press(k);
+    }
+    // `.` button is disabled because there is no applicable next field.
+    await expect(modal.getByTestId('dot-btn')).toBeDisabled();
+
+    // Pressing `.` on the keyboard is also a no-op.
+    await page.locator('body').press('.');
+    await expect(modal.getByTestId('natural-label')).not.toContainText('の');
+    await expect(modal.getByTestId('natural-label')).not.toContainText('第1項');
+
+    // Enter Enter still jumps to 第400条.
+    await page.locator('body').press('Enter');
+    await page.locator('body').press('Enter');
+    await expect(page.locator('[data-anchor="条400"]').first()).toBeInViewport();
+  });
+
+  test('899 + . advances to の (民法899条 has sub-article 第899条の2)', async ({ page }) => {
+    await page.goto(`/law/${REAL_MINPO_LAW_ID}`);
+    await page.locator('body').press('=');
+    const modal = page.getByTestId('anchor-jump-modal');
+    await expect(modal).toBeVisible();
+
+    for (const k of ['8', '9', '9']) {
+      await page.locator('body').press(k);
+    }
+    // `.` button enabled with hint pointing to 「の」
+    await expect(modal.getByTestId('dot-btn')).toBeEnabled();
+    await expect(modal.getByTestId('dot-btn')).toContainText('の');
+
+    await page.locator('body').press('.');
+    // Now in の field — Enter label = 「の」, natural label shows trailing の_.
+    await expect(modal.getByTestId('enter-btn')).toHaveText('の');
+    await expect(modal.getByTestId('natural-label')).toContainText('第899条');
+    await expect(modal.getByTestId('natural-label')).toContainText('の');
+  });
+
+  test('Backspace from の field rewinds to article field', async ({ page }) => {
+    await page.goto(`/law/${REAL_MINPO_LAW_ID}`);
+    await page.locator('body').press('=');
+    const modal = page.getByTestId('anchor-jump-modal');
+
+    for (const k of ['8', '9', '9', '.']) {
+      await page.locator('body').press(k);
+    }
+    await expect(modal.getByTestId('enter-btn')).toHaveText('の');
+
+    // Backspace with empty の rewinds to article field.
+    await page.locator('body').press('Backspace');
+    await expect(modal.getByTestId('enter-btn')).toHaveText('条');
+    // Article value preserved.
+    await expect(modal.getByTestId('natural-label')).toContainText('第899');
+    // Next backspace deletes the last digit.
+    await page.locator('body').press('Backspace');
+    await expect(modal.getByTestId('natural-label')).toContainText('第89');
+    await expect(modal.getByTestId('natural-label')).not.toContainText('第899');
   });
 });
 

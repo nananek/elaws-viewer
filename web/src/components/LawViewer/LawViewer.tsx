@@ -217,6 +217,7 @@ export function LawViewer({ body }: Props) {
         )}
         {jumpOpen && (
           <AnchorJumpModal
+            body={body}
             onClose={() => setJumpOpen(false)}
             onJump={(anchor) => scrollToAnchor(contentRef.current, anchor)}
           />
