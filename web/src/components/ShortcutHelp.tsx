@@ -60,7 +60,7 @@ export function ShortcutHelp() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="fixed bottom-3 right-3 z-40 w-7 h-7 rounded-full bg-paper border border-neutral-300 text-sm text-neutral-500 hover:text-ink hover:border-ink shadow"
+        className="fixed bottom-3 right-3 z-40 w-11 h-11 rounded-full bg-paper border border-neutral-300 text-base text-neutral-500 hover:text-ink hover:border-ink shadow flex items-center justify-center"
         aria-label="キーボードショートカット (g / で開閉)"
         title="キーボードショートカット (g / で開閉)"
         data-testid="shortcut-help-button"
@@ -85,7 +85,7 @@ export function ShortcutHelp() {
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="text-neutral-500 hover:text-ink"
+                className="w-11 h-11 -mr-2 -mt-2 rounded-md inline-flex items-center justify-center text-xl text-neutral-500 hover:text-ink"
                 aria-label="閉じる"
               >
                 ×
