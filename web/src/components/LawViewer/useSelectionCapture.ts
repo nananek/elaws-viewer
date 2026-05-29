@@ -8,9 +8,12 @@ export interface CapturedSelection {
   startString: string;
   endString: string | null;
   startStringOccurrenceIndex: number;
-  /** Viewport position for popup placement (top-left of selection rect) */
+  /** Viewport X of selection rect center (popup horizontal anchor) */
   popupX: number;
+  /** Viewport Y of selection rect TOP (popup above-mode anchor) */
   popupY: number;
+  /** Viewport Y of selection rect BOTTOM (popup below-mode anchor for touch) */
+  popupBottom: number;
 }
 
 /**
@@ -74,6 +77,7 @@ export function useSelectionCapture(
         startStringOccurrenceIndex: occurrenceIndex,
         popupX: rect.left + rect.width / 2,
         popupY: rect.top,
+        popupBottom: rect.bottom,
       });
     };
 
