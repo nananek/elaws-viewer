@@ -9,6 +9,35 @@ function recordVersion(res: Response): void {
   useUpdate.getState().observeServerVersion(v);
 }
 
+const CLIENT_ID_KEY = 'elaws.clientId';
+
+/**
+ * Per-browser-tab client id. sessionStorage scopes it to one tab — open
+ * the app in two tabs of the same browser and they get different ids
+ * (and therefore sync between themselves over SSE).
+ *
+ * Every mutating request (POST/PUT/PATCH/DELETE) stamps `X-Client-Id`
+ * so the server's change-feed can suppress sending the change back to
+ * the originating session.
+ */
+export function getClientId(): string {
+  if (typeof window === 'undefined') return 'ssr';
+  let id = sessionStorage.getItem(CLIENT_ID_KEY);
+  if (!id) {
+    id = crypto.randomUUID();
+    sessionStorage.setItem(CLIENT_ID_KEY, id);
+  }
+  return id;
+}
+
+function mutationHeaders(extra: Record<string, string> = {}): Record<string, string> {
+  return {
+    'content-type': 'application/json',
+    'x-client-id': getClientId(),
+    ...extra,
+  };
+}
+
 /** Minimal fetch wrapper that throws on non-2xx and parses JSON. */
 export async function apiGet<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(path, init);
@@ -20,7 +49,9 @@ export async function apiGet<T>(path: string, init?: RequestInit): Promise<T> {
 export async function apiPost<T>(path: string, body?: unknown): Promise<T> {
   const res = await fetch(path, {
     method: 'POST',
-    headers: body ? { 'content-type': 'application/json' } : {},
+    headers: body
+      ? mutationHeaders()
+      : { 'x-client-id': getClientId() },
     body: body ? JSON.stringify(body) : undefined,
   });
   recordVersion(res);
@@ -34,7 +65,7 @@ export async function apiPost<T>(path: string, body?: unknown): Promise<T> {
 export async function apiPatch<T>(path: string, body: unknown): Promise<T> {
   const res = await fetch(path, {
     method: 'PATCH',
-    headers: { 'content-type': 'application/json' },
+    headers: mutationHeaders(),
     body: JSON.stringify(body),
   });
   recordVersion(res);
@@ -52,7 +83,7 @@ export async function apiPut<T>(
 ): Promise<T> {
   const res = await fetch(path, {
     method: 'PUT',
-    headers: { 'content-type': 'application/json', ...extraHeaders },
+    headers: mutationHeaders(extraHeaders),
     body: JSON.stringify(body),
     // keepalive lets the PUT outlive page navigation (cross-device tab
     // sync was missing trailing updates because the user navigated away
@@ -68,7 +99,10 @@ export async function apiPut<T>(
 }
 
 export async function apiDelete(path: string): Promise<void> {
-  const res = await fetch(path, { method: 'DELETE' });
+  const res = await fetch(path, {
+    method: 'DELETE',
+    headers: { 'x-client-id': getClientId() },
+  });
   recordVersion(res);
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}: ${path}`);
 }

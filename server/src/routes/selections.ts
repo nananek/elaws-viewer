@@ -5,6 +5,14 @@ import {
   createSelection, softDeleteSelection, updateSelectionNotes,
   updateSelectionStyle,
 } from '../realm/selections-write.js';
+import { publishChange } from '../events.js';
+
+/** Read X-Client-Id from a request header. Sessions without one (e.g.
+ *  legacy iOS app or curl) get a null id and never get echo-suppressed —
+ *  they always see broadcasts of their own changes. */
+function getClientId(c: { req: { header: (k: string) => string | undefined } }): string | null {
+  return c.req.header('x-client-id') ?? null;
+}
 
 export const selectionsRouter = new Hono();
 
@@ -39,12 +47,20 @@ selectionsRouter.post('/selections', async (c) => {
     return c.json({ error: 'invalid', issues: parsed.error.format() }, 400);
   }
   const uuid = await createSelection(parsed.data);
+  publishChange({ resource: 'selections', lawNo: parsed.data.lawNo, clientId: getClientId(c) });
   return c.json({ uuid }, 201);
 });
 
 selectionsRouter.delete('/selections/:uuid', async (c) => {
   const uuid = c.req.param('uuid');
   const ok = await softDeleteSelection(uuid);
+  if (ok) {
+    // softDeleteSelection doesn't return lawNo. Publishing without it
+    // makes the client invalidate ['selections'] for all laws, which
+    // react-query then auto-refetches only for active queries (= the
+    // law the user is currently viewing).
+    publishChange({ resource: 'selections', lawNo: null, clientId: getClientId(c) });
+  }
   return c.json({ uuid, deleted: ok }, ok ? 200 : 404);
 });
 
@@ -71,5 +87,8 @@ selectionsRouter.patch('/selections/:uuid', async (c) => {
     found = found && r;
   }
   ok = found;
+  if (ok) {
+    publishChange({ resource: 'selections', lawNo: null, clientId: getClientId(c) });
+  }
   return c.json({ uuid, updated: ok }, ok ? 200 : 404);
 });

@@ -17,7 +17,9 @@ let workDir: string;
 async function buildApp(): Promise<Hono> {
   const app = new Hono();
   const { tabsRouter } = await import('./tabs.js');
+  const { eventsRouter } = await import('./events.js');
   app.route('/api/tabs', tabsRouter);
+  app.route('/api/events', eventsRouter);
   return app;
 }
 
@@ -80,12 +82,12 @@ describe('tabsRouter', () => {
     expect(body.error).toMatch(/duplicate lawId/);
   });
 
-  it('GET /api/tabs/events emits the initial snapshot as an SSE event', async () => {
+  it('GET /api/events emits the initial snapshot as an SSE event', async () => {
     const app = await buildApp();
     const { replaceTabs } = await import('../cache/tabs.js');
     replaceTabs([{ lawId: 'SEEDED', title: '事前タブ' }], 'seeder');
 
-    const res = await app.fetch(new Request('http://x/api/tabs/events'));
+    const res = await app.fetch(new Request('http://x/api/events'));
     expect(res.status).toBe(200);
     expect(res.headers.get('content-type')).toMatch(/text\/event-stream/);
 
@@ -100,14 +102,15 @@ describe('tabsRouter', () => {
     }
     void reader.cancel(); // close the stream — otherwise it stays open forever
 
-    // Expected: `event: tabs\ndata: {"tabs":[{...}],"clientId":null}\n\n`
-    expect(buf).toMatch(/event: tabs/);
+    // Expected: `event: change\ndata: {"resource":"tabs","tabs":[{...}],"clientId":null}\n\n`
+    expect(buf).toMatch(/event: change/);
     const dataLine = buf
       .split('\n')
       .find((l) => l.startsWith('data:'))!
       .slice('data:'.length)
       .trim();
     expect(JSON.parse(dataLine)).toEqual({
+      resource: 'tabs',
       tabs: [{ lawId: 'SEEDED', title: '事前タブ' }],
       clientId: null,
     });
@@ -117,7 +120,7 @@ describe('tabsRouter', () => {
     const app = await buildApp();
 
     // Open the SSE stream first
-    const sse = await app.fetch(new Request('http://x/api/tabs/events'));
+    const sse = await app.fetch(new Request('http://x/api/events'));
     const reader = sse.body!.getReader();
     const decoder = new TextDecoder();
 
@@ -151,6 +154,7 @@ describe('tabsRouter', () => {
       .slice('data:'.length)
       .trim();
     expect(JSON.parse(dataLine)).toEqual({
+      resource: 'tabs',
       tabs: [{ lawId: 'NEW', title: 'X' }],
       clientId: 'caller-1',
     });

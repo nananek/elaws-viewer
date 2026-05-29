@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { z } from 'zod';
 import { listTagEntities, updateTagEntityTitle, listTagsForLaw, createTag, softDeleteTag } from '../realm/tags.js';
+import { publishChange } from '../events.js';
 
 export const tagsRouter = new Hono();
 
@@ -22,6 +23,9 @@ tagsRouter.patch('/:tagNumber', async (c) => {
   const parsed = PatchBody.safeParse(body);
   if (!parsed.success) return c.json({ error: 'invalid' }, 400);
   const ok = await updateTagEntityTitle(tagNumber, parsed.data.title);
+  if (ok) {
+    publishChange({ resource: 'tags', clientId: c.req.header('x-client-id') ?? null });
+  }
   return c.json({ updated: ok }, ok ? 200 : 404);
 });
 
@@ -36,10 +40,14 @@ tagsRouter.post('/applications', async (c) => {
   const parsed = CreateTagBody.safeParse(body);
   if (!parsed.success) return c.json({ error: 'invalid' }, 400);
   const uuid = await createTag(parsed.data);
+  publishChange({ resource: 'tags', clientId: c.req.header('x-client-id') ?? null });
   return c.json({ uuid }, 201);
 });
 
 tagsRouter.delete('/applications/:uuid', async (c) => {
   const ok = await softDeleteTag(c.req.param('uuid'));
+  if (ok) {
+    publishChange({ resource: 'tags', clientId: c.req.header('x-client-id') ?? null });
+  }
   return c.json({ deleted: ok }, ok ? 200 : 404);
 });
