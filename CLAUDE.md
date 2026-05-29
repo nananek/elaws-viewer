@@ -45,7 +45,7 @@ Realm スキーマ・anchor 記法・style 番号と色の対応表を定義す�
 `mishikoLawNum`, `addedDate`, `filepath`, `order`, `title`, `isDeleted`
 
 ### `Organizable` (pk=`uuid`) — 法令の並べ替え用
-`lawNo`, `filepath`, `order`, `title`, `isDeleted`
+`filepath`, `order`, `title`, `isDeleted`
 
 ### `Tag` (pk=`uuid`) — タグ適用（位置×タグ）
 `lawNo`, `anchor`, `tagNumber`, `isDeleted`
@@ -103,12 +103,72 @@ Realm スキーマ・anchor 記法・style 番号と色の対応表を定義す�
 - `条576/頭` — 会社法576条の見出し
 - `前0/項1/文` — 憲法前文1項
 
+## 実装スコープ
+
+iOS 参考実装との相互運用のためスキーマ v23 は完全に定義しているが、本 web 実装では
+以下を**意図的に実装しない**（決定済み・着手予定なし）。
+
+- **`PendingSyncTask`** — iCloud 同期キュー。本プロジェクトでは SSE で
+  クロスデバイス同期を実装済（`/api/events`）。スキーマ定義のみ保持して
+  Read/Write しない。下手に触ると iOS 側との同期が壊れる。
+- **`SelectionObject.attributedString` / `embeddedObject` / `embeddedObjectTextRep`** —
+  作成時 null 固定。リッチテキストと手描き図形 (HEIC) は表示しない。
+  style=13 は overlay 上にプレースホルダ (`sel-drawing-13` クラス) のみ。
+- **`Bookmark.attributedString`** — 同上、null 固定。
+- **Bookmark 作成 UI** — read/delete のみ。`createBookmark` API は実装済だが
+  web UI からは呼ばれない（iOS 側で作成された既存 Bookmark の閲覧用）。
+- **Tag 付与 UI** — `TagEntity` の名前変更のみ。anchor に tag を付ける操作は
+  サーバー API (`/api/tags/applications`) は揃っているが web UI には無い。
+- **`SelectionObject.notes` / `Bookmark.notes` 編集 UI** — サーバー API は対応
+  済みだが、web に編集画面は提供しない。
+
+「実装してあるべきだが未着手」ではなく**仕様として割り切った機能群**。アンカー取得
+(`web/src/components/LawViewer/useSelectionCapture.ts`) や Tag 付与 API は揃っている
+ので、将来必要になった時の参入コストは低い。
+
 ## 法令ファイル名 (`DownloadedLaw.filename`)
 
 e-Gov 法令API の `<law_id>_<施行日>_<改正法ID>` 形式。
 例: `129AC0000000089_20260401_506AC0000000033`
 - `129AC0000000089` = 民法 (明治29年法律第89号)
 - `20260401` = 2026年4月1日施行版
+
+## ユーザー作成法令 (e-Gov 非収録法令)
+
+Catalystwo は e-Gov に無い法令（例: 最高裁判所裁判事務処理規則）を
+ユーザーが手入力して保持できる。実機バックアップで符号化規則を確定済み。
+
+### `DownloadedLaw` 側のフィールド規約
+| field | ユーザー作成法令 | 通常の e-Gov 法令 |
+|---|---|---|
+| `lawNum` | **`👤`(U+1F464) + 22文字 base64url**（例 `👤D2oDXaZVSgCX2N6OtSS3WA`） | `明治二十九年法律第八十九号` 等 |
+| `filename` | **`👤` のみ**（全件共通のセンチネル、ユニークでない） | e-Gov law_id（`129AC0000000089_…`） |
+| `lawEdition` | **22文字 base64url**（例 `8U3u_5yQGk8roYY4GoRmJg`、本文の実キー） | 32文字 hex（内容ハッシュ） |
+
+- **判別子は `lawNum` 先頭の 👤**。`lawNum.startsWith('👤')` で自作判定。
+- アノテーション(`SelectionObject.lawNo` 等)は 👤 付き `lawNum` で紐づく。
+- **ユニークキーは `lawEdition`**（`filename` は全自作法令で `👤` 共有＝衝突するので
+  本文キーには使えない）。
+
+### 本文ファイル (`.lawxml`)
+本文は Realm に入らず、アプリコンテナの lawxml フォルダに**個別ファイル**として置かれる
+（iOS エクスポートには通常含まれない）。
+
+- ファイル名 = **`{lawNum} {lawEdition}.lawxml`**（空白区切り）
+- **zlib deflate 圧縮**（先頭 `78 9c`）。読む前に inflate 必須。
+- ルートは **生 `<Law>`**。e-Gov の `<law_data_response>`/`law_info`/`law_full_text`
+  包みは**無い**：
+  `<Law><LawNum>👤…</LawNum><LawBody><LawTitle/><TOC/><MainProvision>…<Article Num="N">…</Article>…</MainProvision></LawBody></Law>`
+- 手入力由来のクセ: `<SupplProvision>` が `<MainProvision>` の**中に入れ子**
+  （e-Gov は LawBody 直下の兄弟）／制定文・改正履歴が MainProvision 直下の
+  **生テキストノード**で条文の前に置かれる。
+
+### web 取り込みの注意
+現行 `parseLawXml`（`server/src/egov/parse.ts`）は `<law_data_response>` ルート必須かつ
+inflate しないので、`.lawxml` をそのまま渡すと throw する。取り込むなら
+(A) inflate → `<Law>` を最小 envelope で包んで既存パーサ流用（入れ子附則・制定文は欠落）、
+または (B) 生 `<Law>` + zlib に対応するネイティブパーサ分岐を追加する。
+いずれも本文キーは `lawEdition` に寄せる。
 
 ## デバッグ用スクリプト
 
