@@ -24,17 +24,20 @@ const rootRoute = createRootRoute({
     const [searchOpen, setSearchOpen] = useState(false);
     const [addOpen, setAddOpen] = useState<{ initialQuery: string } | null>(null);
 
-    // `/` opens the global law-name search modal when no input is focused.
+    // `?` opens the global law-name search modal when no input is focused.
+    // (Was `/` before — that key is now in-law text search inside LawViewer.
+    // The shortcut-help modal moved to the `g/` chord — see ShortcutHelp.)
     useEffect(() => {
       function onKey(e: KeyboardEvent) {
         if (e.metaKey || e.ctrlKey || e.altKey) return;
+        if (e.defaultPrevented) return; // chord listener (g/) may have eaten this
         const t = e.target as HTMLElement | null;
         const inField =
           t &&
           (t.tagName === 'INPUT' ||
             t.tagName === 'TEXTAREA' ||
             t.isContentEditable);
-        if (e.key === '/' && !inField) {
+        if (e.key === '?' && !inField) {
           e.preventDefault();
           setSearchOpen(true);
         }
@@ -61,9 +64,9 @@ const rootRoute = createRootRoute({
             type="button"
             onClick={() => setSearchOpen(true)}
             className="ml-auto text-xs text-neutral-500 hover:text-ink border border-neutral-200 rounded px-2 py-0.5"
-            title="法令名検索 ( / )"
+            title="法令名検索 ( ? )"
           >
-            / 検索
+            ? 検索
           </button>
         </header>
         <LawTabs />

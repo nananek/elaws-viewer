@@ -70,7 +70,7 @@ test.describe('Phase 10 PR C — = AnchorJumpModal + / GlobalLawSearchModal (#4)
     await expect(page.locator('[data-anchor="条2"]')).toBeInViewport();
   });
 
-  test('/ is fully suppressed inside AnchorJumpModal (does NOT open GlobalLawSearchModal)', async ({ page }) => {
+  test('/ and ? are fully suppressed inside AnchorJumpModal (no other modal opens)', async ({ page }) => {
     await page.goto(`/law/${LAW_ID}`);
     await page.locator('body').press('=');
     const modal = page.getByTestId('anchor-jump-modal');
@@ -80,17 +80,19 @@ test.describe('Phase 10 PR C — = AnchorJumpModal + / GlobalLawSearchModal (#4)
     await page.locator('body').press('9');
     await page.locator('body').press('9');
     await page.locator('body').press('/');
+    await page.locator('body').press('?');
 
-    // GlobalLawSearchModal must NOT open. AnchorJumpModal must remain open
-    // with 第899条 still in its label (the `/` key is a no-op here).
+    // Neither in-law search nor GlobalLawSearchModal must open. AnchorJumpModal
+    // must remain open with 第899条 still in its label (both keys are no-ops here).
     await expect(page.getByTestId('global-search-modal')).toHaveCount(0);
+    await expect(page.getByTestId('in-law-search-modal')).toHaveCount(0);
     await expect(modal).toBeVisible();
     await expect(modal.getByTestId('natural-label')).toContainText('第899');
   });
 
-  test('/ key (no focused input, no modal) opens GlobalLawSearchModal', async ({ page }) => {
+  test('? key (no focused input, no modal) opens GlobalLawSearchModal', async ({ page }) => {
     await page.goto('/');
-    await page.locator('body').press('/');
+    await page.locator('body').press('?');
     const modal = page.getByTestId('global-search-modal');
     await expect(modal).toBeVisible();
     await expect(modal.getByTestId('global-search-input')).toBeFocused();

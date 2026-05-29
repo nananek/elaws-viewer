@@ -19,20 +19,128 @@ import { useSelectionCapture } from './useSelectionCapture.js';
 import { SelectionMenu } from './SelectionMenu.js';
 import { EditSelectionMenu } from './EditSelectionMenu.js';
 import { AnchorJumpModal } from '../AnchorJumpModal.js';
+import { InLawSearchModal } from '../InLawSearchModal.js';
 
 interface Props {
   body: LawBody;
+}
+
+/** Collect anchors of the leaf-most 条/項/号 nodes in document order. */
+function flattenLeafUnits(nodes: LawNode[]): string[] {
+  const out: string[] = [];
+  function walk(n: LawNode): void {
+    if (
+      n.kind === 'part' ||
+      n.kind === 'chapter' ||
+      n.kind === 'section' ||
+      n.kind === 'subsection' ||
+      n.kind === 'division' ||
+      n.kind === 'preamble'
+    ) {
+      for (const c of n.children ?? []) walk(c);
+      return;
+    }
+    if (n.kind === 'article') {
+      for (const c of n.children ?? []) walk(c);
+      return;
+    }
+    if (n.kind === 'paragraph') {
+      const items = (n.children ?? []).filter((c) => c.kind === 'item');
+      if (items.length === 0) {
+        out.push(n.anchor);
+        return;
+      }
+      for (const it of items) walk(it);
+      return;
+    }
+    if (n.kind === 'item') {
+      const subItems = (n.children ?? []).filter((c) => c.kind === 'item');
+      if (subItems.length === 0) {
+        out.push(n.anchor);
+        return;
+      }
+      for (const sub of subItems) walk(sub);
+      return;
+    }
+  }
+  for (const n of nodes) walk(n);
+  return out;
 }
 
 export function LawViewer({ body }: Props) {
   const contentRef = useRef<HTMLDivElement>(null);
   const articleRef = useRef<HTMLElement>(null);
   const [jumpOpen, setJumpOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [focusedAnchor, setFocusedAnchor] = useState<string | null>(null);
 
-  // `=` opens AnchorJumpModal (Issue #4). `g` + `/` shortcuts removed.
+  const leafUnits = useMemo(() => flattenLeafUnits(body.nodes), [body.nodes]);
+  const modalOpen = jumpOpen || searchOpen;
+
+  function scrollFocusedIntoView(anchor: string) {
+    const root = contentRef.current;
+    if (!root) return;
+    const el = root.querySelector<HTMLElement>(
+      `[data-anchor="${cssEscape(anchor)}"]`,
+    );
+    if (!el) return;
+    el.scrollIntoView({ block: 'center', behavior: 'auto' });
+  }
+
+  function moveFocus(delta: 1 | -1) {
+    if (leafUnits.length === 0) return;
+    const idx = focusedAnchor ? leafUnits.indexOf(focusedAnchor) : -1;
+    const nextIdx =
+      idx < 0
+        ? delta > 0 ? 0 : leafUnits.length - 1
+        : Math.max(0, Math.min(leafUnits.length - 1, idx + delta));
+    const target = leafUnits[nextIdx]!;
+    setFocusedAnchor(target);
+    scrollFocusedIntoView(target);
+  }
+
+  /** Find the leaf unit anchor whose rect is closest to the given viewport
+   *  Y position. Used by f/b to re-snap focus to the new visible edge. */
+  function pickUnitNearViewportY(y: number): string | null {
+    const root = contentRef.current;
+    if (!root) return null;
+    let bestAnchor: string | null = null;
+    let bestDist = Number.POSITIVE_INFINITY;
+    for (const anchor of leafUnits) {
+      const el = root.querySelector<HTMLElement>(
+        `[data-anchor="${cssEscape(anchor)}"]`,
+      );
+      if (!el) continue;
+      const r = el.getBoundingClientRect();
+      const center = r.top + r.height / 2;
+      const dist = Math.abs(center - y);
+      if (dist < bestDist) {
+        bestDist = dist;
+        bestAnchor = anchor;
+      }
+    }
+    return bestAnchor;
+  }
+
+  function pageScroll(direction: 1 | -1) {
+    const root = contentRef.current;
+    if (!root) return;
+    const step = root.clientHeight * 0.85; // 85% of viewport, vim-style
+    root.scrollBy({ top: direction * step, behavior: 'auto' });
+    // After the scroll, snap focus to the new leading edge.
+    requestAnimationFrame(() => {
+      const rect = root.getBoundingClientRect();
+      const targetY = direction > 0 ? rect.bottom - 16 : rect.top + 16;
+      const pick = pickUnitNearViewportY(targetY);
+      if (pick) setFocusedAnchor(pick);
+    });
+  }
+
+  // `=` AnchorJumpModal, `/` in-law search, j/k focus move, f/b page scroll.
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.defaultPrevented) return; // chord listener may have eaten this
       const t = e.target as HTMLElement | null;
       const inField =
         t &&
@@ -40,14 +148,38 @@ export function LawViewer({ body }: Props) {
           t.tagName === 'TEXTAREA' ||
           t.isContentEditable);
       if (inField) return;
-      if (e.key === '=') {
-        e.preventDefault();
-        setJumpOpen(true);
+      if (modalOpen) return; // let the modal own the keyboard
+
+      switch (e.key) {
+        case '=':
+          e.preventDefault();
+          setJumpOpen(true);
+          return;
+        case '/':
+          e.preventDefault();
+          setSearchOpen(true);
+          return;
+        case 'j':
+          e.preventDefault();
+          moveFocus(1);
+          return;
+        case 'k':
+          e.preventDefault();
+          moveFocus(-1);
+          return;
+        case 'f':
+          e.preventDefault();
+          pageScroll(1);
+          return;
+        case 'b':
+          e.preventDefault();
+          pageScroll(-1);
+          return;
       }
     }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  });
 
   const queryClient = useQueryClient();
   const selectionsQuery = useQuery({
@@ -136,6 +268,22 @@ export function LawViewer({ body }: Props) {
       unwrapOverlays(root);
     };
   }, [body.lawId, selectionsQuery.data]);
+
+  // Mirror `focusedAnchor` into the DOM via `data-focused="1"` so CSS can
+  // outline the active 条/項/号. The dep on selectionsQuery.data is what
+  // re-applies the marker after overlays rewrap the spans.
+  useEffect(() => {
+    const root = articleRef.current;
+    if (!root) return;
+    const prev = root.querySelector<HTMLElement>('[data-focused="1"]');
+    if (prev) prev.removeAttribute('data-focused');
+    if (focusedAnchor) {
+      const el = root.querySelector<HTMLElement>(
+        `[data-anchor="${cssEscape(focusedAnchor)}"]`,
+      );
+      if (el) el.setAttribute('data-focused', '1');
+    }
+  }, [focusedAnchor, body.lawId, selectionsQuery.data]);
 
 
   // Click an existing overlay span to open the edit menu.
@@ -254,6 +402,16 @@ export function LawViewer({ body }: Props) {
             body={body}
             onClose={() => setJumpOpen(false)}
             onJump={(anchor) => scrollToAnchor(contentRef.current, anchor)}
+          />
+        )}
+        {searchOpen && (
+          <InLawSearchModal
+            body={body}
+            onClose={() => setSearchOpen(false)}
+            onJump={(anchor) => {
+              scrollToAnchor(contentRef.current, anchor);
+              setFocusedAnchor(anchor);
+            }}
           />
         )}
       </section>
