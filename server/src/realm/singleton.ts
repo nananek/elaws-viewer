@@ -18,14 +18,13 @@ export async function getRealm(): Promise<Realm> {
     path: REALM_PATH,
     schema: ALL_SCHEMAS,
     schemaVersion: SCHEMA_VERSION,
-    // PR #17 bumped the schema from 23 → 24 (added FolderEntity). The bump
-    // is purely additive (new class, no field/PK changes on existing
-    // classes), so the migration is a no-op — but Realm SDK refuses to
-    // open a file at an older version unless an `onMigration` callback is
-    // explicitly provided. Without this, the user sees
-    //   "Provided schema version 24 does not equal last set version 23."
+    // Defensive: if anyone bumps SCHEMA_VERSION in the future (matching a
+    // real iOS schema change), a no-op `onMigration` lets Realm SDK proceed
+    // for additive-only migrations without the user hitting:
+    //   "Provided schema version N does not equal last set version M."
+    // Adapt this body if a future bump needs data transfer.
     onMigration: () => {
-      // intentional no-op: additive class migrations need no data transfer.
+      // additive-only by default; modify when a real migration is needed.
     },
   });
   return realm;

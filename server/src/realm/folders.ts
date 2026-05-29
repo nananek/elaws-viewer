@@ -1,21 +1,42 @@
 import { randomUUID } from 'node:crypto';
 import { getRealm, withWrite } from './singleton.js';
 
+/**
+ * Folder model — matches the Catalystwo iOS app's representation:
+ *
+ *   - A folder is an `Organizable` row (no separate FolderEntity class).
+ *   - `Organizable.filepath` stores the folder's parent path (`/` for
+ *     root, `/{parent-uuid}/` for one level deep, etc.).
+ *   - A folder's "absolute path" (what laws use to reference it) is
+ *     `${filepath}${uuid}/`. Children — both other folders and
+ *     `DownloadedLaw` rows — set their own filepath to that value.
+ *   - In Catalystwo a `DownloadedLaw` can ALSO act as a folder container
+ *     (its uuid appears in other rows' filepaths). This module focuses on
+ *     Organizable-as-folder; DownloadedLaw-as-folder is handled by the
+ *     tree builder client-side.
+ *
+ * `parentUuid` in the DTO is derived from `filepath` (last UUID segment
+ * before the trailing slash, or null for root). The DTO shape is kept
+ * compatible with the previous FolderEntity-based API so the frontend
+ * FolderTree component doesn't have to change.
+ */
+
 export interface FolderDto {
   uuid: string;
   title: string;
   parentUuid: string | null;
   order: number;
+  /** Absolute path that children must set as their filepath to live here. */
   path: string;
   createdAt: string;
   updatedAt: string;
 }
 
-interface FolderRow {
+interface OrganizableRow {
   uuid: string;
-  title: string;
-  parentUuid: string | null;
+  filepath: string;
   order: number;
+  title: string;
   isDeleted: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -31,27 +52,27 @@ function base64UrlUuid(): string {
     .replace(/=+$/, '');
 }
 
-function buildPath(row: FolderRow, byUuid: Map<string, FolderRow>): string {
-  const segs: string[] = [];
-  let cur: FolderRow | undefined = row;
-  const seen = new Set<string>();
-  while (cur) {
-    if (seen.has(cur.uuid)) break;
-    seen.add(cur.uuid);
-    segs.unshift(cur.title);
-    if (!cur.parentUuid) break;
-    cur = byUuid.get(cur.parentUuid);
-  }
-  return `/${segs.join('/')}/`;
+/** Last UUID segment of a `/a/b/c/` path, or null for `/`. */
+function parentUuidFromFilepath(filepath: string): string | null {
+  const trimmed = filepath.replace(/^\/+|\/+$/g, '');
+  if (!trimmed) return null;
+  const segs = trimmed.split('/');
+  return segs[segs.length - 1] ?? null;
 }
 
-function toDto(row: FolderRow, byUuid: Map<string, FolderRow>): FolderDto {
+/** Absolute path of a folder (what children use as their filepath). */
+function absolutePath(row: OrganizableRow): string {
+  const base = row.filepath.endsWith('/') ? row.filepath : `${row.filepath}/`;
+  return `${base}${row.uuid}/`;
+}
+
+function toDto(row: OrganizableRow): FolderDto {
   return {
     uuid: row.uuid,
     title: row.title,
-    parentUuid: row.parentUuid,
+    parentUuid: parentUuidFromFilepath(row.filepath),
     order: row.order,
-    path: buildPath(row, byUuid),
+    path: absolutePath(row),
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   };
@@ -61,12 +82,11 @@ export async function listFolders(): Promise<FolderDto[]> {
   const realm = await getRealm();
   const rows = Array.from(
     realm
-      .objects<FolderRow>('FolderEntity')
+      .objects<OrganizableRow>('Organizable')
       .filtered('isDeleted == false'),
   );
-  const byUuid = new Map(rows.map((r) => [r.uuid, r] as const));
   return rows
-    .map((r) => toDto(r, byUuid))
+    .map(toDto)
     .sort((a, b) => a.order - b.order || a.title.localeCompare(b.title, 'ja'));
 }
 
@@ -75,14 +95,28 @@ export async function createFolder(input: {
   parentUuid?: string | null;
   order?: number;
 }): Promise<FolderDto> {
+  // Resolve parent filepath (the absolute path of the parent folder, or `/`).
+  let parentFilepath = '/';
+  if (input.parentUuid) {
+    const realm = await getRealm();
+    const parent = realm.objectForPrimaryKey<OrganizableRow>(
+      'Organizable',
+      input.parentUuid,
+    );
+    if (!parent || parent.isDeleted) {
+      throw new Error(`parent folder ${input.parentUuid} not found`);
+    }
+    parentFilepath = absolutePath(parent);
+  }
+
   const uuid = base64UrlUuid();
   await withWrite((realm) => {
     const now = new Date();
-    realm.create('FolderEntity', {
+    realm.create('Organizable', {
       uuid,
-      title: input.title.trim() || '新規フォルダ',
-      parentUuid: input.parentUuid ?? null,
+      filepath: parentFilepath,
       order: input.order ?? 50,
+      title: input.title.trim() || '新規フォルダ',
       isDeleted: false,
       createdAt: now,
       updatedAt: now,
@@ -94,7 +128,7 @@ export async function createFolder(input: {
 
 export async function renameFolder(uuid: string, title: string): Promise<void> {
   await withWrite((realm) => {
-    const row = realm.objectForPrimaryKey<FolderRow>('FolderEntity', uuid);
+    const row = realm.objectForPrimaryKey<OrganizableRow>('Organizable', uuid);
     if (!row || row.isDeleted) throw new Error('folder not found');
     row.title = title.trim() || row.title;
     row.updatedAt = new Date();
@@ -103,7 +137,7 @@ export async function renameFolder(uuid: string, title: string): Promise<void> {
 
 export async function softDeleteFolder(uuid: string): Promise<void> {
   await withWrite((realm) => {
-    const row = realm.objectForPrimaryKey<FolderRow>('FolderEntity', uuid);
+    const row = realm.objectForPrimaryKey<OrganizableRow>('Organizable', uuid);
     if (!row) return;
     row.isDeleted = true;
     row.updatedAt = new Date();
