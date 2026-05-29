@@ -146,11 +146,13 @@ test.describe('Phase 10 PR C — テンキー `.` separator + smart-skip (民法
     for (const k of ['4', '0', '0']) {
       await page.locator('body').press(k);
     }
-    // `.` button is disabled because there is no applicable next field.
+    // Both `.` and `+` buttons are disabled because no applicable next field.
     await expect(modal.getByTestId('dot-btn')).toBeDisabled();
+    await expect(modal.getByTestId('plus-btn')).toBeDisabled();
 
-    // Pressing `.` on the keyboard is also a no-op.
+    // Pressing `.` or `+` on the keyboard is also a no-op.
     await page.locator('body').press('.');
+    await page.locator('body').press('+');
     await expect(modal.getByTestId('natural-label')).not.toContainText('の');
     await expect(modal.getByTestId('natural-label')).not.toContainText('第1項');
 
@@ -169,15 +171,30 @@ test.describe('Phase 10 PR C — テンキー `.` separator + smart-skip (民法
     for (const k of ['8', '9', '9']) {
       await page.locator('body').press(k);
     }
-    // `.` button enabled with hint pointing to 「の」
+    // Both `.` and `+` buttons are enabled (same action); the upcoming-field
+    // hint 「の」 is shown on the wider `+` button.
     await expect(modal.getByTestId('dot-btn')).toBeEnabled();
-    await expect(modal.getByTestId('dot-btn')).toContainText('の');
+    await expect(modal.getByTestId('plus-btn')).toBeEnabled();
+    await expect(modal.getByTestId('plus-btn')).toContainText('の');
 
     await page.locator('body').press('.');
     // Now in の field — Enter label = 「の」, natural label shows trailing の_.
     await expect(modal.getByTestId('enter-btn')).toHaveText('の');
     await expect(modal.getByTestId('natural-label')).toContainText('第899条');
     await expect(modal.getByTestId('natural-label')).toContainText('の');
+  });
+
+  test('`+` key advances field the same as `.` (physical numpad alias)', async ({ page }) => {
+    await page.goto(`/law/${REAL_MINPO_LAW_ID}`);
+    await page.locator('body').press('=');
+    const modal = page.getByTestId('anchor-jump-modal');
+
+    // 899+2+1 should produce the same state as 899.2.1
+    for (const k of ['8', '9', '9', '+', '2', '+', '1']) {
+      await page.locator('body').press(k);
+    }
+    await expect(modal.getByTestId('natural-label')).toContainText('第899条の2');
+    await expect(modal.getByTestId('natural-label')).toContainText('第1項');
   });
 
   test('Backspace from の field rewinds to article field', async ({ page }) => {

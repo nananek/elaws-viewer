@@ -46,6 +46,43 @@ test.describe('Phase 10 PR B — paper-like style overhaul (#3)', () => {
     expect(writingMode).toBe('vertical-rl');
   });
 
+  test('会社法 第二条 vertical paragraph stays bounded inside parent column (does not blow out)', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto(`/law/${REAL_KAISHA_LAW_ID}`);
+    await expect(page.locator('[data-anchor="題名"]')).toHaveText('会社法');
+
+    // The paragraph contains ~38 vertical-rl columns of content (~4000px
+    // intrinsic). Without `max-width: 100%` the element blows out to its
+    // content width and the page itself scrolls horizontally — the regression
+    // that motivated this guard. After the fix, the paragraph must be
+    // narrower than the viewport and have actual horizontal scroll inside.
+    const { clientWidth, scrollWidth, paragraphX, paragraphRight, viewportWidth } =
+      await page.locator('[data-anchor="条2/項1"]').evaluate((el) => {
+        const r = el.getBoundingClientRect();
+        return {
+          clientWidth: el.clientWidth,
+          scrollWidth: el.scrollWidth,
+          paragraphX: r.x,
+          paragraphRight: r.x + r.width,
+          viewportWidth: window.innerWidth,
+        };
+      });
+    expect(clientWidth).toBeLessThan(viewportWidth); // bounded
+    expect(scrollWidth).toBeGreaterThan(clientWidth); // actually scrolls
+    expect(paragraphX).toBeGreaterThanOrEqual(0);
+    expect(paragraphRight).toBeLessThanOrEqual(viewportWidth);
+
+    // In vertical-rl, scrollLeft=0 means the first content (rightmost) is
+    // visible. So 号1 must be inside the viewport (not scrolled offscreen).
+    const item1Box = await page.locator('[data-anchor="条2/項1/号1"]').boundingBox();
+    if (!item1Box) throw new Error('号1 not measurable');
+    // Allow a small margin for the element being slightly clipped at the
+    // very edge of the scroll viewport (browsers report bounding boxes that
+    // include the part hidden by overflow).
+    expect(item1Box.x).toBeLessThan(paragraphRight + 8);
+    expect(item1Box.x + item1Box.width).toBeGreaterThan(paragraphX - 8);
+  });
+
   test('会社法 第二条三号の二 イ/ロ Subitems stack vertically (not flex-row siblings)', async ({ page }) => {
     await page.goto(`/law/${REAL_KAISHA_LAW_ID}`);
     await expect(page.locator('[data-anchor="題名"]')).toHaveText('会社法');

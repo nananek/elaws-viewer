@@ -22,6 +22,19 @@ const PREV: Record<FieldKey, FieldKey | null> = {
   item: 'paragraph',
 };
 
+// Explicit grid-placement classes so Tailwind keeps them in the build.
+const DIGIT_BTNS: Array<{ d: string; cls: string }> = [
+  { d: '7', cls: 'col-start-1 row-start-2' },
+  { d: '8', cls: 'col-start-2 row-start-2' },
+  { d: '9', cls: 'col-start-3 row-start-2' },
+  { d: '4', cls: 'col-start-1 row-start-3' },
+  { d: '5', cls: 'col-start-2 row-start-3' },
+  { d: '6', cls: 'col-start-3 row-start-3' },
+  { d: '1', cls: 'col-start-1 row-start-4' },
+  { d: '2', cls: 'col-start-2 row-start-4' },
+  { d: '3', cls: 'col-start-3 row-start-4' },
+];
+
 interface Props {
   body: LawBody;
   onClose: () => void;
@@ -154,7 +167,7 @@ export function AnchorJumpModal({ body, onClose, onJump }: Props) {
         appendDigit(e.key);
         return;
       }
-      if (e.key === '.') {
+      if (e.key === '.' || e.key === '+') {
         e.preventDefault();
         advance();
         return;
@@ -192,62 +205,89 @@ export function AnchorJumpModal({ body, onClose, onJump }: Props) {
           {renderNaturalLabel(vals, active, confirmed)}
         </div>
 
+        {/* Physical numpad layout: 4 columns × 5 rows.
+              row1: . . ⌫ ×
+              row2: 7 8 9 + (spans 2 rows)
+              row3: 4 5 6 +
+              row4: 1 2 3 E (spans 2 rows; label dynamic)
+              row5: 0 (spans 2 cols) . E
+            ` +` is aliased to `.` (next-field advance) — same action, two physical keys. */}
         <div
-          className="grid grid-cols-3 gap-2 text-lg font-mono select-none"
+          className="grid grid-cols-4 grid-rows-5 gap-2 text-lg font-mono select-none"
           data-testid="keypad"
         >
-          {['7', '8', '9', '4', '5', '6', '1', '2', '3'].map((d) => (
-            <button
-              key={d}
-              type="button"
-              onClick={() => appendDigit(d)}
-              className="bg-white border border-neutral-300 rounded py-2 hover:bg-neutral-50"
-            >
-              {d}
-            </button>
-          ))}
+          {/* row 1: top right backspace + close */}
           <button
             type="button"
             onClick={backspace}
-            className="bg-white border border-neutral-300 rounded py-2 hover:bg-neutral-50 text-sm"
+            className="col-start-3 row-start-1 bg-white border border-neutral-300 rounded py-2 hover:bg-neutral-50 text-sm"
             aria-label="一文字削除"
           >
             ⌫
           </button>
           <button
             type="button"
-            onClick={() => appendDigit('0')}
-            className="bg-white border border-neutral-300 rounded py-2 hover:bg-neutral-50"
+            onClick={onClose}
+            className="col-start-4 row-start-1 bg-white border border-neutral-300 rounded py-2 hover:bg-neutral-50 text-sm"
+            aria-label="閉じる"
           >
-            0
+            ×
           </button>
-          <button
-            type="button"
-            onClick={pressEnter}
-            className="bg-ink text-paper border border-ink rounded py-2 hover:opacity-90 text-sm"
-            data-testid="enter-btn"
-          >
-            {enterLabel}
-          </button>
-        </div>
 
-        <div className="grid grid-cols-2 gap-2 text-sm">
+          {/* digits 7-9, 4-6, 1-3 — explicit grid placement so Tailwind keeps the classes */}
+          {DIGIT_BTNS.map(({ d, cls }) => (
+            <button
+              key={d}
+              type="button"
+              onClick={() => appendDigit(d)}
+              className={`bg-white border border-neutral-300 rounded py-2 hover:bg-neutral-50 ${cls}`}
+            >
+              {d}
+            </button>
+          ))}
+
+          {/* + spans rows 2-3, col 4 — alias for . (advance) */}
           <button
             type="button"
             onClick={advance}
             disabled={!dotEnabled}
-            className="px-3 py-2 rounded border border-neutral-300 bg-white hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed"
-            data-testid="dot-btn"
-            title="次のフィールドへ ( . )"
+            className="col-start-4 row-start-2 row-span-2 bg-white border border-neutral-300 rounded hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed text-sm flex flex-col items-center justify-center"
+            data-testid="plus-btn"
+            title="次のフィールドへ ( + or . )"
           >
-            . {dotHint && <span className="text-xs text-neutral-500">→ {dotHint}</span>}
+            <span>+</span>
+            {dotHint && <span className="text-xs text-neutral-500 mt-0.5">→ {dotHint}</span>}
           </button>
+
+          {/* 0 spans cols 1-2, row 5 */}
           <button
             type="button"
-            onClick={onClose}
-            className="px-3 py-2 rounded border border-neutral-300 bg-white hover:bg-neutral-50"
+            onClick={() => appendDigit('0')}
+            className="col-start-1 col-span-2 row-start-5 bg-white border border-neutral-300 rounded py-2 hover:bg-neutral-50"
           >
-            Esc 閉じる
+            0
+          </button>
+
+          {/* . at col 3 row 5 — same action as + */}
+          <button
+            type="button"
+            onClick={advance}
+            disabled={!dotEnabled}
+            className="col-start-3 row-start-5 bg-white border border-neutral-300 rounded py-2 hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed"
+            data-testid="dot-btn"
+            title="次のフィールドへ ( . or + )"
+          >
+            .
+          </button>
+
+          {/* Enter spans rows 4-5, col 4 */}
+          <button
+            type="button"
+            onClick={pressEnter}
+            className="col-start-4 row-start-4 row-span-2 bg-ink text-paper border border-ink rounded hover:opacity-90 text-sm flex items-center justify-center"
+            data-testid="enter-btn"
+          >
+            {enterLabel}
           </button>
         </div>
       </div>

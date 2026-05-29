@@ -119,6 +119,7 @@ export function LawViewer({ body }: Props) {
     };
   }, [body.lawId, selectionsQuery.data]);
 
+
   // Click an existing overlay span to open the edit menu.
   useEffect(() => {
     const root = articleRef.current;
