@@ -7,7 +7,10 @@ import {
   storeLawBody, loadLawBody,
 } from '../cache/laws.js';
 import { reindexLaw } from '../cache/fts.js';
-import { upsertDownloadedLaw } from '../realm/downloads-write.js';
+import {
+  upsertDownloadedLaw,
+  softDeleteDownloadedLaw,
+} from '../realm/downloads-write.js';
 
 export const lawsRouter = new Hono();
 
@@ -102,4 +105,17 @@ lawsRouter.get('/:lawId/meta', async (c) => {
   const meta = getLawMeta(lawId);
   if (!meta) return c.json({ error: 'not downloaded' }, 404);
   return c.json(meta);
+});
+
+/**
+ * Soft-delete a DownloadedLaw. `lawId` here is the `filename` field
+ * (= e-Gov revision id). The SQLite caches (laws_xml, laws_body, FTS)
+ * are intentionally left in place so re-downloading the same revision
+ * is fast; the row reappears via upsert with isDeleted=false.
+ */
+lawsRouter.delete('/:lawId', async (c) => {
+  const lawId = c.req.param('lawId');
+  const ok = await softDeleteDownloadedLaw(lawId);
+  if (!ok) return c.json({ error: 'not found' }, 404);
+  return c.json({ ok: true, lawId });
 });

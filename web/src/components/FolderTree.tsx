@@ -9,6 +9,7 @@ import {
   renameFolderApi,
   setLawFolderApi,
 } from '../api/folders.js';
+import { deleteLaw } from '../api/laws.js';
 
 interface Props {
   folders: Folder[];
@@ -114,6 +115,10 @@ export function FolderTree({ folders, laws }: Props) {
   const moveMut = useMutation({
     mutationFn: ({ filename, path }: { filename: string; path: string }) =>
       setLawFolderApi(filename, path),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['laws'] }),
+  });
+  const deleteLawMut = useMutation({
+    mutationFn: (filename: string) => deleteLaw(filename),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['laws'] }),
   });
 
@@ -240,21 +245,40 @@ export function FolderTree({ folders, laws }: Props) {
                 e.dataTransfer.setData('application/x-law-filename', law.filename);
               }}
               data-testid="folder-tree-law"
-              className="px-1 cursor-grab active:cursor-grabbing"
+              className="px-1 cursor-grab active:cursor-grabbing group"
             >
-              <Link
-                to="/law/$lawId"
-                params={{ lawId: law.filename }}
-                draggable={false}
-                className="block px-2 py-1 rounded hover:bg-neutral-100 text-sm"
-              >
-                <div className="flex justify-between gap-3 items-baseline">
-                  <span className="truncate">{law.lawTitle}</span>
-                  <span className="text-xs text-neutral-500 truncate">
-                    {law.lawNum}
-                  </span>
-                </div>
-              </Link>
+              <div className="flex items-baseline gap-2">
+                <Link
+                  to="/law/$lawId"
+                  params={{ lawId: law.filename }}
+                  draggable={false}
+                  className="block flex-1 min-w-0 px-2 py-1 rounded hover:bg-neutral-100 text-sm"
+                >
+                  <div className="flex justify-between gap-3 items-baseline">
+                    <span className="truncate">{law.lawTitle}</span>
+                    <span className="text-xs text-neutral-500 truncate">
+                      {law.lawNum}
+                    </span>
+                  </div>
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (
+                      !confirm(`「${law.lawTitle}」を削除しますか?\n(ハイライト等は保持されます)`)
+                    ) {
+                      return;
+                    }
+                    deleteLawMut.mutate(law.filename);
+                  }}
+                  className="opacity-0 group-hover:opacity-100 focus:opacity-100 text-xs text-red-600 underline hover:text-red-800 px-1"
+                  title="この法令をフォルダから削除"
+                  data-testid="folder-tree-law-delete"
+                  aria-label={`${law.lawTitle} を削除`}
+                >
+                  削除
+                </button>
+              </div>
             </li>
           ))}
         </ul>
