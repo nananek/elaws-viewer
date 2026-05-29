@@ -163,6 +163,24 @@ export function buildCompoundAnchor(p: CompoundAnchorParts): string {
 }
 
 /**
+ * Build natural Japanese label for テンキー display.
+ *   { article: 899 }                               → "第899条"
+ *   { article: 899, of: 2 }                        → "第899条の2"
+ *   { article: 899, of: 2, paragraph: 1 }          → "第899条の2 第1項"
+ *   { article: 2, paragraph: 1, item: 3 }          → "第2条 第1項第3号"
+ *   { article: 400 }                               → "第400条"
+ */
+export function formatNaturalAnchor(p: CompoundAnchorParts): string {
+  let s = `第${p.article}条`;
+  if (p.of != null) s += `の${p.of}`;
+  const tail: string[] = [];
+  if (p.paragraph != null) tail.push(`第${p.paragraph}項`);
+  if (p.item != null) tail.push(`第${p.item}号`);
+  if (tail.length > 0) s += ` ${tail.join('')}`;
+  return s;
+}
+
+/**
  * For a compound anchor like "条N_M/項P/号I", return progressively coarser
  * anchors so the viewer can scroll to the nearest matching DOM node when the
  * exact 号/項-level anchor isn't rendered.
