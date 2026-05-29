@@ -5,17 +5,21 @@ import { mkdirSync } from 'node:fs';
 import { ALL_SCHEMAS, SCHEMA_VERSION } from './schema.js';
 
 const REPO_ROOT = resolve(import.meta.dirname, '..', '..', '..');
-const STORAGE_DIR = resolve(REPO_ROOT, 'storage');
-const REALM_PATH = resolve(STORAGE_DIR, 'annotations.realm');
+const DEFAULT_STORAGE_DIR = resolve(REPO_ROOT, 'storage');
+const DEFAULT_REALM_PATH = resolve(DEFAULT_STORAGE_DIR, 'annotations.realm');
 
 let realm: Realm | null = null;
 const writeMutex = new Mutex();
 
 export async function getRealm(): Promise<Realm> {
   if (realm && !realm.isClosed) return realm;
-  mkdirSync(STORAGE_DIR, { recursive: true });
+  // Tests override the Realm file via `ELAWS_REALM_PATH=/tmp/...` so they
+  // don't trample the dev / prod `storage/annotations.realm`.
+  const realmPath = process.env.ELAWS_REALM_PATH ?? DEFAULT_REALM_PATH;
+  const storageDir = resolve(realmPath, '..');
+  mkdirSync(storageDir, { recursive: true });
   realm = await Realm.open({
-    path: REALM_PATH,
+    path: realmPath,
     schema: ALL_SCHEMAS,
     schemaVersion: SCHEMA_VERSION,
     // Defensive: if anyone bumps SCHEMA_VERSION in the future (matching a
