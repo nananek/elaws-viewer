@@ -72,6 +72,33 @@ test.describe('LawTabs × button visibility (desktop, pointer:fine)', () => {
     await inactiveTab.hover();
     await expect(inactiveClose).toBeVisible();
   });
+
+  // Regression for "tab width jitters when × pops in on hover": the
+  // close button is `invisible` (not `hidden`) on non-active tabs so
+  // its layout slot is reserved; flipping `visibility` between hover
+  // states must NOT change the tab's bounding box.
+  test('non-active tab width is identical whether × is hovered or not', async ({ page }) => {
+    await page.goto('/');
+    await openTwoTabs(page);
+
+    const inactiveTab = page
+      .locator('[data-tab-law-id][data-active="0"]')
+      .first();
+    await expect(inactiveTab).toHaveCount(1);
+
+    // Park the mouse far from the tab bar so the hover state is OFF.
+    await page.mouse.move(0, 600);
+    const noHover = await inactiveTab.boundingBox();
+    expect(noHover).not.toBeNull();
+
+    await inactiveTab.hover();
+    const onHover = await inactiveTab.boundingBox();
+    expect(onHover).not.toBeNull();
+
+    // 1-px tolerance for sub-pixel rounding.
+    expect(Math.abs(noHover!.width - onHover!.width)).toBeLessThanOrEqual(1);
+    expect(Math.abs(noHover!.height - onHover!.height)).toBeLessThanOrEqual(1);
+  });
 });
 
 test.describe('LawTabs × button visibility (touch, pointer:coarse)', () => {
