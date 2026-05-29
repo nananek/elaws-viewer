@@ -45,7 +45,7 @@ Realm スキーマ・anchor 記法・style 番号と色の対応表を定義す�
 `mishikoLawNum`, `addedDate`, `filepath`, `order`, `title`, `isDeleted`
 
 ### `Organizable` (pk=`uuid`) — 法令の並べ替え用
-`lawNo`, `filepath`, `order`, `title`, `isDeleted`
+`filepath`, `order`, `title`, `isDeleted`
 
 ### `Tag` (pk=`uuid`) — タグ適用（位置×タグ）
 `lawNo`, `anchor`, `tagNumber`, `isDeleted`
@@ -102,6 +102,29 @@ Realm スキーマ・anchor 記法・style 番号と色の対応表を定義す�
 - `条400/項1/文1` — 民法400条1項1文（善管注意義務）
 - `条576/頭` — 会社法576条の見出し
 - `前0/項1/文` — 憲法前文1項
+
+## 実装スコープ
+
+iOS 参考実装との相互運用のためスキーマ v23 は完全に定義しているが、本 web 実装では
+以下を**意図的に実装しない**（決定済み・着手予定なし）。
+
+- **`PendingSyncTask`** — iCloud 同期キュー。本プロジェクトでは SSE で
+  クロスデバイス同期を実装済（`/api/events`）。スキーマ定義のみ保持して
+  Read/Write しない。下手に触ると iOS 側との同期が壊れる。
+- **`SelectionObject.attributedString` / `embeddedObject` / `embeddedObjectTextRep`** —
+  作成時 null 固定。リッチテキストと手描き図形 (HEIC) は表示しない。
+  style=13 は overlay 上にプレースホルダ (`sel-drawing-13` クラス) のみ。
+- **`Bookmark.attributedString`** — 同上、null 固定。
+- **Bookmark 作成 UI** — read/delete のみ。`createBookmark` API は実装済だが
+  web UI からは呼ばれない（iOS 側で作成された既存 Bookmark の閲覧用）。
+- **Tag 付与 UI** — `TagEntity` の名前変更のみ。anchor に tag を付ける操作は
+  サーバー API (`/api/tags/applications`) は揃っているが web UI には無い。
+- **`SelectionObject.notes` / `Bookmark.notes` 編集 UI** — サーバー API は対応
+  済みだが、web に編集画面は提供しない。
+
+「実装してあるべきだが未着手」ではなく**仕様として割り切った機能群**。アンカー取得
+(`web/src/components/LawViewer/useSelectionCapture.ts`) や Tag 付与 API は揃っている
+ので、将来必要になった時の参入コストは低い。
 
 ## 法令ファイル名 (`DownloadedLaw.filename`)
 
