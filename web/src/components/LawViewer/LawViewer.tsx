@@ -99,11 +99,14 @@ export function LawViewer({ body }: Props) {
     scrollFocusedIntoView(target);
   }
 
-  /** Find the leaf unit anchor whose rect is closest to the given viewport
-   *  Y position. Used by f/b to re-snap focus to the new visible edge. */
+  /** Find the leaf unit anchor whose rect intersects the scroll viewport
+   *  and is closest to the given Y. Excludes off-screen candidates so a
+   *  big paragraph just past the bottom edge doesn't win and leave the
+   *  user staring at an invisible focused outline. */
   function pickUnitNearViewportY(y: number): string | null {
     const root = contentRef.current;
     if (!root) return null;
+    const rootRect = root.getBoundingClientRect();
     let bestAnchor: string | null = null;
     let bestDist = Number.POSITIVE_INFINITY;
     for (const anchor of leafUnits) {
@@ -112,6 +115,9 @@ export function LawViewer({ body }: Props) {
       );
       if (!el) continue;
       const r = el.getBoundingClientRect();
+      // Require the rect to OVERLAP the scroll viewport. Otherwise the
+      // focused outline would be painted off-screen.
+      if (r.bottom <= rootRect.top || r.top >= rootRect.bottom) continue;
       const center = r.top + r.height / 2;
       const dist = Math.abs(center - y);
       if (dist < bestDist) {

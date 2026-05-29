@@ -88,26 +88,38 @@ test.describe('Vim-style navigation (j/k/f/b)', () => {
     expect(back).not.toBe(second);
   });
 
-  test('`f` scrolls forward and snaps focus to a unit near the new bottom edge', async ({ page }) => {
+  test('`f` scrolls forward and snaps focus to a visible unit', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto(`/law/${REAL_KENPO_LAW_ID}`);
     await page.locator('[data-anchor="条1/頭"]').waitFor({ state: 'visible' });
 
-    // Capture the scroll-container's scrollTop before/after `f`
     const scrollerSelector = 'section.flex-1.overflow-y-auto';
-    const before = await page.locator(scrollerSelector).evaluate((el) => el.scrollTop);
+    const before = await page
+      .locator(scrollerSelector)
+      .evaluate((el) => el.scrollTop);
     await page.locator('body').press('f');
-    await page.waitForTimeout(60); // rAF + state set
-    const after = await page.locator(scrollerSelector).evaluate((el) => el.scrollTop);
+    await page.waitForTimeout(80); // rAF + state set
+    const after = await page
+      .locator(scrollerSelector)
+      .evaluate((el) => el.scrollTop);
     expect(after).toBeGreaterThan(before);
 
-    // A focused unit must be set and its rect must lie within the current viewport
+    // The focused unit must intersect the scroll viewport (not the window).
+    // A tall paragraph's overall bounding box can extend past viewport
+    // bottom; what matters is that SOME part of it is visible.
     const focused = page.locator('[data-focused="1"]');
     await expect(focused).toHaveCount(1);
-    const box = await focused.boundingBox();
-    if (!box) throw new Error('focused unit has no bounding box');
-    expect(box.y).toBeLessThan(800);
-    expect(box.y + box.height).toBeGreaterThan(0);
+    const overlap = await page.evaluate(() => {
+      const f = document.querySelector<HTMLElement>('[data-focused="1"]');
+      const s = document.querySelector<HTMLElement>(
+        'section.flex-1.overflow-y-auto',
+      );
+      if (!f || !s) return false;
+      const fr = f.getBoundingClientRect();
+      const sr = s.getBoundingClientRect();
+      return !(fr.bottom <= sr.top || fr.top >= sr.bottom);
+    });
+    expect(overlap).toBe(true);
   });
 });
 
