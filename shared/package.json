@@ -9,7 +9,8 @@
     ".": "./src/index.ts",
     "./styles": "./src/styles.ts",
     "./anchor": "./src/anchor.ts",
-    "./types": "./src/types.ts"
+    "./types": "./src/types.ts",
+    "./revision": "./src/revision.ts"
   },
   "scripts": {
     "dev": "echo no-op",

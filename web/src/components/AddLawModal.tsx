@@ -194,16 +194,19 @@ export function AddLawModal({ onClose, initialQuery = '' }: Props) {
                     type="button"
                     onClick={() => setRevisionsFor(h)}
                     className="text-xs underline text-neutral-500 hover:text-ink"
+                    data-testid="add-law-other-revisions"
                   >
-                    他の施行日版を選ぶ
+                    他の版を見る
                   </button>
                   <button
                     type="button"
                     onClick={() => downloadHit(h)}
                     disabled={downloadMutation.isPending}
-                    className="text-sm px-3 py-1 rounded bg-ink text-paper hover:opacity-90 disabled:opacity-40"
+                    className="text-sm px-3 py-1.5 rounded bg-ink text-paper font-medium hover:opacity-90 disabled:opacity-40"
+                    data-testid="add-law-add-current"
+                    title="e-Gov の現行最新版をダウンロードして追加"
                   >
-                    ダウンロード
+                    現行最新を追加
                   </button>
                 </li>
               ))}
@@ -266,7 +269,7 @@ export function AddLawModal({ onClose, initialQuery = '' }: Props) {
                         disabled={downloadMutation.isPending}
                         className="text-sm px-3 py-1 rounded bg-ink text-paper hover:opacity-90 disabled:opacity-40"
                       >
-                        ダウンロード
+                        この版を追加
                       </button>
                     </li>
                   );

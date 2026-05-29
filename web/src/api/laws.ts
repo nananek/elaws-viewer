@@ -1,5 +1,5 @@
 import type { DownloadedLaw, LawBody } from '@elaws/shared/types';
-import { apiGet, apiPost } from './client.js';
+import { apiDelete, apiGet, apiPost } from './client.js';
 
 export interface LawsListResponse {
   count: number;
@@ -30,6 +30,10 @@ export function downloadLaw(
   return apiPost<DownloadResponse>(
     `/api/laws/${encodeURIComponent(lawId)}/download${qs}`,
   );
+}
+
+export function deleteLaw(lawId: string): Promise<void> {
+  return apiDelete(`/api/laws/${encodeURIComponent(lawId)}`);
 }
 
 export interface EgovSearchResponse {

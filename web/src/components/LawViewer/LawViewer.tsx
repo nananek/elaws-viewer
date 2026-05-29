@@ -2,11 +2,17 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { LawBody, LawNode, SelectionObject } from '@elaws/shared/types';
 import { anchorFallbackChain } from '@elaws/shared/anchor';
+import {
+  computeRevisionStatus,
+  REVISION_STATUS_LABEL,
+  type RevisionStatus,
+} from '@elaws/shared/revision';
 import { TocSidebar } from './TocSidebar.js';
 import { renderNode } from './anchorDom.js';
 import {
   fetchSelectionsForLaw, createSelection, deleteSelection, updateSelectionStyle,
 } from '../../api/selections.js';
+import { fetchLaws } from '../../api/laws.js';
 import { applyOverlays, unwrapOverlays } from './overlay.js';
 import { findOverlappingOlder } from './overlap.js';
 import { useSelectionCapture } from './useSelectionCapture.js';
@@ -48,6 +54,18 @@ export function LawViewer({ body }: Props) {
     queryKey: ['selections', body.lawId],
     queryFn: () => fetchSelectionsForLaw(body.lawId),
   });
+
+  // Revision status badge — compares the displayed law's 施行日 against
+  // sibling revisions (same lawNum) the user has downloaded.
+  const lawsQuery = useQuery({ queryKey: ['laws'], queryFn: fetchLaws });
+  const revisionStatus: RevisionStatus | null = useMemo(() => {
+    if (!lawsQuery.data) return null;
+    const siblings = lawsQuery.data.laws
+      .filter((l) => l.lawNum === body.lawNum)
+      .map((l) => l.filename);
+    if (siblings.length === 0) return null; // not in downloaded list (?)
+    return computeRevisionStatus(body.lawId, siblings);
+  }, [lawsQuery.data, body.lawNum, body.lawId]);
 
   const { selection: pickerSelection, clear: clearSelection } = useSelectionCapture(articleRef);
   const [editTarget, setEditTarget] = useState<
@@ -170,6 +188,21 @@ export function LawViewer({ body }: Props) {
       <section className="flex-1 overflow-y-auto scroll-pt-28" ref={contentRef}>
         <div className="sticky top-0 bg-paper/95 backdrop-blur border-b border-neutral-200 px-4 py-2 flex flex-wrap items-baseline gap-3 z-10">
           <h1 className="heading-gothic text-lg font-bold">{body.lawTitle}</h1>
+          {revisionStatus && (
+            <span
+              data-testid="revision-status-badge"
+              data-revision-status={revisionStatus}
+              className={`heading-gothic text-xs px-1.5 py-0.5 rounded border ${
+                revisionStatus === 'current'
+                  ? 'border-emerald-400 bg-emerald-50 text-emerald-800'
+                  : revisionStatus === 'past'
+                    ? 'border-neutral-400 bg-neutral-100 text-neutral-700'
+                    : 'border-amber-400 bg-amber-50 text-amber-800'
+              }`}
+            >
+              {REVISION_STATUS_LABEL[revisionStatus]}
+            </span>
+          )}
           <span className="text-xs text-neutral-500">{body.lawNum}</span>
           <button
             type="button"
