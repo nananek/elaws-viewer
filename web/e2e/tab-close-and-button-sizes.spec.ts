@@ -23,10 +23,20 @@ const MIN_TAP = 44;
  */
 
 async function openTwoTabs(page: import('@playwright/test').Page): Promise<void> {
+  // After each hard navigation, wait for the debounced PUT /api/tabs to
+  // flush so the next page-load's GET sees the updated server state.
+  // Without this, the second page never finds the first tab and only one
+  // tab renders.
   await page.goto(`/law/${LAW_ID}`);
   await expect(page.locator('[data-anchor="条1/頭"]')).toBeVisible();
+  await page.waitForResponse(
+    (r) => r.url().includes('/api/tabs') && r.request().method() === 'PUT',
+  );
   await page.goto(`/law/${REAL_KENPO_LAW_ID}`);
   await expect(page.locator('[data-anchor="条1/頭"]')).toBeVisible();
+  await page.waitForResponse(
+    (r) => r.url().includes('/api/tabs') && r.request().method() === 'PUT',
+  );
 }
 
 test.describe('LawTabs × button visibility (desktop, pointer:fine)', () => {

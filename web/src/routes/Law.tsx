@@ -37,11 +37,14 @@ export function LawPage() {
     })();
   }, [notDownloaded, downloading, lawId]);
 
-  // Register this law in the tabs store once we have a title
+  // Register this law in the tabs store once we have a title.
+  // Wait for server-tab hydrate so that the cold-start GET /api/tabs
+  // doesn't overwrite a tab we just opened locally (race fix).
+  const tabsHydrated = useTabs((s) => s.hydrated);
   useEffect(() => {
-    if (!query.data) return;
+    if (!query.data || !tabsHydrated) return;
     useTabs.getState().open({ lawId, title: query.data.lawTitle });
-  }, [lawId, query.data]);
+  }, [lawId, query.data, tabsHydrated]);
 
   if (query.isLoading) return <div className="p-6 text-sm">読み込み中…</div>;
   if (downloading) {
