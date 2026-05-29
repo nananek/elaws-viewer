@@ -56,7 +56,8 @@ export function LawTabs() {
               setDropIndex(null);
             }}
             data-tab-law-id={t.lawId}
-            className={`relative flex items-center gap-1 px-2 py-1 rounded ${
+            data-active={active ? '1' : '0'}
+            className={`group relative flex items-center gap-1 pl-2 pr-1 py-1 rounded ${
               active
                 ? 'bg-white border border-neutral-300'
                 : 'hover:bg-neutral-100'
@@ -101,7 +102,25 @@ export function LawTabs() {
                   }
                 }
               }}
-              className="text-neutral-400 hover:text-neutral-700 px-1"
+              // Visibility model — protect iPad users from accidentally
+              // closing the wrong tab while trying to switch:
+              //   * active tab: × always visible (so you can close the
+              //     current tab without first leaving it).
+              //   * non-active tab: hidden by default; on hover-capable
+              //     mouse devices we reveal it on group hover (Chrome /
+              //     Safari tab-bar convention). On touch we never reveal
+              //     it — you must switch to the tab first, then close.
+              //
+              // Size: ≥ 44 × 44 hit area on coarse pointer (iPad);
+              // smaller on mouse since precision is fine.
+              data-tab-close
+              className={
+                'items-center justify-center rounded text-neutral-400 hover:text-neutral-700 ' +
+                'w-6 h-6 text-base pointer-coarse:w-11 pointer-coarse:h-11 pointer-coarse:text-xl ' +
+                (active
+                  ? 'inline-flex'
+                  : 'hidden pointer-fine:group-hover:inline-flex')
+              }
               aria-label={`Close tab ${t.title}`}
               title="閉じる"
             >

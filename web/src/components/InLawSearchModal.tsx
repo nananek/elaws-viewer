@@ -223,8 +223,9 @@ export function InLawSearchModal({ body, onClose, onJump }: Props) {
           <button
             type="button"
             onClick={onClose}
-            className="ml-auto text-neutral-500 hover:text-ink text-xl"
+            className="ml-auto w-11 h-11 inline-flex items-center justify-center rounded-md text-xl text-neutral-500 hover:text-ink"
             aria-label="閉じる"
+            data-testid="in-law-search-close"
           >
             ×
           </button>
