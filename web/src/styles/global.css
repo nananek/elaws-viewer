@@ -16,6 +16,14 @@
     font-family: var(--font-mincho);
   }
 
+  /* Vim-nav focused 条/項/号 — `j/k` and `f/b` set this attribute
+     in LawViewer. Soft outline so highlight overlays underneath stay
+     legible. */
+  [data-focused="1"] {
+    outline: 2px solid #f59e0b;
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
 }
 
 /* Gothic for headings (and anything else explicitly tagged). */
