@@ -82,7 +82,7 @@ export function renderNode(n: LawNode, depth = 0): JSX.Element {
           key={n.anchor}
           data-anchor={n.anchor}
           data-row={n.row}
-          className="my-3 scroll-mt-16"
+          className="my-3"
         >
           {(n.children ?? []).map((c) => renderNode(c))}
         </article>
@@ -113,13 +113,11 @@ export function renderNode(n: LawNode, depth = 0): JSX.Element {
       );
 
     case 'paragraph': {
-      const vertical = isDefinitionList(n);
       return (
         <div
           key={n.anchor}
           data-anchor={n.anchor}
           data-row={n.row}
-          data-vertical={vertical ? '1' : undefined}
           className="my-1 pl-4 text-justify"
         >
           {(n.children ?? []).map((c) => renderNode(c))}
@@ -207,32 +205,3 @@ const ITEM_INDENT = [
   'pl-16 -indent-4',
   'pl-20 -indent-4',
 ] as const;
-
-/**
- * Definition-list heuristic — 会社法 2 条, 民法 90 条の 2 etc.
- *
- * A paragraph is treated as a list of defined terms when it has ≥4 items
- * and every item matches at least one of:
- *   - has ≥2 `itemSentence` children (the e-Gov parser emits one
- *     itemSentence per `<Column>` in `<ItemSentence>`, which is exactly
- *     the defined-term / definition split used by 会社法 2 条), or
- *   - the first itemSentence starts with 「  (the 「定義」style used in
- *     民法 etc.).
- *
- * Container is flagged with data-vertical="1" so CSS can flip
- * writing-mode to vertical-rl.
- */
-function isDefinitionList(paragraph: LawNode): boolean {
-  const items = (paragraph.children ?? []).filter((c) => c.kind === 'item');
-  if (items.length < 4) return false;
-  for (const it of items) {
-    const sentences = (it.children ?? []).filter(
-      (c) => c.kind === 'itemSentence' || c.kind === 'sentence',
-    );
-    if (sentences.length === 0) return false;
-    const columnSplit = sentences.length >= 2;
-    const bracketed = sentences[0]!.text.startsWith('「');
-    if (!columnSplit && !bracketed) return false;
-  }
-  return true;
-}

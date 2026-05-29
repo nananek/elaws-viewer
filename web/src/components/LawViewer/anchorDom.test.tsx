@@ -37,64 +37,20 @@ describe('anchorDom — depth-aware item nesting (Issue #3)', () => {
   });
 });
 
-describe('anchorDom — definition-list vertical layout (Issue #3)', () => {
-  it('会社法 第二条 项1 paragraph is tagged data-vertical="1" (≥4 items, each begins 「)', () => {
+describe('anchorDom — definition-list paragraphs render horizontally (PR-D reversal of Phase 10 PR B vertical-rl)', () => {
+  it('会社法 第二条 項1 paragraph carries NO data-vertical attribute', () => {
     const body = loadKaisha();
     const html = render(body.nodes);
-    expect(html).toMatch(/data-anchor="条2\/項1"[^>]*data-vertical="1"/);
+    const match = html.match(/data-anchor="条2\/項1"[^>]*/);
+    expect(match).toBeTruthy();
+    expect(match![0]).not.toMatch(/data-vertical/);
   });
 
-  it('会社法 第一条 项1 paragraph is NOT tagged data-vertical (regular prose, not a definition list)', () => {
+  it('会社法 第一条 項1 paragraph also has no data-vertical', () => {
     const body = loadKaisha();
     const html = render(body.nodes);
     const match = html.match(/data-anchor="条1\/項1"[^>]*/);
     expect(match).toBeTruthy();
     expect(match![0]).not.toMatch(/data-vertical/);
   });
-
-  it('synthetic: ≥4 items but one not starting with 「 → no data-vertical', () => {
-    const node: LawNode = {
-      anchor: '条99/項1',
-      row: 1,
-      kind: 'paragraph',
-      text: '',
-      children: [
-        item('条99/項1/号1', 'イ', '「定義1」とは…'),
-        item('条99/項1/号2', 'ロ', '「定義2」とは…'),
-        item('条99/項1/号3', 'ハ', '「定義3」とは…'),
-        item('条99/項1/号4', 'ニ', '普通の文'),
-      ],
-    };
-    const html = render([node]);
-    expect(html).not.toMatch(/data-vertical/);
-  });
-
-  it('synthetic: only 3 items, all starting with 「 → no data-vertical (need ≥4)', () => {
-    const node: LawNode = {
-      anchor: '条98/項1',
-      row: 1,
-      kind: 'paragraph',
-      text: '',
-      children: [
-        item('条98/項1/号1', '一', '「A」'),
-        item('条98/項1/号2', '二', '「B」'),
-        item('条98/項1/号3', '三', '「C」'),
-      ],
-    };
-    const html = render([node]);
-    expect(html).not.toMatch(/data-vertical/);
-  });
 });
-
-function item(anchor: string, title: string, sentenceText: string): LawNode {
-  return {
-    anchor,
-    row: 0,
-    kind: 'item',
-    text: '',
-    children: [
-      { anchor: `${anchor}/番号`, row: 0, kind: 'itemTitle', text: title },
-      { anchor: `${anchor}/文1`, row: 0, kind: 'itemSentence', text: sentenceText },
-    ],
-  };
-}

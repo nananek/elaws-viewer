@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import {
   LAW_ID,
   REAL_KAISHA_LAW_ID,
+  REAL_KENPO_LAW_ID,
   createMockState,
   installApiMocks,
 } from './fixtures.js';
@@ -34,53 +35,32 @@ test.describe('Phase 10 PR B — paper-like style overhaul (#3)', () => {
     expect(colorScheme).not.toBe('dark');
   });
 
-  test('会社法 第二条 (definitions) renders with data-vertical="1" and writing-mode: vertical-rl', async ({ page }) => {
+  test('会社法 第二条 renders as horizontal hanging-indent list (no vertical-rl)', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto(`/law/${REAL_KAISHA_LAW_ID}`);
     await expect(page.locator('[data-anchor="題名"]')).toHaveText('会社法');
 
     const paragraph = page.locator('[data-anchor="条2/項1"]');
     await expect(paragraph).toBeVisible();
-    await expect(paragraph).toHaveAttribute('data-vertical', '1');
 
+    // The Phase 10 PR B vertical-rl experiment is reverted — paragraphs no
+    // longer carry data-vertical and writing-mode must be horizontal-tb.
+    await expect(paragraph).not.toHaveAttribute('data-vertical', /.*/);
     const writingMode = await paragraph.evaluate((el) => getComputedStyle(el).writingMode);
-    expect(writingMode).toBe('vertical-rl');
-  });
+    expect(writingMode).toBe('horizontal-tb');
 
-  test('会社法 第二条 vertical paragraph stays bounded inside parent column (does not blow out)', async ({ page }) => {
-    await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto(`/law/${REAL_KAISHA_LAW_ID}`);
-    await expect(page.locator('[data-anchor="題名"]')).toHaveText('会社法');
+    // Items render top-to-bottom (each on its own line), not as side-by-side
+    // columns. 号1 must sit above 号2.
+    const box1 = await page.locator('[data-anchor="条2/項1/号1"]').boundingBox();
+    const box2 = await page.locator('[data-anchor="条2/項1/号2"]').boundingBox();
+    if (!box1 || !box2) throw new Error('号1/号2 not measurable');
+    expect(box2.y).toBeGreaterThan(box1.y + 4);
 
-    // The paragraph contains ~38 vertical-rl columns of content (~4000px
-    // intrinsic). Without `max-width: 100%` the element blows out to its
-    // content width and the page itself scrolls horizontally — the regression
-    // that motivated this guard. After the fix, the paragraph must be
-    // narrower than the viewport and have actual horizontal scroll inside.
-    const { clientWidth, scrollWidth, paragraphX, paragraphRight, viewportWidth } =
-      await page.locator('[data-anchor="条2/項1"]').evaluate((el) => {
-        const r = el.getBoundingClientRect();
-        return {
-          clientWidth: el.clientWidth,
-          scrollWidth: el.scrollWidth,
-          paragraphX: r.x,
-          paragraphRight: r.x + r.width,
-          viewportWidth: window.innerWidth,
-        };
-      });
-    expect(clientWidth).toBeLessThan(viewportWidth); // bounded
-    expect(scrollWidth).toBeGreaterThan(clientWidth); // actually scrolls
-    expect(paragraphX).toBeGreaterThanOrEqual(0);
-    expect(paragraphRight).toBeLessThanOrEqual(viewportWidth);
-
-    // In vertical-rl, scrollLeft=0 means the first content (rightmost) is
-    // visible. So 号1 must be inside the viewport (not scrolled offscreen).
-    const item1Box = await page.locator('[data-anchor="条2/項1/号1"]').boundingBox();
-    if (!item1Box) throw new Error('号1 not measurable');
-    // Allow a small margin for the element being slightly clipped at the
-    // very edge of the scroll viewport (browsers report bounding boxes that
-    // include the part hidden by overflow).
-    expect(item1Box.x).toBeLessThan(paragraphRight + 8);
-    expect(item1Box.x + item1Box.width).toBeGreaterThan(paragraphX - 8);
+    // Paragraph itself must fit within the viewport — no horizontal scroll.
+    const viewportWidth = await page.evaluate(() => window.innerWidth);
+    const paraBox = await paragraph.boundingBox();
+    if (!paraBox) throw new Error('paragraph not measurable');
+    expect(paraBox.x + paraBox.width).toBeLessThanOrEqual(viewportWidth);
   });
 
   test('会社法 第二条三号の二 イ/ロ Subitems stack vertically (not flex-row siblings)', async ({ page }) => {
@@ -101,20 +81,46 @@ test.describe('Phase 10 PR B — paper-like style overhaul (#3)', () => {
     await expect(sub1).toHaveAttribute('data-depth', '1');
     await expect(sub2).toHaveAttribute('data-depth', '1');
 
-    // The two Subitems must NOT be side-by-side. Compare their bounding
-    // boxes — within vertical writing mode the columns advance right-to-
-    // left, but each Subitem still occupies its own column / row, so
-    // their bounding rects must not be horizontal flex siblings on the
-    // same baseline.
+    // The two Subitems must stack vertically (different y), not be flex
+    // siblings on the same baseline as in the original 会社法 2 条 bug.
     const box1 = await sub1.boundingBox();
     const box2 = await sub2.boundingBox();
     if (!box1 || !box2) throw new Error('Subitems not measurable');
-    // Allow either: stacked (different y) or columnar (different x). The
-    // failure mode we are guarding against is identical top AND
-    // overlapping x ranges from the old `flex gap-2 pl-8` layout.
-    const sameTop = Math.abs(box1.y - box2.y) < 4;
-    const xOverlap = !(box1.x + box1.width <= box2.x || box2.x + box2.width <= box1.x);
-    expect(sameTop && xOverlap).toBe(false);
+    expect(box2.y).toBeGreaterThan(box1.y + 4);
+  });
+
+  test('AnchorJumpModal jump to a paragraph lands BELOW the sticky header (scroll-padding-top)', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto(`/law/${REAL_KENPO_LAW_ID}`);
+    await page.locator('[data-anchor="条1/頭"]').waitFor({ state: 'visible' });
+
+    // Jump to 第14条第1項 — paragraph-level target. Pre-fix it landed
+    // ~47px above the sticky header bottom (hidden). After adding
+    // scroll-pt-28 on the scroll container, target.top must be >= sticky
+    // bottom (with a few px tolerance for sub-pixel rounding).
+    await page.locator('body').press('=');
+    await page.getByTestId('anchor-jump-modal').waitFor({ state: 'visible' });
+    for (const k of ['1', '4', '.', '1']) {
+      await page.locator('body').press(k);
+    }
+    await page.locator('body').press('Enter');
+    await page.locator('body').press('Enter');
+    await page.getByTestId('anchor-jump-modal').waitFor({ state: 'detached' });
+
+    const { stickyBottom, targetTop } = await page.evaluate(() => {
+      const sticky = document.querySelector<HTMLElement>('.sticky.top-0');
+      const target = document.querySelector<HTMLElement>('[data-anchor="条14/項1"]');
+      return {
+        stickyBottom: sticky ? sticky.getBoundingClientRect().bottom : null,
+        targetTop: target ? target.getBoundingClientRect().top : null,
+      };
+    });
+
+    expect(stickyBottom).not.toBeNull();
+    expect(targetTop).not.toBeNull();
+    // Pre-fix: targetTop was 47px (hidden). Post-fix: targetTop should be
+    // at or below stickyBottom (~95px).
+    expect(targetTop!).toBeGreaterThanOrEqual(stickyBottom! - 4);
   });
 
   test('PWA manifest uses cream theme/background color', async ({ page }) => {

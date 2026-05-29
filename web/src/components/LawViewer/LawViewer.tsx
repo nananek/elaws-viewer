@@ -167,7 +167,7 @@ export function LawViewer({ body }: Props) {
         <TocSidebar toc={toc} onJump={(a) => scrollToAnchor(contentRef.current, a)} />
       </aside>
 
-      <section className="flex-1 overflow-y-auto" ref={contentRef}>
+      <section className="flex-1 overflow-y-auto scroll-pt-28" ref={contentRef}>
         <div className="sticky top-0 bg-paper/95 backdrop-blur border-b border-neutral-200 px-4 py-2 flex flex-wrap items-baseline gap-3 z-10">
           <h1 className="heading-gothic text-lg font-bold">{body.lawTitle}</h1>
           <span className="text-xs text-neutral-500">{body.lawNum}</span>

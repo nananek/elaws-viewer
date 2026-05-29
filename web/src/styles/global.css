@@ -16,20 +16,6 @@
     font-family: var(--font-mincho);
   }
 
-  /* Definition-list paragraphs (会社法 2 条 etc.) flip to vertical writing.
-     Marked by anchorDom when ≥4 sibling items each begin with 「.
-     `max-width: 100%` keeps the (vertical-rl) block axis bounded by the
-     parent column width so `overflow-x: auto` actually engages — otherwise
-     the element would blow out to its intrinsic content width (~4000px for
-     会社法第二条) and the surrounding page would scroll instead. */
-  [data-vertical="1"] {
-    writing-mode: vertical-rl;
-    max-height: 60vh;
-    max-width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-    white-space: nowrap;
-  }
 }
 
 /* Gothic for headings (and anything else explicitly tagged). */
