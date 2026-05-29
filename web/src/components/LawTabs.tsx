@@ -106,20 +106,26 @@ export function LawTabs() {
               // closing the wrong tab while trying to switch:
               //   * active tab: × always visible (so you can close the
               //     current tab without first leaving it).
-              //   * non-active tab: hidden by default; on hover-capable
-              //     mouse devices we reveal it on group hover (Chrome /
-              //     Safari tab-bar convention). On touch we never reveal
-              //     it — you must switch to the tab first, then close.
+              //   * non-active tab: invisible (NOT display:none) by
+              //     default so the tab's width is stable; on hover-
+              //     capable mouse devices we flip visibility on group
+              //     hover (Chrome / Safari tab-bar convention). On
+              //     touch we never reveal it — you must switch to the
+              //     tab first, then close.
+              //
+              // Using `invisible` instead of `hidden` reserves the
+              // layout slot so the tab doesn't flicker-resize when
+              // the mouse enters/leaves.
               //
               // Size: ≥ 44 × 44 hit area on coarse pointer (iPad);
               // smaller on mouse since precision is fine.
               data-tab-close
               className={
-                'items-center justify-center rounded text-neutral-400 hover:text-neutral-700 ' +
+                'inline-flex items-center justify-center rounded text-neutral-400 hover:text-neutral-700 ' +
                 'w-6 h-6 text-base pointer-coarse:w-11 pointer-coarse:h-11 pointer-coarse:text-xl ' +
                 (active
-                  ? 'inline-flex'
-                  : 'hidden pointer-fine:group-hover:inline-flex')
+                  ? 'visible'
+                  : 'invisible pointer-fine:group-hover:visible')
               }
               aria-label={`Close tab ${t.title}`}
               title="閉じる"
