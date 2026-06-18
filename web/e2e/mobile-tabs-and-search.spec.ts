@@ -197,3 +197,55 @@ test.describe('Mobile: tab switcher reachable from the sticky toolbar', () => {
     await expect(page.locator('[data-anchor="条2/項1"]')).toBeAttached();
   });
 });
+
+test.describe('条文ジャンプ must not scroll the chrome off-screen', () => {
+  // The actual reported trigger: tabs vanished specifically when using
+  // 条文ジャンプ, not when scrolling by hand. Root cause was a window-level
+  // scroll (the shell was `min-h-screen` and the viewer's hardcoded
+  // `h-[calc(100vh-3rem)]` ignored the tab bar, so the body grew past the
+  // viewport). `scrollIntoView` then moved the WINDOW, sliding header+tabs
+  // away. Manual scroll only moved the inner region, so it never lost them.
+  // Fix: a fixed-height shell (`h-screen overflow-hidden`) where only the
+  // inner region scrolls.
+  test.beforeEach(async ({ page }) => {
+    const state = createMockState();
+    state.tabs = [
+      { lawId: REAL_KAISHA_LAW_ID, title: '会社法' },
+      { lawId: REAL_KENPO_LAW_ID, title: '日本国憲法' },
+    ];
+    await installApiMocks(page, state);
+  });
+
+  test('jumping to a late article keeps header + tabs in view; window never scrolls', async ({ page }) => {
+    await page.setViewportSize(PHONE);
+    await page.goto(`/law/${REAL_KENPO_LAW_ID}`);
+    await expect(page.locator('[data-anchor="条1/頭"]')).toBeVisible();
+    await expect(page.getByTestId('law-tabs')).toBeInViewport();
+
+    // Drive the real numpad: 第99条 → Enter (confirm) → Enter (jump).
+    await page.getByRole('button', { name: '= 条文ジャンプ' }).click();
+    const pad = page.getByTestId('keypad');
+    await pad.getByRole('button', { name: '9', exact: true }).click();
+    await pad.getByRole('button', { name: '9', exact: true }).click();
+    await page.getByTestId('enter-btn').click();
+    await page.getByTestId('enter-btn').click();
+
+    // Inner scroller actually moved...
+    const innerTop = await page
+      .locator('section.flex-1.overflow-y-auto')
+      .evaluate((el) => el.scrollTop);
+    expect(innerTop).toBeGreaterThan(100);
+
+    // ...but the chrome stayed put and the window never scrolled.
+    await expect(page.getByTestId('law-tabs')).toBeInViewport();
+    await expect(page.locator('header')).toBeInViewport();
+    const win = await page.evaluate(() => ({
+      y: window.scrollY,
+      overflow:
+        document.documentElement.scrollHeight -
+        document.documentElement.clientHeight,
+    }));
+    expect(win.y).toBe(0);
+    expect(win.overflow).toBeLessThanOrEqual(1);
+  });
+});

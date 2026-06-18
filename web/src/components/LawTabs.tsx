@@ -23,7 +23,7 @@ export function LawTabs() {
     // so labels stay readable instead of being squeezed to nothing.
     <div
       data-testid="law-tabs"
-      className="heading-gothic border-b border-neutral-200 bg-paper px-2 py-1 flex flex-nowrap overflow-x-auto gap-1 text-sm"
+      className="heading-gothic shrink-0 border-b border-neutral-200 bg-paper px-2 py-1 flex flex-nowrap overflow-x-auto gap-1 text-sm"
     >
       {tabs.map((t, i) => {
         const active = matchRoute({ to: '/law/$lawId', params: { lawId: t.lawId } });

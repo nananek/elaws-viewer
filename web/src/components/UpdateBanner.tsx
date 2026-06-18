@@ -16,7 +16,7 @@ export function UpdateBanner() {
     <div
       role="status"
       data-update-banner
-      className="w-full bg-amber-100 border-b border-amber-300 px-4 py-2 text-sm flex items-center gap-3"
+      className="shrink-0 w-full bg-amber-100 border-b border-amber-300 px-4 py-2 text-sm flex items-center gap-3"
     >
       <span aria-hidden="true">↻</span>
       <span className="text-amber-900">
