@@ -20,6 +20,7 @@ import { SelectionMenu } from './SelectionMenu.js';
 import { EditSelectionMenu } from './EditSelectionMenu.js';
 import { AnchorJumpModal } from '../AnchorJumpModal.js';
 import { InLawSearchModal } from '../InLawSearchModal.js';
+import { TabSwitcher } from '../TabSwitcher.js';
 
 interface Props {
   body: LawBody;
@@ -364,6 +365,7 @@ export function LawViewer({ body }: Props) {
               physical keyboard. Without the search button, in-law text
               search was `/`-only and unreachable on a phone. */}
           <div className="ml-auto flex items-center gap-2">
+            <TabSwitcher currentLawId={body.lawId} />
             <button
               type="button"
               onClick={() => setSearchOpen(true)}

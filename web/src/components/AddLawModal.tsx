@@ -101,13 +101,13 @@ export function AddLawModal({ onClose, initialQuery = '' }: Props) {
       role="dialog"
       aria-modal="true"
       aria-label="法令を追加"
-      className="fixed inset-0 z-50 flex items-start justify-center pt-[8vh] bg-black/40"
+      className="fixed inset-0 z-50 flex items-start justify-center px-4 pt-[8vh] bg-black/40"
       onClick={onClose}
       data-testid="add-law-modal"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-paper border border-neutral-300 rounded-md shadow-xl w-full max-w-2xl mx-4 max-h-[80vh] flex flex-col"
+        className="bg-paper border border-neutral-300 rounded-md shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col"
       >
         <div className="px-4 py-3 border-b border-neutral-200 flex items-baseline gap-2">
           <h2 className="heading-gothic text-base font-bold">法令を追加</h2>

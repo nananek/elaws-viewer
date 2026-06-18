@@ -141,13 +141,13 @@ export function GlobalLawSearchModal({ onClose, onRemoteHit }: Props) {
       role="dialog"
       aria-modal="true"
       aria-label="法令名検索"
-      className="fixed inset-0 z-50 flex items-start justify-center pt-[10vh] bg-black/30"
+      className="fixed inset-0 z-50 flex items-start justify-center px-4 pt-[10vh] bg-black/30"
       onClick={onClose}
       data-testid="global-search-modal"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-paper border border-neutral-300 rounded-md shadow-lg w-full max-w-xl mx-4"
+        className="bg-paper border border-neutral-300 rounded-md shadow-lg w-full max-w-xl"
       >
         <input
           ref={inputRef}

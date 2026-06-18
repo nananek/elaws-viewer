@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import {
+  REAL_KAISHA_LAW_ID,
   REAL_KENPO_LAW_ID,
   createMockState,
   installApiMocks,
@@ -123,5 +124,76 @@ test.describe('Mobile: in-law search reachable via button (no keyboard)', () => 
     // Clicking a hit jumps and closes the modal.
     await cards.first().click();
     await expect(modal).toHaveCount(0);
+  });
+
+  test('search modal never exceeds the viewport width (no broken overflow)', async ({ page }) => {
+    await page.setViewportSize(PHONE);
+    await page.goto(`/law/${REAL_KENPO_LAW_ID}`);
+    await expect(page.locator('[data-anchor="条1/頭"]')).toBeVisible();
+
+    await page.getByRole('button', { name: '🔍 検索' }).click();
+    const modal = page.getByTestId('in-law-search-modal');
+    await expect(modal).toBeVisible();
+
+    // The dialog box must fit inside the viewport. With the old
+    // `w-full mx-4` the box was 100% + 32px wide and spilled past the
+    // right edge, creating a horizontal scrollbar on <html>.
+    const box = await modal.locator('> div').first().boundingBox();
+    expect(box).not.toBeNull();
+    expect(box!.x).toBeGreaterThanOrEqual(0);
+    expect(box!.x + box!.width).toBeLessThanOrEqual(PHONE.width + 0.5);
+
+    // And the document itself must not have gained horizontal scroll.
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
+    expect(overflow).toBeLessThanOrEqual(1);
+  });
+});
+
+test.describe('Mobile: tab switcher reachable from the sticky toolbar', () => {
+  // Several filler tabs plus a real, mockable law to switch *to*.
+  const FILLER = Array.from({ length: 6 }, (_, i) => ({
+    lawId: `SEED_LAW_${i}`,
+    title: `長い法令名サンプル第${i}号`,
+  }));
+  const SEED_TABS = [
+    ...FILLER,
+    { lawId: REAL_KAISHA_LAW_ID, title: '会社法' },
+  ];
+
+  test.beforeEach(async ({ page }) => {
+    const state = createMockState();
+    state.tabs = [...SEED_TABS];
+    await installApiMocks(page, state);
+  });
+
+  test('after scrolling down, the tab button still switches laws', async ({ page }) => {
+    await page.setViewportSize(PHONE);
+    await page.goto(`/law/${REAL_KENPO_LAW_ID}`);
+    await expect(page.locator('[data-anchor="条1/頭"]')).toBeVisible();
+
+    // Scroll the law content well past the top — this is where the old
+    // top-of-page tab strip scrolled out of reach.
+    const scroller = page.locator('section.flex-1.overflow-y-auto');
+    await scroller.evaluate((el) => {
+      el.scrollTop = el.scrollHeight;
+    });
+
+    // The toolbar (and its tab button) is sticky, so still on screen.
+    const tabBtn = page.getByTestId('tab-switcher-button');
+    await expect(tabBtn).toBeInViewport();
+    await tabBtn.click();
+
+    const menu = page.getByTestId('tab-switcher-menu');
+    await expect(menu).toBeVisible();
+
+    // Switch to 会社法 by tapping its entry — the law actually loads.
+    await menu
+      .locator(`[data-tab-switcher-law-id="${REAL_KAISHA_LAW_ID}"] a`)
+      .click();
+    await expect(page).toHaveURL(new RegExp(`/law/${REAL_KAISHA_LAW_ID}$`));
+    await expect(menu).toHaveCount(0);
+    await expect(page.locator('[data-anchor="条2/項1"]')).toBeAttached();
   });
 });
