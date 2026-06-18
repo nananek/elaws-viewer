@@ -47,9 +47,18 @@ const rootRoute = createRootRoute({
     }, []);
 
     return (
-      <div className="min-h-screen flex flex-col">
+      // Fixed-height app shell: the window itself never scrolls (overflow
+      // -hidden + h-screen). Only `main` scrolls. This is what keeps the
+      // header + tab strip pinned: previously the column was `min-h-screen`
+      // and the law viewer's `h-[calc(100vh-3rem)]` ignored the tab bar's
+      // height, so the body grew past the viewport and the WINDOW gained a
+      // scrollbar. A 条文ジャンプ (scrollIntoView) then scrolled that window,
+      // sliding the chrome off-screen — manual inner-scroll didn't, which
+      // is why only jumps lost the tabs. With a fixed shell, scrollIntoView
+      // can only move the inner scroll region.
+      <div className="h-screen flex flex-col overflow-hidden">
         <UpdateBanner />
-        <header className="border-b border-neutral-200 px-4 py-2 flex items-center gap-4">
+        <header className="shrink-0 border-b border-neutral-200 px-4 py-2 flex items-center gap-4">
           <Link
             to="/"
             className="heading-gothic font-bold text-ink hover:underline"
@@ -70,7 +79,7 @@ const rootRoute = createRootRoute({
           </button>
         </header>
         <LawTabs />
-        <main className="flex-1 min-h-0">
+        <main className="flex-1 min-h-0 overflow-y-auto">
           <Outlet />
         </main>
         <ShortcutHelp />

@@ -336,7 +336,7 @@ export function LawViewer({ body }: Props) {
   }, [body.lawId]);
 
   return (
-    <div className="flex h-[calc(100vh-3rem)]">
+    <div className="flex h-full min-h-0">
       <aside className="w-72 border-r border-neutral-200 overflow-y-auto p-3 hidden md:block">
         <TocSidebar toc={toc} onJump={(a) => scrollToAnchor(contentRef.current, a)} />
       </aside>
