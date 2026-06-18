@@ -209,13 +209,13 @@ export function InLawSearchModal({ body, onClose, onJump }: Props) {
       role="dialog"
       aria-modal="true"
       aria-label="法令内検索"
-      className="fixed inset-0 z-40 flex items-start justify-center pt-[6vh] bg-black/30"
+      className="fixed inset-0 z-40 flex items-start justify-center px-4 pt-[6vh] bg-black/30"
       onClick={onClose}
       data-testid="in-law-search-modal"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-paper border border-neutral-300 rounded-md shadow-xl w-full max-w-3xl mx-4 max-h-[88vh] flex flex-col"
+        className="bg-paper border border-neutral-300 rounded-md shadow-xl w-full max-w-3xl max-h-[88vh] flex flex-col"
       >
         <div className="px-4 py-3 border-b border-neutral-200 flex items-baseline gap-2">
           <h2 className="heading-gothic text-base font-bold">法令内検索</h2>

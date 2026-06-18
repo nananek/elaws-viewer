@@ -70,12 +70,12 @@ export function ShortcutHelp() {
 
       {open && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+          className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/40"
           onClick={() => setOpen(false)}
           data-testid="shortcut-help-modal"
         >
           <div
-            className="bg-paper text-ink rounded-lg shadow-xl p-5 max-w-md w-full mx-4"
+            className="bg-paper text-ink rounded-lg shadow-xl p-5 max-w-md w-full"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-baseline justify-between mb-3">
