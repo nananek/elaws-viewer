@@ -359,14 +359,28 @@ export function LawViewer({ body }: Props) {
             </span>
           )}
           <span className="text-xs text-neutral-500">{body.lawNum}</span>
-          <button
-            type="button"
-            onClick={() => setJumpOpen(true)}
-            className="ml-auto text-sm px-3 py-1 rounded border border-neutral-300 bg-white hover:bg-neutral-50"
-            title="条文番号ジャンプ (= キー)"
-          >
-            = 条文ジャンプ
-          </button>
+          {/* Buttons mirror the `/` and `=` shortcuts so the features are
+              reachable on touch devices (mobile PWA, iPad) that have no
+              physical keyboard. Without the search button, in-law text
+              search was `/`-only and unreachable on a phone. */}
+          <div className="ml-auto flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setSearchOpen(true)}
+              className="text-sm px-3 py-1 rounded border border-neutral-300 bg-white hover:bg-neutral-50"
+              title="法令内をテキスト検索 (/ キー)"
+            >
+              🔍 検索
+            </button>
+            <button
+              type="button"
+              onClick={() => setJumpOpen(true)}
+              className="text-sm px-3 py-1 rounded border border-neutral-300 bg-white hover:bg-neutral-50"
+              title="条文番号ジャンプ (= キー)"
+            >
+              = 条文ジャンプ
+            </button>
+          </div>
         </div>
 
         <article
